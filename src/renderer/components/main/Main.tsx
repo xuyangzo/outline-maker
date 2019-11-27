@@ -1,0 +1,20 @@
+import * as React from 'react';
+import { MainProps, MainState } from './mainDec';
+import { Col } from 'antd';
+import classnames from 'classnames';
+
+// const IconFont = Icon.createFromIconfontCN({
+// 	scriptUrl: '//at.alicdn.com/t/font_1531781_n3f5v9yel4c.js',
+// });
+
+export default class Main extends React.Component<MainProps, MainState> {
+  constructor(props: MainProps) {
+    super(props);
+  }
+
+  render() {
+    const size: number = this.props.expand ? 19 : 23;
+
+    return <Col span={size}>sb</Col>;
+  }
+}

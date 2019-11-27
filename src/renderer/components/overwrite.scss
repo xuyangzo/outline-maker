@@ -1,0 +1,38 @@
+/**
+ * overwrite global ant design css
+ */
+
+// overwrite right border of sidebar
+.ant-menu {
+    border-right: none !important;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+    background-color: rgb(233, 233, 233);
+    color: mediumpurple;
+}
+
+.ant-menu-inline .ant-menu-item:after,
+.ant-menu-vertical-left .ant-menu-item:after,
+.ant-menu-vertical-right .ant-menu-item:after,
+.ant-menu-vertical .ant-menu-item:after {
+    border-right: 3px solid mediumpurple;
+}
+
+.ant-menu-item-selected,
+.ant-menu-item-selected > a,
+.ant-menu-item-selected > a:hover {
+    color: mediumpurple;
+}
+
+.ant-menu-item-active,
+.ant-menu-item:hover,
+.ant-menu-submenu-active,
+.ant-menu-submenu-title:hover,
+.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open {
+    color: mediumpurple;
+}
+
+.ant-menu-submenu-selected {
+    color: mediumpurple;
+}

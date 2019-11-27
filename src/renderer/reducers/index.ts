@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
-import { CounterState, counterReducer } from './counterReducer';
+import { SidebarState, sidebarReducer } from './sidebarReducer';
 
 export interface RootState {
-    counter: CounterState;
+	sidebar: SidebarState;
 }
 
 export const rootReducer = combineReducers<RootState | undefined>({
-    counter: counterReducer
+	sidebar: sidebarReducer
 });
