@@ -33,7 +33,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 					<aside className="toggle-sidebar" onClick={action}>
 						<Icon type={arrow} />
 					</aside>
-					<Menu defaultSelectedKeys={['all-1']} defaultOpenKeys={['all']} mode="inline">
+					<Menu defaultSelectedKeys={['default-template']} defaultOpenKeys={['all']} mode="inline">
 						<SubMenu
 							key="all"
 							title={
@@ -43,7 +43,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 								</span>
 							}
 						>
-							<Menu.Item key="all-1">Option 5</Menu.Item>
+							<Menu.Item key="default-template">默认模板</Menu.Item>
 							<Menu.Item key="all-2">Option 6</Menu.Item>
 						</SubMenu>
 						<SubMenu
