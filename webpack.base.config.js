@@ -17,5 +17,8 @@ module.exports = {
     },
     devtool: 'source-map',
     plugins: [
-    ]
+    ],
+    externals: {
+        "sequelize": "require('sequelize')"
+    }
 };

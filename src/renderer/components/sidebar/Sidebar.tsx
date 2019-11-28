@@ -1,23 +1,78 @@
 import * as React from 'react';
-import { SidebarProps, SidebarState } from './sidebarDec';
+import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
 import { Col, Menu, Icon } from 'antd';
 import classnames from 'classnames';
 
 const { SubMenu } = Menu;
 
-require('./sidebar.scss');
+import SidebarTrash from './trash/SidebarTrash';
 
-// const IconFont = Icon.createFromIconfontCN({
-// 	scriptUrl: '//at.alicdn.com/t/font_1531781_n3f5v9yel4c.js',
-// });
+import './sidebar.scss';
+
+require('../../../db/relations');
+import Outlines from '../../../db/models/Outlines';
 
 export default class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
 		super(props);
+		this.state = {
+			outlines: []
+		};
+	}
+
+	componentWillReceiveProps = (newProps: SidebarProps) => {
+		if (newProps.refresh) {
+			Outlines
+				.findAll({
+					order: [['id', 'DESC']]
+				})
+				.then((result: any) => {
+					const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+						const { id, title } = dataValues;
+						return { id, title };
+					});
+
+					this.setState((prevState: SidebarState) => ({
+						...prevState,
+						outlines
+					}));
+
+					this.props.stopRefreshSidebar();
+				})
+				.catch((err: any) => {
+
+				});
+		}
+	}
+
+	componentDidMount = () => {
+		Outlines
+			.findAll({
+				order: [['id', 'DESC']]
+			})
+			.then((result: any) => {
+				const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+					const { id, title } = dataValues;
+					return { id, title };
+				});
+
+				this.setState((prevState: SidebarState) => ({
+					...prevState,
+					outlines
+				}));
+			})
+			.catch((err: any) => {
+
+			});
 	}
 
 	render() {
-		const { expand, growSidebar, shrinkSidebar } = this.props;
+		const {
+			expand,
+			growSidebar,
+			shrinkSidebar,
+			createOutline
+		} = this.props;
 
 		const arrow: string = expand ? 'double-left' : 'double-right';
 		const action: () => void = expand ? shrinkSidebar : growSidebar;
@@ -33,6 +88,9 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 					<aside className="toggle-sidebar" onClick={action}>
 						<Icon type={arrow} />
 					</aside>
+					<button className="add-outline-button" onClick={createOutline}>
+						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;添加大纲
+					</button>
 					<Menu defaultSelectedKeys={['default-template']} defaultOpenKeys={['all']} mode="inline">
 						<SubMenu
 							key="all"
@@ -43,8 +101,11 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 								</span>
 							}
 						>
-							<Menu.Item key="default-template">默认模板</Menu.Item>
-							<Menu.Item key="all-2">Option 6</Menu.Item>
+							{
+								this.state.outlines.map((outline: Outline) => (
+									<Menu.Item key={outline.id}>{outline.title}</Menu.Item>
+								))
+							}
 						</SubMenu>
 						<SubMenu
 							key="draft"
@@ -58,18 +119,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 							<Menu.Item key="draft-1">Option 5</Menu.Item>
 							<Menu.Item key="draft-2">Option 6</Menu.Item>
 						</SubMenu>
-						<SubMenu
-							key="trash"
-							title={
-								<span>
-									<Icon type="delete" />
-									<span>垃圾箱</span>
-								</span>
-							}
-						>
-							<Menu.Item key="trash-1">Option 5</Menu.Item>
-							<Menu.Item key="trash-2">Option 6</Menu.Item>
-						</SubMenu>
+						<SidebarTrash />
 					</Menu>
 				</Col>
 			</section>

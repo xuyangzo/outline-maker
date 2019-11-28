@@ -11,24 +11,24 @@ import './main.scss';
 // });
 
 export default class Main extends React.Component<MainProps, MainState> {
-  constructor(props: MainProps) {
-    super(props);
-  }
+	constructor(props: MainProps) {
+		super(props);
+	}
 
-  render() {
-    const { expand } = this.props;
+	render() {
+		const { expand } = this.props;
 
-    return (
-      <Col
-        span={19}
-        className={
-          classnames('main', {
-            'main-grow': !expand
-          })
-        }
-      >
-        <MainHeader />
-      </Col>
-    );
-  }
+		return (
+			<Col
+				span={19}
+				className={
+					classnames('main', {
+						'main-grow': !expand
+					})
+				}
+			>
+				<MainHeader />
+			</Col>
+		);
+	}
 }

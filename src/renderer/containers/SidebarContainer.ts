@@ -3,15 +3,20 @@ import { Dispatch } from 'redux';
 
 import Sidebar from '../components/sidebar/Sidebar';
 import { RootState } from '../reducers';
-import { SidebarAction, shrink, grow } from '../actions/sidebarActions';
+import { SidebarAction, shrink, grow, refresh, stop } from '../actions/sidebarActions';
+import { OutlineAction, create } from '../actions/outlineActions';
 
 const mapStateToProps = (state: RootState) => ({
-	expand: state.sidebar.expand
+	expand: state.sidebar.expand,
+	refresh: state.sidebar.refresh,
+	showModal: state.outline.showOutlineModal
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<SidebarAction>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<SidebarAction | OutlineAction>) => ({
 	shrinkSidebar: () => dispatch(shrink()),
-	growSidebar: () => dispatch(grow())
+	growSidebar: () => dispatch(grow()),
+	createOutline: () => dispatch(create()),
+	stopRefreshSidebar: () => dispatch(stop())
 });
 
 export default connect(
