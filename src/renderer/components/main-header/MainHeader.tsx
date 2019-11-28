@@ -13,10 +13,12 @@ export default class Main extends React.Component<MainHeaderProps, MainHeaderSta
 	}
 
 	render() {
+		const { title, description } = this.props;
+
 		return (
 			<PageHeader
-				title="Title"
-				subTitle="This is not subtitle"
+				title={title}
+				subTitle={description}
 				backIcon={false}
 				extra={[
 					<Button type="primary" key="add-person" ghost><Icon type="user-add" />添加人物</Button>,

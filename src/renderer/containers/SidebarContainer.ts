@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import Sidebar from '../components/sidebar/Sidebar';
 import { RootState } from '../reducers';
-import { SidebarAction, shrink, grow, refresh, stop } from '../actions/sidebarActions';
+import { SidebarAction, shrink, grow, stop } from '../actions/sidebarActions';
 import { OutlineAction, create } from '../actions/outlineActions';
 
 const mapStateToProps = (state: RootState) => ({

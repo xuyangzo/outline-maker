@@ -54,8 +54,17 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 		}));
 	}
 
+	closeModal = () => {
+		this.props.closeModal();
+		// clear content
+		this.setState({
+			title: '',
+			description: ''
+		});
+	}
+
 	render() {
-		const { showModal, closeModal } = this.props;
+		const { showModal } = this.props;
 
 		const { title, description } = this.state;
 
@@ -64,9 +73,9 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 				title="创建新的大纲"
 				visible={showModal}
 				onOk={this.handleSubmit}
-				onCancel={closeModal}
+				onCancel={this.closeModal}
 				footer={[
-					<Button type="danger" key="back" onClick={closeModal} ghost>取消</Button>,
+					<Button type="danger" key="back" onClick={this.closeModal} ghost>取消</Button>,
 					<Button type="primary" key="submit" onClick={this.handleSubmit} ghost>确认</Button>
 				]}
 			>

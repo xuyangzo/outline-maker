@@ -19,7 +19,7 @@ module.exports = merge.smart(baseConfig, {
 		headers: { 'Access-Control-Allow-Origin': '*' },
 		historyApiFallback: {
 			verbose: true,
-			disableDotRule: false
+			disableDotRule: true
 		},
 		before() {
 			if (process.env.START_HOT) {

@@ -1,22 +1,70 @@
 import * as React from 'react';
 import { MainProps, MainState } from './mainDec';
+import { OutlineDataValue } from '../sidebar/sidebarDec';
 import { Col } from 'antd';
 import classnames from 'classnames';
 
 import MainHeader from '../main-header/MainHeader';
+import { withRouter } from 'react-router-dom';
 import './main.scss';
 
-// const IconFont = Icon.createFromIconfontCN({
-// 	scriptUrl: '//at.alicdn.com/t/font_1531781_n3f5v9yel4c.js',
-// });
+import Outlines from '../../../db/models/Outlines';
 
-export default class Main extends React.Component<MainProps, MainState> {
+class Main extends React.Component<MainProps, MainState> {
 	constructor(props: MainProps) {
 		super(props);
+		this.state = {
+			id: -1,
+			title: '标题',
+			description: '描述...'
+		};
+	}
+
+	componentWillReceiveProps = (props: MainProps) => {
+		const { id } = props.match.params;
+		Outlines
+			.findOne({
+				where: {
+					id
+				}
+			})
+			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
+				const { id, title, description } = dataValues;
+				this.setState({
+					id,
+					title,
+					description
+				});
+			})
+			.catch((err: any) => {
+
+			});
+	}
+
+	componentDidMount = () => {
+		const { id } = this.props.match.params;
+		Outlines
+			.findOne({
+				where: {
+					id
+				}
+			})
+			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
+				const { id, title, description } = dataValues;
+				this.setState({
+					id,
+					title,
+					description
+				});
+			})
+			.catch((err: any) => {
+
+			});
 	}
 
 	render() {
 		const { expand } = this.props;
+		const { title, description } = this.state;
 
 		return (
 			<Col
@@ -27,8 +75,10 @@ export default class Main extends React.Component<MainProps, MainState> {
 					})
 				}
 			>
-				<MainHeader />
+				<MainHeader title={title} description={description} />
 			</Col>
 		);
 	}
 }
+
+export default withRouter(Main);

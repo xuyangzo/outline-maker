@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
 import { Col, Menu, Icon } from 'antd';
 import classnames from 'classnames';
+import { withRouter } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 
@@ -11,8 +12,9 @@ import './sidebar.scss';
 
 require('../../../db/relations');
 import Outlines from '../../../db/models/Outlines';
+import { ClickParam } from 'antd/lib/menu';
 
-export default class Sidebar extends React.Component<SidebarProps, SidebarState> {
+class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
 		super(props);
 		this.state = {
@@ -66,6 +68,14 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 			});
 	}
 
+	select = (e: ClickParam) => {
+		this.props.history.push(`/outline/${e.key}`);
+	}
+
+	toTutorial = (e: ClickParam) => {
+		this.props.history.push('/');
+	}
+
 	render() {
 		const {
 			expand,
@@ -77,6 +87,12 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 		const arrow: string = expand ? 'double-left' : 'double-right';
 		const action: () => void = expand ? shrinkSidebar : growSidebar;
 
+		// outline to be selected when first loading the page
+		let selected = 'tutorial';
+		if (this.props.location.pathname.indexOf('outline') !== -1) {
+			selected = this.props.location.pathname.slice(9)
+		}
+
 		return (
 			<section id="sidebar" className="sidebar">
 				<Col
@@ -85,13 +101,21 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 						'sidebar-shrink': !expand
 					})}
 				>
-					<aside className="toggle-sidebar" onClick={action}>
+					<aside
+						className={classnames('toggle-sidebar', {
+							'toggle-sidebar-moveleft': !expand
+						})}
+						onClick={action}
+					>
 						<Icon type={arrow} />
 					</aside>
 					<button className="add-outline-button" onClick={createOutline}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;添加大纲
 					</button>
-					<Menu defaultSelectedKeys={['default-template']} defaultOpenKeys={['all']} mode="inline">
+					<Menu defaultSelectedKeys={[selected]} defaultOpenKeys={['all']} mode="inline">
+						<Menu.Item key="tutorial" onClick={this.toTutorial}>
+							<Icon type="question-circle" />教程
+						</Menu.Item>
 						<SubMenu
 							key="all"
 							title={
@@ -103,7 +127,7 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 						>
 							{
 								this.state.outlines.map((outline: Outline) => (
-									<Menu.Item key={outline.id}>{outline.title}</Menu.Item>
+									<Menu.Item key={outline.id} onClick={this.select}>{outline.title}</Menu.Item>
 								))
 							}
 						</SubMenu>
@@ -126,3 +150,5 @@ export default class Sidebar extends React.Component<SidebarProps, SidebarState>
 		);
 	}
 }
+
+export default withRouter(Sidebar);

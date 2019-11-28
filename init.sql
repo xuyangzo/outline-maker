@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS categories;
 CREATE TABLE outlines
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT,
+  title TEXT UNIQUE,
   description TEXT,
   category_id INTEGER,
   category_title TEXT,
@@ -31,7 +31,7 @@ CREATE TABLE favorite
 
 CREATE TABLE trash
 (
-  trash_id INTEGER PRIMARY KEY,
+  trash_id INTEGER PRIMARY KEY AUTOINCREMENT,
   outline_id INTEGER,
   outline_title TEXT,
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
