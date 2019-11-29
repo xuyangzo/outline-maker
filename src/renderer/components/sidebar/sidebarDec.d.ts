@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 export interface Outline {
 	id: number;
 	title: string;
+	deleted: number;
 }
 
 export interface OutlineDataValue {
@@ -31,13 +32,7 @@ export interface SidebarProps extends RouteComponentProps<MatchParams> {
 
 export interface SidebarState {
 	outlines: Array<Outline>;
+	all: Array<Outline>;
+	trash: Array<Outline>;
 	selected: string[];
-}
-
-export interface SidebarTrashProps {
-
-}
-
-export interface SidebarTrashState {
-
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { SidebarTrashProps, SidebarTrashState } from '../sidebarDec';
+import { SidebarTrashProps, SidebarTrashState } from './sidebarTrashDec';
+import { Outline } from '../sidebarDec';
 import { Menu, Icon } from 'antd';
-import classnames from 'classnames';
 
 const { SubMenu } = Menu;
 
@@ -9,11 +9,6 @@ export default class Trash extends React.Component<SidebarTrashProps, SidebarTra
 	constructor(props: SidebarTrashProps) {
 		super(props);
 	}
-
-	componentDidMount = () => {
-
-	}
-
 	render() {
 		const { ...other } = this.props;
 
@@ -28,8 +23,11 @@ export default class Trash extends React.Component<SidebarTrashProps, SidebarTra
 				}
 				{...other}
 			>
-				<Menu.Item key="trash-1">Option 5</Menu.Item>
-				<Menu.Item key="trash-2">Option 6</Menu.Item>
+				{
+					this.props.outlines.map((outline: Outline) => (
+						<Menu.Item key={outline.id}>{outline.title}</Menu.Item>
+					))
+				}
 			</SubMenu>
 		);
 	}

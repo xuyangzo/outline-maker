@@ -63,7 +63,7 @@ class Main extends React.Component<MainProps, MainState> {
 	}
 
 	render() {
-		const { expand } = this.props;
+		const { expand, refreshSidebar } = this.props;
 		const { title, description } = this.state;
 
 		return (
@@ -75,7 +75,7 @@ class Main extends React.Component<MainProps, MainState> {
 					})
 				}
 			>
-				<MainHeader title={title} description={description} />
+				<MainHeader title={title} description={description} refresh={refreshSidebar} />
 			</Col>
 		);
 	}

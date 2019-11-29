@@ -3,7 +3,7 @@ import sequelize from './sequelize';
 
 // model for Trash
 const Trash = sequelize.define(
-	'outline_details',
+	'trash',
 	{
 		id: {
 			field: 'trash_id',
@@ -17,7 +17,21 @@ const Trash = sequelize.define(
 		title: {
 			field: 'outline_title',
 			type: Sequelize.STRING
+		},
+		createdAt: {
+			field: 'created_at',
+			type: Sequelize.DATE,
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+		},
+		updatedAt: {
+			field: 'updated_at',
+			type: Sequelize.DATE,
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
 		}
+	},
+	{
+		freezeTableName: true,
+		timestamps: true
 	}
 );
 

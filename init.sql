@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS outlines;
-DROP TABLE IF EXISTS outline_details;
-DROP TABLE IF EXISTS favorite;
 DROP TABLE IF EXISTS trash;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS favorite;
+DROP TABLE IF EXISTS outline_details;
+DROP TABLE IF EXISTS outlines;
 
 CREATE TABLE outlines
 (
@@ -12,7 +12,9 @@ CREATE TABLE outlines
   category_id INTEGER,
   category_title TEXT,
   fav INTEGER,
-  deleted INTEGER
+  deleted INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE outline_details
@@ -33,7 +35,8 @@ CREATE TABLE trash
 (
   trash_id INTEGER PRIMARY KEY AUTOINCREMENT,
   outline_id INTEGER,
-  outline_title TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
 );
 

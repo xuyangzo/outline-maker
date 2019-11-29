@@ -55,11 +55,21 @@ const Outlines = sequelize.define(
 			field: 'deleted',
 			type: Sequelize.INTEGER,
 			defaultValue: 0
+		},
+		createdAt: {
+			field: 'created_at',
+			type: Sequelize.DATE,
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+		},
+		updatedAt: {
+			field: 'updated_at',
+			type: Sequelize.DATE,
+			defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
 		}
 	},
 	{
 		freezeTableName: true,
-		timestamps: false
+		timestamps: true
 	}
 );
 

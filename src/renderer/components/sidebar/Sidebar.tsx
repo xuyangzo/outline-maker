@@ -19,6 +19,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		super(props);
 		this.state = {
 			outlines: [],
+			all: [],
+			trash: [],
 			selected: []
 		};
 	}
@@ -38,20 +40,25 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		if (newProps.refresh) {
 			Outlines
 				.findAll({
-					order: [['id', 'DESC']]
+					order: [['updatedAt', 'DESC']]
 				})
 				.then((result: any) => {
-					const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-						const { id, title } = dataValues;
-						return { id, title };
+					// all outlines
+					const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+						const { id, title, deleted } = dataValues;
+						return { id, title, deleted };
 					});
+
+					// filter trash
+					const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
+					const trash: Outline[] = outlines.filter((outline: Outline) => outline.deleted);
 
 					this.setState((prevState: SidebarState) => ({
 						...prevState,
-						outlines
+						outlines,
+						all,
+						trash
 					}));
-
-					this.props.stopRefreshSidebar();
 				})
 				.catch((err: any) => {
 
@@ -76,14 +83,21 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 				order: [['id', 'DESC']]
 			})
 			.then((result: any) => {
-				const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title } = dataValues;
-					return { id, title };
+				// all outlines
+				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+					const { id, title, deleted } = dataValues;
+					return { id, title, deleted };
 				});
+
+				// filter trash
+				const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
+				const trash: Outline[] = outlines.filter((outline: Outline) => outline.deleted);
 
 				this.setState((prevState: SidebarState) => ({
 					...prevState,
-					outlines
+					outlines,
+					all,
+					trash
 				}));
 			})
 			.catch((err: any) => {
@@ -161,7 +175,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 							}
 						>
 							{
-								this.state.outlines.map((outline: Outline) => (
+								this.state.all.map((outline: Outline) => (
 									<Menu.Item key={outline.id} onClick={this.select}>{outline.title}</Menu.Item>
 								))
 							}
@@ -178,7 +192,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 							<Menu.Item key="draft-1">Option 5</Menu.Item>
 							<Menu.Item key="draft-2">Option 6</Menu.Item>
 						</SubMenu>
-						<SidebarTrash />
+						<SidebarTrash outlines={this.state.trash} />
 					</Menu>
 				</Col>
 			</section>

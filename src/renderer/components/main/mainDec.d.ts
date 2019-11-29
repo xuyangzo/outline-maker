@@ -6,6 +6,8 @@ interface MatchParams {
 
 export interface MainProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
+
+	refreshSidebar: () => void;
 }
 
 export interface MainState {
