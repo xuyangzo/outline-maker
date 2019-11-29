@@ -176,7 +176,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						<Icon type={arrow} />
 					</aside>
 					<button className="add-outline-button" onClick={createOutline}>
-						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;添加大纲
+						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;创建大纲
 					</button>
 					<Menu
 						defaultSelectedKeys={[selected]}

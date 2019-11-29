@@ -145,6 +145,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 					(this.state.outlines.length === 0) && (
 						<div className="empty-fav">
 							<h2>收藏夹是空的哟...</h2>
+							<br />
 							<img src={empty} alt="empty trash" />
 						</div>
 					)

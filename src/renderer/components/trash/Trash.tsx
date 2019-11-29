@@ -12,6 +12,7 @@ import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // sequelize modals
 import TrashModal from '../../../db/models/Trash';
+import FavoriteModal from '../../../db/models/Favorite';
 import Outlines from '../../../db/models/Outlines';
 
 // sass
@@ -89,6 +90,13 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			.all([
 				// delete outline from trash table
 				TrashModal
+					.destroy({
+						where: {
+							outline_id: this.state.selected
+						}
+					}),
+				// delete outline from favorite table
+				FavoriteModal
 					.destroy({
 						where: {
 							outline_id: this.state.selected
@@ -191,6 +199,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					(this.state.outlines.length === 0) && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
+							<br />
 							<img src={empty} alt="empty trash" />
 						</div>
 					)
