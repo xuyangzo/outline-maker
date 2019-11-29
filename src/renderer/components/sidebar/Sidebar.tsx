@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
-import { Col, Menu, Icon } from 'antd';
+import { Col, Menu, Icon, message as Message } from 'antd';
 import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
+import { DatabaseError } from 'sequelize';
 
 const { SubMenu } = Menu;
 
@@ -57,8 +58,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						all
 					}));
 				})
-				.catch((err: any) => {
-
+				.catch((err: DatabaseError) => {
+					Message.error(err.message);
 				});
 		}
 	}
@@ -99,8 +100,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					trash
 				}));
 			})
-			.catch((err: any) => {
-
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 

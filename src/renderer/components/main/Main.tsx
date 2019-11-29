@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { MainProps, MainState } from './mainDec';
 import { OutlineDataValue } from '../sidebar/sidebarDec';
-import { Col } from 'antd';
+import { Col, message as Message } from 'antd';
 import classnames from 'classnames';
+import { DatabaseError } from 'sequelize';
 
 import MainHeader from '../main-header/MainHeader';
 import { withRouter } from 'react-router-dom';
@@ -36,8 +37,8 @@ class Main extends React.Component<MainProps, MainState> {
 					description
 				});
 			})
-			.catch((err: any) => {
-
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
@@ -57,8 +58,8 @@ class Main extends React.Component<MainProps, MainState> {
 					description
 				});
 			})
-			.catch((err: any) => {
-
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 

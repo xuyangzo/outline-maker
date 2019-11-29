@@ -6,6 +6,8 @@ import { withRouter } from 'react-router-dom';
 import Outlines from '../../../db/models/Outlines';
 import Trash from '../../../db/models/Trash';
 
+import { DatabaseError } from 'sequelize';
+
 class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	constructor(props: MainHeaderProps) {
 		super(props);
@@ -47,8 +49,8 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					this.props.history.push('/trash');
 				});
 			})
-			.catch((err: any) => {
-				console.log(err);
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
