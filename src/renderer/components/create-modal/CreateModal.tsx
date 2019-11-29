@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { CreateModalProps, CreateModalState } from './CreateModalDec';
-import { Button, Modal, Form, Input, Icon, message } from 'antd';
+import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
+import { withRouter } from 'react-router-dom';
+import { ValidationErrorItem } from 'sequelize';
 
 const { TextArea } = Input;
 
 import Outlines from '../../../db/models/Outlines';
 
-export default class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
+class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 	constructor(props: CreateModalProps) {
 		super(props);
 		this.state = {
@@ -21,8 +23,8 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 				title: this.state.title,
 				description: this.state.description
 			})
-			.then(() => {
-				message.success('创建大纲成功！');
+			.then(({ 'null': id }: { 'null': number }) => {
+				Message.success('创建大纲成功！');
 				// close modal
 				this.props.closeModal();
 				// refresh sidebar
@@ -32,9 +34,18 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 					title: '',
 					description: ''
 				});
+				// redirect to created outline page
+				this.props.history.push(`/outline/${id}`);
 			})
-			.catch((err: any) => {
-				console.log(err);
+			.catch(({ errors }: { errors: ValidationErrorItem[] }) => {
+				// iterate through all error messages
+				errors.forEach((error: ValidationErrorItem) => {
+					const { path, message } = error;
+					if (path === 'title') {
+						Message.error(message);
+					}
+				});
+
 			});
 	}
 
@@ -85,7 +96,7 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 							value={title}
 							onChange={this.onChange}
 							prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							placeholder="大纲名字"
+							placeholder="大纲名字（10个字以内）"
 						/>
 					</Form.Item>
 					<Form.Item>
@@ -103,3 +114,5 @@ export default class CreateModal extends React.Component<CreateModalProps, Creat
 		);
 	}
 }
+
+export default withRouter(CreateModal);

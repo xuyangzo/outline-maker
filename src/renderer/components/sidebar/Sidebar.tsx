@@ -18,11 +18,23 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
 		super(props);
 		this.state = {
-			outlines: []
+			outlines: [],
+			selected: []
 		};
 	}
 
 	componentWillReceiveProps = (newProps: SidebarProps) => {
+		// set selected keys
+		let selected = 'tutorial';
+		if (newProps.location.pathname.indexOf('outline') !== -1) {
+			selected = newProps.location.pathname.slice(9);
+		}
+		this.setState((prevState: SidebarState) => ({
+			...prevState,
+			selected: [selected]
+		}));
+
+		// if need to refresh, refresh
 		if (newProps.refresh) {
 			Outlines
 				.findAll({
@@ -48,6 +60,17 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	}
 
 	componentDidMount = () => {
+		// set selected keys
+		let selected = 'tutorial';
+		if (this.props.location.pathname.indexOf('outline') !== -1) {
+			selected = this.props.location.pathname.slice(9);
+		}
+		this.setState((prevState: SidebarState) => ({
+			...prevState,
+			selected: [selected]
+		}));
+
+		// grab data
 		Outlines
 			.findAll({
 				order: [['id', 'DESC']]
@@ -66,6 +89,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 			.catch((err: any) => {
 
 			});
+	}
+
+	onSelect = ({ key }: { key: string }) => {
+		this.setState((prevState: SidebarState) => ({
+			...prevState,
+			selected: [key]
+		}));
 	}
 
 	select = (e: ClickParam) => {
@@ -87,10 +117,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		const arrow: string = expand ? 'double-left' : 'double-right';
 		const action: () => void = expand ? shrinkSidebar : growSidebar;
 
-		// outline to be selected when first loading the page
 		let selected = 'tutorial';
 		if (this.props.location.pathname.indexOf('outline') !== -1) {
-			selected = this.props.location.pathname.slice(9)
+			selected = this.props.location.pathname.slice(9);
 		}
 
 		return (
@@ -112,7 +141,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					<button className="add-outline-button" onClick={createOutline}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;添加大纲
 					</button>
-					<Menu defaultSelectedKeys={[selected]} defaultOpenKeys={['all']} mode="inline">
+					<Menu
+						defaultSelectedKeys={[selected]}
+						selectedKeys={this.state.selected}
+						defaultOpenKeys={['all']}
+						mode="inline"
+						onSelect={this.onSelect}
+					>
 						<Menu.Item key="tutorial" onClick={this.toTutorial}>
 							<Icon type="question-circle" />教程
 						</Menu.Item>

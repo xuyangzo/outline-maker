@@ -31,6 +31,7 @@ export interface SidebarProps extends RouteComponentProps<MatchParams> {
 
 export interface SidebarState {
 	outlines: Array<Outline>;
+	selected: string[];
 }
 
 export interface SidebarTrashProps {

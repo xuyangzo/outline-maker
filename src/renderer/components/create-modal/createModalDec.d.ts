@@ -1,4 +1,6 @@
-export interface CreateModalProps {
+import { RouteComponentProps } from 'react-router-dom';
+
+export interface CreateModalProps extends RouteComponentProps {
   showModal: boolean;
 
   closeModal: () => void;

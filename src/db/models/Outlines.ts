@@ -12,11 +12,31 @@ const Outlines = sequelize.define(
 		},
 		title: {
 			field: 'title',
-			type: Sequelize.STRING
+			type: Sequelize.STRING,
+			allowNull: false,
+			validate: {
+				notNull: {
+					msg: '标题不能为空'
+				},
+				notEmpty: {
+					msg: '标题不能为空'
+				},
+				len: {
+					args: [0, 10],
+					msg: '标题应该在 10 个字之内！'
+				}
+			}
 		},
 		description: {
 			field: 'description',
-			type: Sequelize.STRING
+			type: Sequelize.STRING,
+			defaultValue: '描述被吃了...',
+			validate: {
+				len: {
+					args: [0, 100],
+					msg: '描述应该在 100 个字之内！'
+				}
+			}
 		},
 		category_id: {
 			field: 'category_id',
