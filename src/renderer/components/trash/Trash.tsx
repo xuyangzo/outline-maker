@@ -17,6 +17,9 @@ import Outlines from '../../../db/models/Outlines';
 // sass
 import './trash.scss';
 
+// image
+import empty from '../../../public/empty.png';
+
 class Trash extends React.Component<TrashProps, TrashState> {
 	constructor(props: TrashProps) {
 		super(props);
@@ -184,6 +187,14 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					})
 				}
 			>
+				{
+					(this.state.outlines.length === 0) && (
+						<div className="empty-trash">
+							<h2>垃圾箱是空的哟...</h2>
+							<img src={empty} alt="empty trash" />
+						</div>
+					)
+				}
 				<Row>
 					{
 						this.state.outlines.map((outline: Outline) => (

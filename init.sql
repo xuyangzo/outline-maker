@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS outlines;
 CREATE TABLE outlines
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT UNIQUE,
+  title TEXT,
   description TEXT,
   category_id INTEGER,
   category_title TEXT,

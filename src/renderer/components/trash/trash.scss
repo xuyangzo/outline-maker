@@ -5,6 +5,18 @@
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
 
+  .empty-trash {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+
+    img {
+      width: 40%;
+    }
+  }
+
   // add box-shadow to card
   .custom-card {
     width: 80%;
