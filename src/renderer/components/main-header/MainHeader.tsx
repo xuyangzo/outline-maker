@@ -31,7 +31,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		Favorite
 			.findOne({
 				where: {
-					id
+					outline_id: id
 				}
 			})
 			.then((result: any) => {
@@ -54,7 +54,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		Favorite
 			.findOne({
 				where: {
-					id
+					outline_id: id
 				}
 			})
 			.then((result: any) => {
