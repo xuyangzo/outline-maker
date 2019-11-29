@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CreateModalProps, CreateModalState } from './CreateModalDec';
+import { CreateModalProps, CreateModalState, CreateModalTemplate } from './CreateModalDec';
 import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { ValidationErrorItem } from 'sequelize';
@@ -18,11 +18,15 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 	}
 
 	handleSubmit = () => {
+		const model: CreateModalTemplate = {
+			title: this.state.title
+		};
+		if (this.state.description.length) {
+			model.description = this.state.description;
+		}
+
 		Outlines
-			.create({
-				title: this.state.title,
-				description: this.state.description
-			})
+			.create(model)
 			.then(({ 'null': id }: { 'null': number }) => {
 				Message.success('创建大纲成功！');
 				// close modal
@@ -40,10 +44,8 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 			.catch(({ errors }: { errors: ValidationErrorItem[] }) => {
 				// iterate through all error messages
 				errors.forEach((error: ValidationErrorItem) => {
-					const { path, message } = error;
-					if (path === 'title') {
-						Message.error(message);
-					}
+					const { message } = error;
+					Message.error(message);
 				});
 
 			});

@@ -4,25 +4,25 @@
 
 // overwrite right border of sidebar
 .ant-menu {
-    border-right: none !important;
+	border-right: none !important;
 }
 
 .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-    background-color: rgb(233, 233, 233);
-    color: mediumpurple;
+	background-color: rgb(233, 233, 233);
+	color: mediumpurple;
 }
 
 .ant-menu-inline .ant-menu-item:after,
 .ant-menu-vertical-left .ant-menu-item:after,
 .ant-menu-vertical-right .ant-menu-item:after,
 .ant-menu-vertical .ant-menu-item:after {
-    border-right: 3px solid mediumpurple;
+	border-right: 3px solid mediumpurple;
 }
 
 .ant-menu-item-selected,
 .ant-menu-item-selected > a,
 .ant-menu-item-selected > a:hover {
-    color: mediumpurple;
+	color: mediumpurple;
 }
 
 .ant-menu-item-active,
@@ -30,9 +30,17 @@
 .ant-menu-submenu-active,
 .ant-menu-submenu-title:hover,
 .ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open {
-    color: mediumpurple;
+	color: mediumpurple;
 }
 
 .ant-menu-submenu-selected {
-    color: mediumpurple;
+	color: mediumpurple;
+}
+
+// add text-overflow to header subtitle
+.ant-page-header-heading-sub-title {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 360px;
 }

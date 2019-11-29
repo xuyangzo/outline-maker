@@ -11,3 +11,8 @@ export interface CreateModalState {
   title: string;
   description: string;
 }
+
+export interface CreateModalTemplate {
+  title: string;
+  description?: string;
+}
