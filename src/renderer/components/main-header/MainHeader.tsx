@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { MainHeaderProps, MainHeaderState } from './mainHeaderDec';
 import { Icon, Button, PageHeader, message as Message, Modal } from 'antd';
+
+// enable history
 import { withRouter } from 'react-router-dom';
 
+// type decalration
+import { MainHeaderProps, MainHeaderState } from './mainHeaderDec';
+import { DatabaseError } from 'sequelize';
+
+// sequelize modals
 import Outlines from '../../../db/models/Outlines';
 import Trash from '../../../db/models/Trash';
-
-import { DatabaseError } from 'sequelize';
 
 class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	constructor(props: MainHeaderProps) {
@@ -28,11 +32,13 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		const id: string = this.props.location.pathname.slice(9);
 		Promise
 			.all([
+				// update outline's deleted column
 				Outlines
 					.update(
 						{ deleted: 1 },
 						{ where: { id } }
 					),
+				// delete current outline from trash table
 				Trash
 					.create({
 						outline_id: id

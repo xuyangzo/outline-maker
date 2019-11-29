@@ -1,15 +1,21 @@
 import * as React from 'react';
-import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
-import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { Col, Row, Card, Button, Modal, message as Message } from 'antd';
 import classnames from 'classnames';
-import { DatabaseError } from 'sequelize';
 
+// enable history
 import { withRouter } from 'react-router-dom';
-import './trash.scss';
 
+// type declaration
+import { DatabaseError } from 'sequelize';
+import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
+import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
+
+// sequelize modals
 import TrashModal from '../../../db/models/Trash';
 import Outlines from '../../../db/models/Outlines';
+
+// sass
+import './trash.scss';
 
 class Trash extends React.Component<TrashProps, TrashState> {
 	constructor(props: TrashProps) {
@@ -54,18 +60,22 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			});
 	}
 
+	// open deletion modal
 	onOpen = (id: number) => {
 		this.setState({ confirmVisible: true, selected: id });
 	}
 
+	// open put back modal
 	onBackOpen = (id: number) => {
 		this.setState({ backVisible: true, selected: id });
 	}
 
+	// cancel deletion modal
 	onCancel = () => {
 		this.setState({ confirmVisible: false, selected: 0 });
 	}
 
+	// cancel put back modal
 	onBackCancel = () => {
 		this.setState({ backVisible: false, selected: 0 });
 	}
@@ -74,12 +84,14 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	onDelete = () => {
 		Promise
 			.all([
+				// delete outline from trash table
 				TrashModal
 					.destroy({
 						where: {
 							outline_id: this.state.selected
 						}
 					}),
+				// delete outline from outlines table
 				Outlines
 					.destroy({
 						where: {
@@ -114,12 +126,14 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	onBack = () => {
 		Promise
 			.all([
+				// delete outline from trash table
 				TrashModal
 					.destroy({
 						where: {
 							outline_id: this.state.selected
 						}
 					}),
+				// update outline's deleted in outlines table
 				Outlines
 					.update(
 						{ deleted: 0 },
@@ -142,6 +156,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						selected: 0
 					}),
 					() => {
+						// redirect to the page put back
 						this.props.history.push(`/outline/${id}`);
 					});
 			})

@@ -1,17 +1,21 @@
 import * as React from 'react';
-import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
 import { Col, Menu, Icon, message as Message } from 'antd';
 import classnames from 'classnames';
-import { withRouter } from 'react-router-dom';
-import { DatabaseError } from 'sequelize';
-
 const { SubMenu } = Menu;
 
-import './sidebar.scss';
+// enable history
+import { withRouter } from 'react-router-dom';
 
-require('../../../db/relations');
-import Outlines from '../../../db/models/Outlines';
+// type decalaration
+import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
+import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
+
+// sequelize modals
+import Outlines from '../../../db/models/Outlines';
+
+// sidebar
+import './sidebar.scss';
 
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
@@ -43,13 +47,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					order: [['id', 'DESC']]
 				})
 				.then((result: any) => {
-					// all outlines
+					// all outlines including deleted ones
 					const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
 						const { id, title, deleted } = dataValues;
 						return { id, title, deleted };
 					});
 
-					// filter trash
+					// filter trash to get all non-deleted ones
 					const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
 
 					this.setState((prevState: SidebarState) => ({
@@ -83,13 +87,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 				order: [['updatedAt', 'DESC']]
 			})
 			.then((result: any) => {
-				// all outlines
+				// all outlines including deleted ones
 				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
 					const { id, title, deleted } = dataValues;
 					return { id, title, deleted };
 				});
 
-				// filter trash
+				// filter trash to get all non-deleted ones
 				const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
 				const trash: Outline[] = outlines.filter((outline: Outline) => outline.deleted);
 
@@ -105,6 +109,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 			});
 	}
 
+	// once a menu is selected
 	onSelect = ({ key }: { key: string }) => {
 		this.setState((prevState: SidebarState) => ({
 			...prevState,
@@ -112,14 +117,17 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		}));
 	}
 
+	// once a menu is selected, forward to corresponding outline page
 	select = (e: ClickParam) => {
 		this.props.history.push(`/outline/${e.key}`);
 	}
 
+	// go to tutorial page (home page)
 	toTutorial = (e: ClickParam) => {
 		this.props.history.push('/');
 	}
 
+	// go to trash page
 	toTrash = () => {
 		this.props.history.push('/trash');
 	}
@@ -132,9 +140,11 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 			createOutline
 		} = this.props;
 
+		// sets the toggle action of sidebar
 		const arrow: string = expand ? 'double-left' : 'double-right';
 		const action: () => void = expand ? shrinkSidebar : growSidebar;
 
+		// sets default selected
 		let selected = 'tutorial';
 		if (this.props.location.pathname.indexOf('outline') !== -1) {
 			selected = this.props.location.pathname.slice(9);

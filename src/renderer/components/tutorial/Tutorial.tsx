@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { TutorialProps, TutorialState } from './tutorialDec';
 import { Col } from 'antd';
 import classnames from 'classnames';
 
+// type declaration
+import { TutorialProps, TutorialState } from './tutorialDec';
+
+// sass
 import './tutorial.scss';
 
 export default class Tutorial extends React.Component<TutorialProps, TutorialState> {

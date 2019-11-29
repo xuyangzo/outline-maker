@@ -1,11 +1,15 @@
 import * as React from 'react';
-import { CreateModalProps, CreateModalState, CreateModalTemplate } from './CreateModalDec';
 import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
-import { withRouter } from 'react-router-dom';
-import { ValidationErrorItem } from 'sequelize';
-
 const { TextArea } = Input;
 
+// enable history
+import { withRouter } from 'react-router-dom';
+
+// type declaration
+import { CreateModalProps, CreateModalState, CreateModalTemplate } from './CreateModalDec';
+import { ValidationErrorItem } from 'sequelize';
+
+// sequelize modals
 import Outlines from '../../../db/models/Outlines';
 
 class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
@@ -18,6 +22,11 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 	}
 
 	handleSubmit = () => {
+		/**
+		 * if the user does not enter anything for description
+		 * do not include it in the object
+		 * so that the defaultValue of sequelize modal will be used
+		 */
 		const model: CreateModalTemplate = {
 			title: this.state.title
 		};
@@ -25,6 +34,7 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 			model.description = this.state.description;
 		}
 
+		// create outline
 		Outlines
 			.create(model)
 			.then(({ 'null': id }: { 'null': number }) => {
@@ -47,7 +57,6 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 					const { message } = error;
 					Message.error(message);
 				});
-
 			});
 	}
 
@@ -59,6 +68,7 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 		}));
 	}
 
+	// the event of textarea change is different, so use a separate method
 	onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const description = event.target.value;
 		this.setState((prevState: CreateModalState) => ({

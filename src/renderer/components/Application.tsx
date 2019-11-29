@@ -19,9 +19,11 @@ import ModalContainer from '../containers/ModalContainer';
 import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
 
-import './overwrite.scss';
-
+// sqlite table relations
 require('../../db/relations');
+
+// sass
+import './overwrite.scss';
 
 const Application = () => (
 	<div>

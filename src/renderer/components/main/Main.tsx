@@ -1,15 +1,23 @@
 import * as React from 'react';
-import { MainProps, MainState } from './mainDec';
-import { OutlineDataValue } from '../sidebar/sidebarDec';
 import { Col, message as Message } from 'antd';
 import classnames from 'classnames';
+
+// custom components
+import MainHeader from '../main-header/MainHeader';
+
+// enable history
+import { withRouter } from 'react-router-dom';
+
+// type declaration
+import { OutlineDataValue } from '../sidebar/sidebarDec';
+import { MainProps, MainState } from './mainDec';
 import { DatabaseError } from 'sequelize';
 
-import MainHeader from '../main-header/MainHeader';
-import { withRouter } from 'react-router-dom';
-import './main.scss';
-
+// sequelize modals
 import Outlines from '../../../db/models/Outlines';
+
+// sass
+import './main.scss';
 
 class Main extends React.Component<MainProps, MainState> {
 	constructor(props: MainProps) {
