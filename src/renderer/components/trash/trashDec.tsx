@@ -2,7 +2,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Outline } from '../sidebar/sidebarDec';
 
 export interface TrashDataValue {
-	trash_id: number;
+	id: number;
 	outline_id: number;
 	createdAt: string;
 	updatedAt: string;

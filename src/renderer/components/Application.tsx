@@ -18,9 +18,7 @@ import MainContainer from '../containers/MainContainer';
 import ModalContainer from '../containers/ModalContainer';
 import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
-
-// sqlite table relations
-require('../../db/relations');
+import FavoriteContainer from '../containers/FavoriteContainer';
 
 // sass
 import './overwrite.scss';
@@ -35,9 +33,7 @@ const Application = () => (
 					<Route path="/" exact><TutorialContainer /></Route>
 					<Route path="/outline/:id" exact><MainContainer /></Route>
 					<Route path="/trash" exact><TrashContainer /></Route>
-					{/* <Route path="/">
-            <Home />
-          </Route> */}
+					<Route path="/favorite" exact><FavoriteContainer /></Route>
 				</Switch>
 			</Router>
 		</Row>

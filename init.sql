@@ -25,9 +25,10 @@ CREATE TABLE outline_details
 
 CREATE TABLE favorite
 (
-  fav_id INTEGER PRIMARY KEY,
+  fav_id INTEGER PRIMARY KEY AUTOINCREMENT,
   outline_id INTEGER,
-  outline_title TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
 );
 
@@ -52,4 +53,4 @@ CREATE TABLE categories
 INSERT INTO outlines
   (title, description, category_id, category_title, fav, deleted)
 VALUES
-  ('test2', 'test6', 0, 0, 0, 0)
+  ('默认模板', '默认介绍...', 0, 0, 0, 0)

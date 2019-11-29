@@ -1,11 +1,11 @@
-.trash {
+.favorite {
   height: 100vh;
   overflow-y: scroll;
   padding: 50px;
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
 
-  .empty-trash {
+  .empty-fav {
     display: flex;
     flex-direction: column;
     justify-content: center;

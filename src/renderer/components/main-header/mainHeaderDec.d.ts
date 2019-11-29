@@ -9,4 +9,5 @@ export interface MainHeaderProps extends RouteComponentProps {
 
 export interface MainHeaderState {
   confirmVisible: boolean;
+  isFav: boolean;
 }

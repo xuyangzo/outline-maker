@@ -1,0 +1,19 @@
+.main-header {
+  // heart icon
+  .header-add-fav {
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .red-heart {
+    color: crimson;
+  }
+
+  // add text-overflow to header subtitle
+  .ant-page-header-heading-sub-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 120px;
+  }
+}

@@ -18,7 +18,7 @@ import Outlines from '../../../db/models/Outlines';
 import './trash.scss';
 
 // image
-import empty from '../../../public/empty.png';
+import empty from '../../../public/empty-trash.png';
 
 class Trash extends React.Component<TrashProps, TrashState> {
 	constructor(props: TrashProps) {

@@ -32,6 +32,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		let selected = 'tutorial';
 		if (newProps.location.pathname.indexOf('trash') !== -1) {
 			selected = 'trash';
+		} else if (newProps.location.pathname.indexOf('favorite') !== -1) {
+			selected = 'fav';
 		} else if (newProps.location.pathname.indexOf('outline') !== -1) {
 			selected = newProps.location.pathname.slice(9);
 		}
@@ -73,6 +75,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		let selected = 'tutorial';
 		if (this.props.location.pathname.indexOf('trash') !== -1) {
 			selected = 'trash';
+		} else if (this.props.location.pathname.indexOf('favorite') !== -1) {
+			selected = 'fav';
 		} else if (this.props.location.pathname.indexOf('outline') !== -1) {
 			selected = this.props.location.pathname.slice(9);
 		}
@@ -130,6 +134,11 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	// go to trash page
 	toTrash = () => {
 		this.props.history.push('/trash');
+	}
+
+	// go to favorite page
+	toFavorite = () => {
+		this.props.history.push('/favorite');
 	}
 
 	render() {
@@ -194,6 +203,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 								))
 							}
 						</SubMenu>
+						<Menu.Item key="fav" onClick={this.toFavorite}>
+							<Icon type="heart" />收藏夹
+						</Menu.Item>
 						<SubMenu
 							key="draft"
 							title={
