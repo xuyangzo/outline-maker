@@ -179,7 +179,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 									hoverable
 									className="custom-card"
 								>
-									<p>{outline.description}</p>
+									<p className="description">{outline.description}</p>
 									<br /><br />
 									<Button
 										type="danger"

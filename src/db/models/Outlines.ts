@@ -14,6 +14,7 @@ const Outlines = sequelize.define(
 			field: 'title',
 			type: Sequelize.STRING,
 			allowNull: false,
+			unique: true,
 			validate: {
 				notNull: {
 					msg: '标题不能为空'

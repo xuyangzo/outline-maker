@@ -3,6 +3,8 @@ import { TutorialProps, TutorialState } from './tutorialDec';
 import { Col } from 'antd';
 import classnames from 'classnames';
 
+import './tutorial.scss';
+
 export default class Tutorial extends React.Component<TutorialProps, TutorialState> {
 	constructor(props: TutorialProps) {
 		super(props);
