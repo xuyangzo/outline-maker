@@ -44,7 +44,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 				// close moal
 				this.setState({ confirmVisible: false }, () => {
 					// redirect to tutorial page
-					this.props.history.push('/');
+					this.props.history.push('/trash');
 				});
 			})
 			.catch((err: any) => {

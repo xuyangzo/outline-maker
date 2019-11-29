@@ -1,0 +1,23 @@
+.trash {
+  height: 100vh;
+  overflow-y: scroll;
+  padding: 50px;
+
+  // add box-shadow to card
+  .custom-card {
+    width: 80%;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    // put back button
+    .put-back-button {
+      margin-bottom: 10px;
+    }
+  }
+}

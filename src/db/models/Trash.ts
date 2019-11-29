@@ -14,10 +14,6 @@ const Trash = sequelize.define(
 			field: 'outline_id',
 			type: Sequelize.INTEGER
 		},
-		title: {
-			field: 'outline_title',
-			type: Sequelize.STRING
-		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

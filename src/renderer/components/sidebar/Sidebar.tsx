@@ -6,8 +6,6 @@ import { withRouter } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 
-import SidebarTrash from './trash/SidebarTrash';
-
 import './sidebar.scss';
 
 require('../../../db/relations');
@@ -20,7 +18,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		this.state = {
 			outlines: [],
 			all: [],
-			trash: [],
 			selected: []
 		};
 	}
@@ -28,7 +25,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	componentWillReceiveProps = (newProps: SidebarProps) => {
 		// set selected keys
 		let selected = 'tutorial';
-		if (newProps.location.pathname.indexOf('outline') !== -1) {
+		if (newProps.location.pathname.indexOf('trash') !== -1) {
+			selected = 'trash';
+		} else if (newProps.location.pathname.indexOf('outline') !== -1) {
 			selected = newProps.location.pathname.slice(9);
 		}
 		this.setState((prevState: SidebarState) => ({
@@ -40,7 +39,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		if (newProps.refresh) {
 			Outlines
 				.findAll({
-					order: [['updatedAt', 'DESC']]
+					order: [['id', 'DESC']]
 				})
 				.then((result: any) => {
 					// all outlines
@@ -51,13 +50,11 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 					// filter trash
 					const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
-					const trash: Outline[] = outlines.filter((outline: Outline) => outline.deleted);
 
 					this.setState((prevState: SidebarState) => ({
 						...prevState,
 						outlines,
-						all,
-						trash
+						all
 					}));
 				})
 				.catch((err: any) => {
@@ -69,7 +66,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	componentDidMount = () => {
 		// set selected keys
 		let selected = 'tutorial';
-		if (this.props.location.pathname.indexOf('outline') !== -1) {
+		if (this.props.location.pathname.indexOf('trash') !== -1) {
+			selected = 'trash';
+		} else if (this.props.location.pathname.indexOf('outline') !== -1) {
 			selected = this.props.location.pathname.slice(9);
 		}
 		this.setState((prevState: SidebarState) => ({
@@ -80,7 +79,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		// grab data
 		Outlines
 			.findAll({
-				order: [['id', 'DESC']]
+				order: [['updatedAt', 'DESC']]
 			})
 			.then((result: any) => {
 				// all outlines
@@ -118,6 +117,10 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	toTutorial = (e: ClickParam) => {
 		this.props.history.push('/');
+	}
+
+	toTrash = () => {
+		this.props.history.push('/trash');
 	}
 
 	render() {
@@ -192,7 +195,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 							<Menu.Item key="draft-1">Option 5</Menu.Item>
 							<Menu.Item key="draft-2">Option 6</Menu.Item>
 						</SubMenu>
-						<SidebarTrash outlines={this.state.trash} />
+						<Menu.Item key="trash" onClick={this.toTrash}>
+							<Icon type="delete" />垃圾箱
+						</Menu.Item>
 					</Menu>
 				</Col>
 			</section>

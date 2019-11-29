@@ -17,6 +17,7 @@ import SidebarContainer from '../containers/SidebarContainer';
 import MainContainer from '../containers/MainContainer';
 import ModalContainer from '../containers/ModalContainer';
 import TutorialContainer from '../containers/TutorialContainer';
+import TrashContainer from '../containers/TrashContainer';
 
 import './overwrite.scss';
 
@@ -31,6 +32,7 @@ const Application = () => (
 				<Switch>
 					<Route path="/" exact><TutorialContainer /></Route>
 					<Route path="/outline/:id" exact><MainContainer /></Route>
+					<Route path="/trash" exact><TrashContainer /></Route>
 					{/* <Route path="/">
             <Home />
           </Route> */}
