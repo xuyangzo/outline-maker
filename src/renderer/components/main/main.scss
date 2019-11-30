@@ -12,12 +12,10 @@
       display: none;
     }
 
+
     table {
-      // part of timeline
-      .timeline-component {
-        width: 80px;
-        height: 100px;
-        line-height: 100px;
+      tbody {
+        transform: translateY(-30px);
       }
 
       .timeline-component-after {
@@ -27,29 +25,27 @@
         min-height: 100px;
       }
 
-      .timeline-header {
-        width: 150px !important;
-        height: 100px;
+      .character-header {
         position: sticky;
-        left: -20px;
+        top: 0;
         background: white;
-        padding-left: 40px !important;
-        transform: translateX(-30px);
+        z-index: 100;
+        height: 120px;
+        vertical-align: center;
+        background: white;
+        transform: translateY(-30px);
       }
 
-      .timeline-header-after {
+      // timeline card
+      .timeline-header {
         width: 150px !important;
         min-height: 100px;
         position: sticky;
         left: 0px;
         background: white;
         padding-left: 60px !important;
-        transform: translateX(-50px);
-      }
-
-      // leftmost th
-      .first-person-th {
-        margin-left: 120px;
+        transform: translateX(-40px);
+        z-index: 500;
       }
 
       // input field for each card

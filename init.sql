@@ -95,6 +95,18 @@ INSERT INTO characters
 VALUES
   (1, '不是我');
 
+
+INSERT INTO characters
+  (outline_id, name)
+VALUES
+  (1, '干我');
+
+
+INSERT INTO characters
+  (outline_id, name)
+VALUES
+  (1, '傻卵');
+
 INSERT INTO timelines
   (outline_id, time)
 VALUES
@@ -104,6 +116,11 @@ INSERT INTO timelines
   (outline_id, time)
 VALUES
   (1, '1991年');
+
+INSERT INTO timelines
+  (outline_id, time)
+VALUES
+  (1, '1992年');
 
 INSERT INTO outline_details
   (outline_id, timeline_id, character_id, content)
@@ -118,4 +135,9 @@ VALUES
 INSERT INTO outline_details
   (outline_id, timeline_id, character_id, content)
 VALUES
-  (1, 2, 1, '我又杀人了');
+  (1, 2, 1, '我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了');
+
+  INSERT INTO outline_details
+  (outline_id, timeline_id, character_id, content)
+VALUES
+  (1, 3, 2, '我tm又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了');

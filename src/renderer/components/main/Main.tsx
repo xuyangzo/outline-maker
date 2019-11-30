@@ -358,9 +358,7 @@ class Main extends React.Component<MainProps, MainState> {
 		 * therefore need to set height to 1 first
 		 */
 		e.target.style.height = '1px';
-		if (e.target.style.height !== `${e.target.scrollHeight}px`) {
-			e.target.style.height = `${e.target.scrollHeight}px`;
-		}
+		e.target.style.height = `${e.target.scrollHeight}px`;
 	}
 
 	// create character locally (not publish to database yet)
@@ -404,17 +402,11 @@ class Main extends React.Component<MainProps, MainState> {
 					<table>
 						<thead>
 							<tr>
-								<th className="timeline-header">
-									<div className="timeline-component" />
-								</th>
+								<th className="timeline-header" />
 								{
 									characters.map((character: Character, index: number) => (
-										<th key={character.id}>
-											<div
-												className={classnames('main-character-card', {
-													'first-person-th': index === 0
-												})}
-											>
+										<th key={character.id} className="character-header">
+											<div className="main-character-card">
 												<input
 													type="text"
 													value={character.name}
@@ -432,7 +424,7 @@ class Main extends React.Component<MainProps, MainState> {
 							{
 								timelines.map((timeline: Timeline) => (
 									<tr key={timeline.id}>
-										<td className="timeline-header-after">
+										<td className="timeline-header">
 											<div className="timeline-component-after">{timeline.time}</div>
 										</td>
 										{
@@ -440,21 +432,19 @@ class Main extends React.Component<MainProps, MainState> {
 												<td
 													key={character.id}
 												>
-													<div
-														className={classnames('main-content-card', {
-															'first-person-th': index === 0
-														})}
-													>
+													<div className="main-content-card">
 														{
 															(contents.get(character.id) || new Map()).get(timeline.id) ?
 																(
 																	<textarea
 																		wrap="hard"
+																		onFocus={this.onTextareaResize}
 																		onInput={this.onTextareaResize}
 																		onChange={
 																			(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onContentChange(character.id, timeline.id, e)
 																		}
 																		value={(contents.get(character.id) || new Map()).get(timeline.id).content}
+																		autoFocus
 																	/>
 																) :
 																(
