@@ -109,6 +109,7 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 							onChange={this.onChange}
 							prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							placeholder="大纲名字（10个字以内）"
+							autoFocus
 						/>
 					</Form.Item>
 					<Form.Item>

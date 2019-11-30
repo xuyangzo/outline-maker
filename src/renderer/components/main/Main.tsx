@@ -93,8 +93,73 @@ class Main extends React.Component<MainProps, MainState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+
+		// get all timelines
+		TimelineModal
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				// grab all timelines
+				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
+					const { id, time } = dataValues;
+					return { id, time };
+				});
+
+				// set timelines
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					timelines
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+
+		// get all outline details
+		OutlineDetails
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				const { contents } = this.state;
+				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
+					const { id, character_id, timeline_id, content } = dataValues;
+					const card: ContentCard = { id, content };
+
+					/**
+					 * if current map does not have corresponding character_id
+					 * create a new map for <timeline_id, content>
+					 * and insert it into contents
+					 */
+					if (!contents.has(character_id)) {
+						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
+						contents.set(character_id, timelineMap);
+					} else {
+						/**
+						 * otherwise, add content to existing timelineMap
+						 */
+						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
+						timelineMap.set(timeline_id, card);
+					}
+				});
+
+				// update contents
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					contents
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
+	// when control + s is pressed
 	keyPress = (e: KeyboardEvent) => {
 		const controlPress = e.ctrlKey || e.metaKey;
 		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
@@ -288,7 +353,10 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// textarea height auto grow
 	onTextareaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		e.target.style.height = `${e.target.scrollHeight}px`;
+		e.target.style.height = '1px';
+		if (e.target.style.height !== `${e.target.scrollHeight}px`) {
+			e.target.style.height = `${e.target.scrollHeight}px`;
+		}
 	}
 
 	// create character locally (not publish to database yet)
@@ -377,6 +445,7 @@ class Main extends React.Component<MainProps, MainState> {
 															(contents.get(character.id) || new Map()).get(timeline.id) ?
 																(
 																	<textarea
+																		wrap="off"
 																		onInput={this.onTextareaResize}
 																		onChange={
 																			(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onContentChange(character.id, timeline.id, e)
