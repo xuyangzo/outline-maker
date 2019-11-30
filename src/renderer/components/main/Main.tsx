@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message } from 'antd';
+import { Col, message as Message, Icon } from 'antd';
 import classnames from 'classnames';
 
 // custom components
@@ -16,7 +16,9 @@ import {
 	CharacterDataValue,
 	Character,
 	TimelineDataValue,
-	Timeline
+	Timeline,
+	OutlineDetailDataValue,
+	ContentCard
 } from './mainDec';
 import { DatabaseError } from 'sequelize';
 
@@ -37,7 +39,8 @@ class Main extends React.Component<MainProps, MainState> {
 			title: '标题',
 			description: '描述...',
 			characters: [],
-			timelines: []
+			timelines: [],
+			contents: new Map<number, Map<number, ContentCard>>()
 		};
 	}
 
@@ -172,19 +175,45 @@ class Main extends React.Component<MainProps, MainState> {
 				Message.error(err.message);
 			});
 
-		// get contents
-		// OutlineDetails
-		// 	.findAll({
-		// 		where: {
-		// 			outline_id: id
-		// 		}
-		// 	})
-		// 	.then((result: any) => {
-		// 		console.log(result);
-		// 	})
-		// 	.catch((err: DatabaseError) => {
-		// 		Message.error(err.message);
-		// 	});
+		// get all outline details
+		OutlineDetails
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				const { contents } = this.state;
+				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
+					const { id, character_id, timeline_id, content } = dataValues;
+					const card: ContentCard = { id, content };
+
+					/**
+					 * if current map does not have corresponding character_id
+					 * create a new map for <timeline_id, content>
+					 * and insert it into contents
+					 */
+					if (!contents.has(character_id)) {
+						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
+						contents.set(character_id, timelineMap);
+					} else {
+						/**
+						 * otherwise, add content to existing timelineMap
+						 */
+						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
+						timelineMap.set(timeline_id, card);
+					}
+				});
+
+				// update contents
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					contents
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
 	// if character's name is changed
@@ -201,6 +230,19 @@ class Main extends React.Component<MainProps, MainState> {
 				}
 				return character;
 			})
+		}));
+	}
+
+	// if content card is changed
+	onContentChange = (character_id: number, timeline_id: number, e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const value: string = e.target.value;
+		const { contents } = this.state;
+		const id = ((contents.get(character_id) || new Map()).get(timeline_id) || {}).id;
+		const card: ContentCard = { id, content: value };
+		(contents.get(character_id) || new Map()).set(timeline_id, card);
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			contents
 		}));
 	}
 
@@ -244,6 +286,11 @@ class Main extends React.Component<MainProps, MainState> {
 			});
 	}
 
+	// textarea height auto grow
+	onTextareaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		e.target.style.height = `${e.target.scrollHeight}px`;
+	}
+
 	// create character locally (not publish to database yet)
 	createCharacterLocally = (name: string) => {
 		// create a local character
@@ -262,7 +309,7 @@ class Main extends React.Component<MainProps, MainState> {
 
 	render() {
 		const { expand, refreshSidebar, refreshMain } = this.props;
-		const { title, description } = this.state;
+		const { title, description, characters, timelines, contents } = this.state;
 
 		return (
 			<Col
@@ -283,30 +330,72 @@ class Main extends React.Component<MainProps, MainState> {
 				/>
 				<div className="main-content">
 					<table>
-						<tr>
-							<th className="timeline-header">
-								<div className="timeline-component" >ceshi</div>
-							</th>
+						<thead>
+							<tr>
+								<th className="timeline-header">
+									<div className="timeline-component" />
+								</th>
+								{
+									characters.map((character: Character, index: number) => (
+										<th key={character.id}>
+											<div
+												className={classnames('main-character-card', {
+													'first-person-th': index === 0
+												})}
+											>
+												<input
+													type="text"
+													value={character.name}
+													onChange={
+														(e: React.ChangeEvent<HTMLInputElement>) => this.onCharacterNameChange(character.id, e)
+													}
+												/>
+											</div>
+										</th>
+									))
+								}
+							</tr>
+						</thead>
+						<tbody>
 							{
-								this.state.characters.map((character: Character, index: number) => (
-									<th key={character.id}>
-										<div
-											className={classnames('main-character-card', {
-												'first-person-th': index === 0
-											})}
-										>
-											<input
-												type="text"
-												value={character.name}
-												onChange={
-													(e: React.ChangeEvent<HTMLInputElement>) => this.onCharacterNameChange(character.id, e)
-												}
-											/>
-										</div>
-									</th>
+								timelines.map((timeline: Timeline) => (
+									<tr key={timeline.id}>
+										<td className="timeline-header-after">
+											<div className="timeline-component-after">{timeline.time}</div>
+										</td>
+										{
+											characters.map((character: Character, index: number) => (
+												<td
+													key={character.id}
+												>
+													<div
+														className={classnames('main-content-card', {
+															'first-person-th': index === 0
+														})}
+													>
+														{
+															(contents.get(character.id) || new Map()).get(timeline.id) ?
+																(
+																	<textarea
+																		onInput={this.onTextareaResize}
+																		onChange={
+																			(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onContentChange(character.id, timeline.id, e)
+																		}
+																		value={(contents.get(character.id) || new Map()).get(timeline.id).content}
+																	/>
+																) :
+																(
+																	<Icon type="plus-circle" className="plus-icon" />
+																)
+														}
+													</div>
+												</td>
+											))
+										}
+									</tr>
 								))
 							}
-						</tr>
+						</tbody>
 					</table>
 				</div>
 			</Col>

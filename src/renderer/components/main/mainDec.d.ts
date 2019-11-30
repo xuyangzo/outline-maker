@@ -1,4 +1,5 @@
 import { RouteComponentProps, Route } from 'react-router-dom';
+import { number } from 'prop-types';
 
 interface MatchParams {
 	id: string;
@@ -32,6 +33,22 @@ export interface TimelineDataValue {
 	updatedAt: string;
 }
 
+export interface OutlineDetailDataValue {
+	id: number;
+	outline_id: number;
+	character_id: number;
+	timeline_id: number;
+	content: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export type ContentCard = {
+	id: number,
+	content: string
+}
+
+export type OutlineContent = Map<number, Map<number, ContentCard>>;
 
 export interface MainProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
@@ -48,4 +65,5 @@ export interface MainState {
 	description: string;
 	characters: Character[];
 	timelines: Timeline[];
+	contents: OutlineContent;
 }

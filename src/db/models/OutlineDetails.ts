@@ -14,14 +14,13 @@ const OutlineDetail = sequelize.define(
 			field: 'outline_id',
 			type: Sequelize.INTEGER
 		},
-		timeline: {
-			field: 'timeline',
-			type: Sequelize.STRING,
-			validate: {
-				notEmpty: {
-					msg: '时间不能为空！'
-				}
-			}
+		character_id: {
+			field: 'character_id',
+			type: Sequelize.INTEGER
+		},
+		timeline_id: {
+			field: 'timeline_id',
+			type: Sequelize.INTEGER
 		},
 		content: {
 			field: 'content',

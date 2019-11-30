@@ -42,14 +42,15 @@ CREATE TABLE timelines
 CREATE TABLE outline_details
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  outline_id INT,
-  timeline TEXT,
+  outline_id INTEGER,
+  timeline_id INTEGER,
   character_id INTEGER,
   content TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (outline_id) REFERENCES outlines (id),
-  FOREIGN KEY (character_id) REFERENCES characters (character_id)
+  FOREIGN KEY (character_id) REFERENCES characters (character_id),
+  FOREIGN KEY (timeline_id) REFERENCES timelines (timeline_id)
 );
 
 CREATE TABLE favorites
@@ -105,16 +106,16 @@ VALUES
   (1, '1991年');
 
 INSERT INTO outline_details
-  (outline_id, timeline, character_id, content)
+  (outline_id, timeline_id, character_id, content)
 VALUES
   (1, 1, 1, '我杀人了');
 
 INSERT INTO outline_details
-  (outline_id, timeline, character_id, content)
+  (outline_id, timeline_id, character_id, content)
 VALUES
   (1, 1, 2, '我被杀了');
 
 INSERT INTO outline_details
-  (outline_id, timeline, character_id, content)
+  (outline_id, timeline_id, character_id, content)
 VALUES
-  (1, 2, 1, '我又杀人了');
+  (1, 2, 1, '我又杀人了\n而且杀了很多人\n现在他们来找我了');

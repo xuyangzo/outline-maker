@@ -20,9 +20,25 @@
         line-height: 100px;
       }
 
+      .timeline-component-after {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100px;
+      }
+
       .timeline-header {
         width: 150px !important;
         height: 100px;
+        position: absolute;
+        background: white;
+        padding-left: 40px !important;
+        transform: translateX(-30px);
+      }
+
+      .timeline-header-after {
+        width: 150px !important;
+        min-height: 100px;
         position: absolute;
         background: white;
         padding-left: 40px !important;
@@ -34,6 +50,56 @@
         margin-left: 120px;
       }
 
+      // input field for each card
+      input {
+        border: none;
+        height: 50px;
+        outline: none;
+        text-align: center;
+      }
+
+      // text area for each card
+      textarea {
+        border: none;
+        outline: none;
+        text-align: center;
+        padding: 5px;
+        resize: none;
+      }
+
+      // table body
+      td {
+        width: 240px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        min-height: 100px;
+        padding: 0 20px;
+
+        // content card
+        .main-content-card {
+          margin-bottom: 20px;
+          margin-top: 20px;
+          min-height: 60px;
+          width: 200px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+          border-radius: 5px;
+          border: 2px solid lightblue;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+                      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+          // plus icon
+          .plus-icon {
+            font-size: 20px;
+          }
+        }
+      }
+
+      // table head, only for characters row
       th {
         width: 240px;
         overflow: hidden;
@@ -53,12 +119,6 @@
           box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                       0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-          // input field for each character
-          input {
-            border: none;
-            height: 50px;
-            outline: none;
-          }
         }
       }
 
