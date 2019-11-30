@@ -6,6 +6,8 @@ export interface MainHeaderProps extends RouteComponentProps {
 
   refresh: () => void;
   refreshMain: () => void;
+  createCharacterLocally: (name: string) => void;
+  onSave: () => void;
 }
 
 export interface MainHeaderState {

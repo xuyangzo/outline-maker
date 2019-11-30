@@ -4,6 +4,7 @@ export interface CharacterModalProps {
 
   closeModal: () => void;
   refreshMain: () => void;
+  createCharacterLocally: (name: string) => void;
 }
 
 export interface CharacterModalState {

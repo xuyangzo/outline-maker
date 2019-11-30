@@ -1,5 +1,13 @@
 import * as React from 'react';
-import { Icon, Button, PageHeader, message as Message, Modal } from 'antd';
+import {
+	Icon,
+	Button,
+	PageHeader,
+	message as Message,
+	Modal,
+	Dropdown,
+	Menu
+} from 'antd';
 import CharacterModal from './character-modal/CharacterModal';
 
 // enable history
@@ -186,7 +194,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	}
 
 	render() {
-		const { title, description } = this.props;
+		const { title, description, createCharacterLocally, refreshMain } = this.props;
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
 			<React.Fragment>
@@ -211,6 +219,15 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			</React.Fragment>
 		);
 
+		// menu for drop down
+		const menu = (
+			<Menu>
+				<Menu.Item onClick={this.onOpen} className="delete-outline-menuitem">
+					<Icon type="close-circle" />删除大纲
+				</Menu.Item>
+			</Menu>
+		);
+
 		return (
 			<React.Fragment>
 				<PageHeader
@@ -222,7 +239,20 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 						<Button type="primary" key="add-person" onClick={this.onOpenCharacter} ghost>
 							<Icon type="user-add" />添加角色
 						</Button>,
-						<Button type="danger" key="delete" onClick={this.onOpen} ghost>删除大纲</Button>
+						<Dropdown key="edit" overlay={menu} placement="bottomCenter">
+							<Button type="danger" className="orange-button" ghost>
+								<Icon type="edit" />编辑大纲
+							</Button>
+						</Dropdown>,
+						<Button
+							key="save"
+							type="danger"
+							className="green-button"
+							onClick={this.props.onSave}
+							ghost
+						>
+							<Icon type="save" />保存
+						</Button>
 					]}
 					className="main-header"
 				/>
@@ -242,7 +272,8 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					id={this.props.location.pathname.slice(9)}
 					showModal={this.state.characterVisible}
 					closeModal={this.onCancelCharacter}
-					refreshMain={this.props.refreshMain}
+					refreshMain={refreshMain}
+					createCharacterLocally={createCharacterLocally}
 				/>
 			</React.Fragment>
 		);

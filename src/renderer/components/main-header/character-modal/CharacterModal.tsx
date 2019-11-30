@@ -3,12 +3,10 @@ import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 
 // type declaration
 import { CharacterModalProps, CharacterModalState, CharacterModalTemplate } from './characterModalDec';
-import { ValidationErrorItem } from 'sequelize';
-
-// sequelize modals
-import Character from '../../../../db/models/Character';
 
 class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
+	private characterName = React.createRef<Modal>();
+
 	constructor(props: CharacterModalProps) {
 		super(props);
 		this.state = {
@@ -16,31 +14,24 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 		};
 	}
 
-	handleSubmit = () => {
-		// create outline
-		Character
-			.create({
-				outline_id: this.props.id,
-				name: this.state.name
-			})
-			.then(() => {
-				Message.success('创建角色成功！');
-				// close modal
-				this.props.closeModal();
-				// refresh main content
-				this.props.refreshMain();
-				// clear modal data
-				this.setState({
-					name: ''
-				});
-			})
-			.catch(({ errors }: { errors: ValidationErrorItem[] }) => {
-				// iterate through all error messages
-				errors.forEach((error: ValidationErrorItem) => {
-					const { message } = error;
-					Message.error(message);
-				});
-			});
+	handleLocalSubmit = () => {
+		// validation
+		if (!this.state.name.length) {
+			Message.error('角色姓名不能为空！');
+			return;
+		}
+		if (this.state.name.length > 20) {
+			Message.error('角色姓名长度不能超过 20 个字！');
+			return;
+		}
+
+		this.props.createCharacterLocally(this.state.name);
+		// close modal
+		this.props.closeModal();
+		// clear modal data
+		this.setState({
+			name: ''
+		});
 	}
 
 	// on input change
@@ -70,14 +61,22 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 			<Modal
 				title="新建角色"
 				visible={showModal}
-				onOk={this.handleSubmit}
+				onOk={this.handleLocalSubmit}
 				onCancel={this.closeModal}
 				footer={[
 					<Button type="danger" key="back" onClick={this.closeModal} ghost>取消</Button>,
-					<Button type="primary" key="submit" onClick={this.handleSubmit} ghost>确认</Button>
+					<Button
+						type="primary"
+						key="submit"
+						// onClick={this.handleSubmit}
+						onClick={this.handleLocalSubmit}
+						ghost
+					>确认
+					</Button>
 				]}
+				ref={this.characterName}
 			>
-				<Form onSubmit={this.handleSubmit} className="login-form">
+				<Form onSubmit={this.handleLocalSubmit} className="login-form">
 					<Form.Item>
 						<Input
 							value={name}
@@ -85,6 +84,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 							prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							placeholder="主角姓名（最多 20 个字）"
 						/>
+						更多的人设可以在添加角色后进行设置。
 					</Form.Item>
 				</Form>
 			</Modal>

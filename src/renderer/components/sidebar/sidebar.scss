@@ -17,6 +17,7 @@
 		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 		transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
 		white-space: nowrap;
+		z-index: 100;
 
 		// toggle sidebar
 		.toggle-sidebar {
@@ -25,7 +26,7 @@
 			text-align: center;
 			width: 25px;
 			position: fixed;
-			left: 225px;
+			left: 19%;
 			top: 0;
 			z-index: 1000;
 			background: white;
