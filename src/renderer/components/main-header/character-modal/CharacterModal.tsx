@@ -2,11 +2,9 @@ import * as React from 'react';
 import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 
 // type declaration
-import { CharacterModalProps, CharacterModalState, CharacterModalTemplate } from './characterModalDec';
+import { CharacterModalProps, CharacterModalState } from './characterModalDec';
 
 class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
-	private characterName = React.createRef<Modal>();
-
 	constructor(props: CharacterModalProps) {
 		super(props);
 		this.state = {
@@ -54,7 +52,6 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 
 	render() {
 		const { showModal } = this.props;
-
 		const { name } = this.state;
 
 		return (
@@ -68,13 +65,11 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 					<Button
 						type="primary"
 						key="submit"
-						// onClick={this.handleSubmit}
 						onClick={this.handleLocalSubmit}
 						ghost
 					>确认
 					</Button>
 				]}
-				ref={this.characterName}
 			>
 				<Form onSubmit={this.handleLocalSubmit} className="login-form">
 					<Form.Item>
@@ -83,6 +78,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 							onChange={this.onChange}
 							prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							placeholder="主角姓名（最多 20 个字）"
+							ref={(input: Input) => input && input.focus()}
 						/>
 						更多的人设可以在添加角色后进行设置。
 					</Form.Item>
