@@ -5,9 +5,11 @@ export interface MainHeaderProps extends RouteComponentProps {
   description: string;
 
   refresh: () => void;
+  refreshMain: () => void;
 }
 
 export interface MainHeaderState {
   confirmVisible: boolean;
+  characterVisible: boolean;
   isFav: boolean;
 }

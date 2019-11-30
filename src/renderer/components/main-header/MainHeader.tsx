@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Icon, Button, PageHeader, message as Message, Modal } from 'antd';
+import CharacterModal from './character-modal/CharacterModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -21,6 +22,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		super(props);
 		this.state = {
 			confirmVisible: false,
+			characterVisible: false,
 			isFav: false
 		};
 	}
@@ -79,6 +81,16 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	// close delete modal
 	onCancel = () => {
 		this.setState({ confirmVisible: false });
+	}
+
+	// open character modal
+	onOpenCharacter = () => {
+		this.setState({ characterVisible: true });
+	}
+
+	// close character modal
+	onCancelCharacter = () => {
+		this.setState({ characterVisible: false });
 	}
 
 	// delete outline
@@ -175,6 +187,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	render() {
 		const { title, description } = this.props;
+		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
 			<React.Fragment>
 				{
@@ -206,7 +219,9 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					backIcon={false}
 					tags={<MyIcon />}
 					extra={[
-						<Button type="primary" key="add-person" ghost><Icon type="user-add" />添加人物</Button>,
+						<Button type="primary" key="add-person" onClick={this.onOpenCharacter} ghost>
+							<Icon type="user-add" />添加角色
+						</Button>,
 						<Button type="danger" key="delete" onClick={this.onOpen} ghost>删除大纲</Button>
 					]}
 					className="main-header"
@@ -223,6 +238,12 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 				>
 					<p>被删除的大纲可以在垃圾箱进行恢复</p>
 				</Modal>
+				<CharacterModal
+					id={this.props.location.pathname.slice(9)}
+					showModal={this.state.characterVisible}
+					closeModal={this.onCancelCharacter}
+					refreshMain={this.props.refreshMain}
+				/>
 			</React.Fragment>
 		);
 	}

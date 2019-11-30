@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS trash;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS favorite;
+DROP TABLE IF EXISTS character;
 DROP TABLE IF EXISTS outline_details;
 DROP TABLE IF EXISTS outlines;
 
@@ -17,10 +18,27 @@ CREATE TABLE outlines
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE character
+(
+  character_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  outline_id INTEGER,
+  name TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (outline_id) REFERENCES outlines (id)
+);
+
 CREATE TABLE outline_details
 (
-  outline_id INTEGER PRIMARY KEY,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id)
+  outline_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  timeline TEXT,
+  character_id INTEGER,
+  character TEXT,
+  content TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (outline_id) REFERENCES outlines (id),
+  FOREIGN KEY (character_id) REFERENCES character (character_id)
 );
 
 CREATE TABLE favorite
