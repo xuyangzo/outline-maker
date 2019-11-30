@@ -10,12 +10,21 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { OutlineDataValue } from '../sidebar/sidebarDec';
-import { MainProps, MainState, CharacterDataValue, Character } from './mainDec';
+import {
+	MainProps,
+	MainState,
+	CharacterDataValue,
+	Character,
+	TimelineDataValue,
+	Timeline
+} from './mainDec';
 import { DatabaseError } from 'sequelize';
 
 // sequelize modals
 import Outlines from '../../../db/models/Outlines';
 import CharacterModal from '../../../db/models/Character';
+import TimelineModal from '../../../db/models/Timeline';
+import OutlineDetails from '../../../db/models/OutlineDetails';
 
 // sass
 import './main.scss';
@@ -27,7 +36,8 @@ class Main extends React.Component<MainProps, MainState> {
 			id: -1,
 			title: '标题',
 			description: '描述...',
-			characters: []
+			characters: [],
+			timelines: []
 		};
 	}
 
@@ -82,7 +92,18 @@ class Main extends React.Component<MainProps, MainState> {
 			});
 	}
 
+	keyPress = (e: KeyboardEvent) => {
+		const controlPress = e.ctrlKey || e.metaKey;
+		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
+		if (controlPress && sPress) {
+			this.onSave();
+		}
+	}
+
 	componentDidMount = () => {
+		// add event listener
+		document.addEventListener('keydown', this.keyPress);
+
 		const { id } = this.props.match.params;
 		// get outline's id, title and description
 		Outlines
@@ -126,10 +147,66 @@ class Main extends React.Component<MainProps, MainState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+
+		// get all timelines
+		TimelineModal
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				// grab all timelines
+				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
+					const { id, time } = dataValues;
+					return { id, time };
+				});
+
+				// set timelines
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					timelines
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+
+		// get contents
+		// OutlineDetails
+		// 	.findAll({
+		// 		where: {
+		// 			outline_id: id
+		// 		}
+		// 	})
+		// 	.then((result: any) => {
+		// 		console.log(result);
+		// 	})
+		// 	.catch((err: DatabaseError) => {
+		// 		Message.error(err.message);
+		// 	});
+	}
+
+	// if character's name is changed
+	onCharacterNameChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
+		const value: string = e.target.value;
+		// update state
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			characters: prevState.characters.map((character: Character) => {
+				if (character.id === id) {
+					character.name = value;
+					character.updated = true;
+					return character;
+				}
+				return character;
+			})
+		}));
 	}
 
 	// save all changes
 	onSave = () => {
+		console.log(this.state.characters);
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
 		this.state.characters.forEach((character: Character) => {
@@ -142,6 +219,15 @@ class Main extends React.Component<MainProps, MainState> {
 							name: character.name
 						})
 				);
+			} else if (character.updated) {
+				// update that character
+				promises.push(
+					CharacterModal
+						.update(
+							{ name: character.name },
+							{ where: { id: character.id } }
+						)
+				);
 			}
 		});
 
@@ -151,9 +237,6 @@ class Main extends React.Component<MainProps, MainState> {
 				// alert success
 				Message.success('保存成功！');
 				// refresh main content
-				// setTimeout(() => {
-				// 	this.props.refreshMain();
-				// }, 3000);
 				this.props.refreshMain();
 			})
 			.catch((err: DatabaseError) => {
@@ -161,7 +244,7 @@ class Main extends React.Component<MainProps, MainState> {
 			});
 	}
 
-	// create character locally (not publish to database)
+	// create character locally (not publish to database yet)
 	createCharacterLocally = (name: string) => {
 		// create a local character
 		const newCharacter: Character = {
@@ -211,7 +294,14 @@ class Main extends React.Component<MainProps, MainState> {
 											className={classnames('main-character-card', {
 												'first-person-th': index === 0
 											})}
-										>{character.name}
+										>
+											<input
+												type="text"
+												value={character.name}
+												onChange={
+													(e: React.ChangeEvent<HTMLInputElement>) => this.onCharacterNameChange(character.id, e)
+												}
+											/>
 										</div>
 									</th>
 								))

@@ -8,12 +8,30 @@ export interface Character {
 	id: number;
 	name: string;
 	created?: boolean;
+	updated?: boolean;
+}
+
+export interface CharacterDataValue {
+	id: number;
+	outline_id: number;
+	name: string;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface Timeline {
+	id: number;
 	time: string;
-
 }
+
+export interface TimelineDataValue {
+	id: number;
+	outline_id: number;
+	time: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
 
 export interface MainProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
@@ -29,12 +47,5 @@ export interface MainState {
 	title: string;
 	description: string;
 	characters: Character[];
-}
-
-export interface CharacterDataValue {
-	id: number;
-	outline_id: number;
-	name: string;
-	createdAt: string;
-	updatedAt: string;
+	timelines: Timeline[];
 }

@@ -3,7 +3,7 @@ import sequelize from './sequelize';
 
 // model for Character
 const Character = sequelize.define(
-	'character',
+	'characters',
 	{
 		id: {
 			field: 'character_id',
@@ -19,7 +19,7 @@ const Character = sequelize.define(
 			type: Sequelize.STRING,
 			validate: {
 				notEmpty: {
-					msg: '角色姓名不能为空'
+					msg: '角色姓名不能为空！'
 				},
 				len: {
 					args: [0, 20],

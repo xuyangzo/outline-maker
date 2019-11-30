@@ -3,7 +3,7 @@ import sequelize from './sequelize';
 
 // model for Trash
 const Trash = sequelize.define(
-	'trash',
+	'trashes',
 	{
 		id: {
 			field: 'trash_id',
