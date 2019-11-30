@@ -353,6 +353,10 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// textarea height auto grow
 	onTextareaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		/**
+		 * scrollHeight is restricted by height
+		 * therefore need to set height to 1 first
+		 */
 		e.target.style.height = '1px';
 		if (e.target.style.height !== `${e.target.scrollHeight}px`) {
 			e.target.style.height = `${e.target.scrollHeight}px`;
@@ -445,7 +449,7 @@ class Main extends React.Component<MainProps, MainState> {
 															(contents.get(character.id) || new Map()).get(timeline.id) ?
 																(
 																	<textarea
-																		wrap="off"
+																		wrap="hard"
 																		onInput={this.onTextareaResize}
 																		onChange={
 																			(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onContentChange(character.id, timeline.id, e)

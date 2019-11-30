@@ -118,4 +118,4 @@ VALUES
 INSERT INTO outline_details
   (outline_id, timeline_id, character_id, content)
 VALUES
-  (1, 2, 1, '我又杀人了\n而且杀了很多人\n现在他们来找我了');
+  (1, 2, 1, '我又杀人了');

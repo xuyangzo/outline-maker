@@ -30,7 +30,8 @@
       .timeline-header {
         width: 150px !important;
         height: 100px;
-        position: absolute;
+        position: sticky;
+        left: -20px;
         background: white;
         padding-left: 40px !important;
         transform: translateX(-30px);
@@ -39,10 +40,11 @@
       .timeline-header-after {
         width: 150px !important;
         min-height: 100px;
-        position: absolute;
+        position: sticky;
+        left: 0px;
         background: white;
-        padding-left: 40px !important;
-        transform: translateX(-30px);
+        padding-left: 60px !important;
+        transform: translateX(-50px);
       }
 
       // leftmost th
@@ -64,8 +66,8 @@
         outline: none;
         text-align: center;
         padding: 5px;
-        resize: none;
         overflow: hidden;
+        word-break: break-all;
       }
 
       // table body
@@ -96,6 +98,7 @@
           // plus icon
           .plus-icon {
             font-size: 20px;
+            cursor: pointer;
           }
         }
       }
