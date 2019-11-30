@@ -48,6 +48,12 @@
         z-index: 500;
       }
 
+      // top-left card
+      .character-append {
+        top: 0;
+        transform: translate(-40px, -30px);
+      }
+
       // input field for each card
       input {
         border: none;

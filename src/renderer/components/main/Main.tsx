@@ -316,6 +316,7 @@ class Main extends React.Component<MainProps, MainState> {
 		console.log(this.state.characters);
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
+		// save all created/updated characters
 		this.state.characters.forEach((character: Character) => {
 			if (character.created) {
 				// create that character
@@ -402,7 +403,7 @@ class Main extends React.Component<MainProps, MainState> {
 					<table>
 						<thead>
 							<tr>
-								<th className="timeline-header" />
+								<th className="timeline-header character-append" />
 								{
 									characters.map((character: Character, index: number) => (
 										<th key={character.id} className="character-header">

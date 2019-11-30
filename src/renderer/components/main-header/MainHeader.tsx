@@ -219,8 +219,20 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			</React.Fragment>
 		);
 
-		// menu for drop down
-		const menu = (
+		// menu for add drop down
+		const addmenu = (
+			<Menu>
+				<Menu.Item onClick={this.onOpenCharacter}>
+					<Icon type="user-add" />添加角色
+				</Menu.Item>
+				<Menu.Item onClick={this.onOpenCharacter}>
+					<Icon type="clock-circle" />添加时间
+				</Menu.Item>
+			</Menu>
+		);
+
+		// menu for edit drop down
+		const editmenu = (
 			<Menu>
 				<Menu.Item onClick={this.onOpen} className="delete-outline-menuitem">
 					<Icon type="close-circle" />删除大纲
@@ -236,10 +248,12 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					backIcon={false}
 					tags={<MyIcon />}
 					extra={[
-						<Button type="primary" key="add-person" onClick={this.onOpenCharacter} ghost>
-							<Icon type="user-add" />添加角色
-						</Button>,
-						<Dropdown key="edit" overlay={menu} placement="bottomCenter">
+						<Dropdown key="add" overlay={addmenu} placement="bottomCenter">
+							<Button type="primary" key="add-person" ghost>
+								<Icon type="folder-add" />添加内容
+							</Button>
+						</Dropdown>,
+						<Dropdown key="edit" overlay={editmenu} placement="bottomCenter">
 							<Button type="danger" className="orange-button" ghost>
 								<Icon type="edit" />编辑大纲
 							</Button>
