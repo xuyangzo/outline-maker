@@ -134,7 +134,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			])
 			.then(() => {
 				// alert success message
-				Message.success('大纲已经被删除！');
+				Message.success('大纲已被删除！');
 				// refresh sidebar
 				this.props.refresh();
 				// close moal
@@ -167,7 +167,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			])
 			.then(() => {
 				// alert success message
-				Message.success('已经添加到收藏夹！');
+				Message.success('已添加到收藏夹！');
 				// set heart icon to be filled
 				this.setState({ isFav: true });
 			})

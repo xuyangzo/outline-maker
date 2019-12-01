@@ -46,8 +46,9 @@ export interface OutlineDetailDataValue {
 }
 
 export type ContentCard = {
-	id: number,
+	id?: number,
 	content: string,
+	created?: boolean,
 	updated?: boolean
 }
 

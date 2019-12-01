@@ -319,9 +319,9 @@ class Main extends React.Component<MainProps, MainState> {
 	onContentChange = (character_id: number, timeline_id: number, e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const value: string = e.target.value;
 		const { contents } = this.state;
-		const id = ((contents.get(character_id) || new Map()).get(timeline_id) || {}).id;
-		const card: ContentCard = { id, content: value, updated: true };
-		(contents.get(character_id) || new Map()).set(timeline_id, card);
+		const card: ContentCard = ((contents.get(character_id) || new Map()).get(timeline_id) || {});
+		const newCard: ContentCard = { ...card, content: value, updated: true };
+		(contents.get(character_id) || new Map()).set(timeline_id, newCard);
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents
@@ -330,7 +330,6 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// save all changes
 	onSave = () => {
-		console.log(this.state.characters);
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
 		// save all created/updated characters
@@ -379,8 +378,92 @@ class Main extends React.Component<MainProps, MainState> {
 			}
 		});
 
+		/**
+		 * all changes of timelines and characters are saved
+		 * but for created timelines and characters
+		 * their corresponding ids are incorrect right now
+		 * so need to get correct id before dealing with content card
+		 */
 		Promise
 			.all(promises)
+			.then((result: any) => {
+				/**
+				 * filter all records that are created
+				 * for update operation, the record is an array, otherwise object
+				 */
+				const created = result.filter((r: any) => !Array.isArray(r));
+				/**
+				 * filter character or timeline based on property
+				 * character has 'name' and timeline has 'time'
+				 * and separate them
+				 */
+				const characters: number[] = [];
+				const timelines: number[] = [];
+				created.forEach((
+					{ dataValues, 'null': id }:
+						{ dataValues: CharacterDataValue & TimelineDataValue, 'null': number }
+				) => {
+					if (dataValues.name) characters.push(id);
+					else if (dataValues.time) timelines.push(id);
+				});
+
+				/**
+				 * create id mapping for both characters and timelines
+				 * because use Promise.all, the order is fixed, which means
+				 * first negative id in this.state.characters => characters[0]
+				 */
+				const characterMapping = new Map<number, number>();
+				const timelineMapping = new Map<number, number>();
+				let characterIndex: number = 0;
+				let timelineIndex: number = 0;
+				// create mapping for character id
+				this.state.characters.forEach((character: Character) => {
+					if (character.id < 0) {
+						characterMapping.set(character.id, characters[characterIndex]);
+						characterIndex += 1;
+					}
+				});
+				// create mapping for timeline id
+				this.state.timelines.forEach((timeline: Timeline) => {
+					if (timeline.id < 0) {
+						timelineMapping.set(timeline.id, timelines[timelineIndex]);
+						timelineIndex += 1;
+					}
+				});
+
+				const promises: Promise<any>[] = [];
+				// save all content cards to database
+				this.state.contents.forEach((timelineMap: Map<number, ContentCard>, character_id: number) => {
+					timelineMap.forEach((content: ContentCard, timeline_id: number) => {
+						const contentText: string = content.content;
+						const c_id = character_id > 0 ? character_id : characterMapping.get(character_id);
+						const t_id = timeline_id > 0 ? timeline_id : timelineMapping.get(timeline_id);
+
+						// create new content card
+						if (content.created) {
+							promises.push(
+								OutlineDetails
+									.create({
+										outline_id: id,
+										character_id: c_id,
+										timeline_id: t_id,
+										content: contentText
+									})
+							);
+						} else if (content.updated) {
+							// update new content card
+							promises.push(
+								OutlineDetails
+									.update(
+										{ content: contentText },
+										{ where: { id: content.id } }
+									)
+							);
+						}
+					});
+				});
+
+			})
 			.then(() => {
 				// alert success
 				Message.success('保存成功！');
@@ -431,6 +514,34 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			timelines: prevState.timelines.concat(newTimeline)
+		}));
+	}
+
+	// create textarea for specific content card
+	createTextAreaLocally = (character_id: number, timeline_id: number) => {
+		const { contents } = this.state;
+		const card: ContentCard = { content: '', created: true };
+
+		/**
+		 * if current map does not have corresponding character_id
+		 * create a new map for <timeline_id, content>
+		 * and insert it into contents
+		 */
+		if (!contents.has(character_id)) {
+			const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
+			contents.set(character_id, timelineMap);
+		} else {
+			/**
+			 * otherwise, add content to existing timelineMap
+			 */
+			const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
+			timelineMap.set(timeline_id, card);
+		}
+
+		// update contents
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			contents
 		}));
 	}
 
@@ -514,7 +625,11 @@ class Main extends React.Component<MainProps, MainState> {
 																	/>
 																) :
 																(
-																	<Icon type="plus-circle" className="plus-icon" />
+																	<Icon
+																		type="plus-circle"
+																		className="plus-icon"
+																		onClick={() => this.createTextAreaLocally(character.id, timeline.id)}
+																	/>
 																)
 														}
 													</div>
