@@ -51,123 +51,13 @@ class Main extends React.Component<MainProps, MainState> {
 	componentWillReceiveProps = (props: MainProps) => {
 		const { id } = props.match.params;
 		// get outline's id, title and description
-		Outlines
-			.findOne({
-				where: {
-					id
-				}
-			})
-			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
-				const { id, title, description } = dataValues;
-				this.setState({
-					id,
-					title,
-					description
-				});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getOutline(id);
 		// get characters
-		CharacterModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name } = dataValues;
-					return { id, name };
-				});
-
-				// set characters
-				this.setState(
-					(prevState: MainState) => ({
-						...prevState,
-						characters
-					}),
-					() => {
-						// cancel update
-						props.cancelRefreshMain();
-					});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getCharacters(id);
 		// get all timelines
-		TimelineModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				// grab all timelines
-				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
-					const { id, time } = dataValues;
-					return { id, time };
-				});
-
-				// set timelines
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					timelines
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getTimelines(id);
 		// get all outline details
-		OutlineDetails
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				const { contents } = this.state;
-				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
-					const { id, character_id, timeline_id, content } = dataValues;
-					const card: ContentCard = { id, content };
-
-					/**
-					 * if current map does not have corresponding character_id
-					 * create a new map for <timeline_id, content>
-					 * and insert it into contents
-					 */
-					if (!contents.has(character_id)) {
-						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
-						contents.set(character_id, timelineMap);
-					} else {
-						/**
-						 * otherwise, add content to existing timelineMap
-						 */
-						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
-						timelineMap.set(timeline_id, card);
-					}
-				});
-
-				// update contents
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					contents,
-					shouldScroll: true
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-	}
-
-	componentDidUpdate = () => {
-		if (this.state.shouldScroll) {
-			(this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
-		}
+		this.getContents(id);
 	}
 
 	componentDidMount = () => {
@@ -176,111 +66,20 @@ class Main extends React.Component<MainProps, MainState> {
 
 		const { id } = this.props.match.params;
 		// get outline's id, title and description
-		Outlines
-			.findOne({
-				where: {
-					id
-				}
-			})
-			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
-				const { id, title, description } = dataValues;
-				this.setState({
-					id,
-					title,
-					description
-				});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getOutline(id);
 		// get characters
-		CharacterModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name } = dataValues;
-					return { id, name };
-				});
-
-				// set characters
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					characters
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getCharacters(id);
 		// get all timelines
-		TimelineModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				// grab all timelines
-				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
-					const { id, time } = dataValues;
-					return { id, time };
-				});
-
-				// set timelines
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					timelines
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-
+		this.getTimelines(id);
 		// get all outline details
-		OutlineDetails
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
-			.then((result: any) => {
-				const { contents } = this.state;
-				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
-					const { id, character_id, timeline_id, content } = dataValues;
-					const card: ContentCard = { id, content };
+		this.getContents(id);
+	}
 
-					/**
-					 * if current map does not have corresponding character_id
-					 * create a new map for <timeline_id, content>
-					 * and insert it into contents
-					 */
-					if (!contents.has(character_id)) {
-						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
-						contents.set(character_id, timelineMap);
-					} else {
-						/**
-						 * otherwise, add content to existing timelineMap
-						 */
-						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
-						timelineMap.set(timeline_id, card);
-					}
-				});
-
-				// update contents
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					contents
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
+	// scroll to top left when first enters the page
+	componentDidUpdate = () => {
+		if (this.state.shouldScroll) {
+			(this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
+		}
 	}
 
 	// if character's name is changed
@@ -577,6 +376,123 @@ class Main extends React.Component<MainProps, MainState> {
 		if (controlPress && sPress) {
 			this.onSave();
 		}
+	}
+
+	// get outline intro
+	getOutline = (id: string) => {
+		Outlines
+			.findOne({
+				where: {
+					id
+				}
+			})
+			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
+				const { id, title, description } = dataValues;
+				this.setState({
+					id,
+					title,
+					description
+				});
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get all timelines
+	getTimelines = (id: string) => {
+		// get all timelines
+		TimelineModal
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				// grab all timelines
+				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
+					const { id, time } = dataValues;
+					return { id, time };
+				});
+
+				// set timelines
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					timelines
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get all characters
+	getCharacters = (id: string) => {
+		CharacterModal
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				// get all characters
+				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+					const { id, name } = dataValues;
+					return { id, name };
+				});
+
+				// set characters
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					characters
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get all content cards
+	getContents = (id: string) => {
+		OutlineDetails
+			.findAll({
+				where: {
+					outline_id: id
+				}
+			})
+			.then((result: any) => {
+				const { contents } = this.state;
+				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
+					const { id, character_id, timeline_id, content } = dataValues;
+					const card: ContentCard = { id, content };
+
+					/**
+					 * if current map does not have corresponding character_id
+					 * create a new map for <timeline_id, content>
+					 * and insert it into contents
+					 */
+					if (!contents.has(character_id)) {
+						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
+						contents.set(character_id, timelineMap);
+					} else {
+						/**
+						 * otherwise, add content to existing timelineMap
+						 */
+						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
+						timelineMap.set(timeline_id, card);
+					}
+				});
+
+				// update contents
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					contents,
+					shouldScroll: true
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
 	render() {
