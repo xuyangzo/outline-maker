@@ -23,6 +23,8 @@ export interface CharacterDataValue {
 export interface Timeline {
 	id: number;
 	time: string;
+	created?: boolean;
+	updated?: boolean;
 }
 
 export interface TimelineDataValue {
@@ -45,7 +47,8 @@ export interface OutlineDetailDataValue {
 
 export type ContentCard = {
 	id: number,
-	content: string
+	content: string,
+	updated?: boolean
 }
 
 export type OutlineContent = Map<number, Map<number, ContentCard>>;

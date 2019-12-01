@@ -8,7 +8,10 @@ import {
 	Dropdown,
 	Menu
 } from 'antd';
+
+// custom components
 import CharacterModal from './character-modal/CharacterModal';
+import TimelineModal from './timeline-modal/TimelineModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -31,6 +34,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		this.state = {
 			confirmVisible: false,
 			characterVisible: false,
+			timelineVisible: false,
 			isFav: false
 		};
 	}
@@ -99,6 +103,16 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	// close character modal
 	onCancelCharacter = () => {
 		this.setState({ characterVisible: false });
+	}
+
+	// open timeline modal
+	onOpenTimeline = () => {
+		this.setState({ timelineVisible: true });
+	}
+
+	// close timeline modal
+	onCancelTimeline = () => {
+		this.setState({ timelineVisible: false });
 	}
 
 	// delete outline
@@ -194,7 +208,12 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	}
 
 	render() {
-		const { title, description, createCharacterLocally, refreshMain } = this.props;
+		const {
+			title,
+			description,
+			createCharacterLocally,
+			createTimelineLocally
+		} = this.props;
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
 			<React.Fragment>
@@ -225,7 +244,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 				<Menu.Item onClick={this.onOpenCharacter}>
 					<Icon type="user-add" />添加角色
 				</Menu.Item>
-				<Menu.Item onClick={this.onOpenCharacter}>
+				<Menu.Item onClick={this.onOpenTimeline}>
 					<Icon type="clock-circle" />添加时间
 				</Menu.Item>
 			</Menu>
@@ -283,11 +302,14 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					<p>被删除的大纲可以在垃圾箱进行恢复</p>
 				</Modal>
 				<CharacterModal
-					id={this.props.location.pathname.slice(9)}
 					showModal={this.state.characterVisible}
 					closeModal={this.onCancelCharacter}
-					refreshMain={refreshMain}
 					createCharacterLocally={createCharacterLocally}
+				/>
+				<TimelineModal
+					showModal={this.state.timelineVisible}
+					closeModal={this.onCancelTimeline}
+					createTimelineLocally={createTimelineLocally}
 				/>
 			</React.Fragment>
 		);

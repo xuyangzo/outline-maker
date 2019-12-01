@@ -298,12 +298,29 @@ class Main extends React.Component<MainProps, MainState> {
 		}));
 	}
 
+	// if timeline is changed
+	onTimelineChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
+		const value: string = e.target.value;
+		// update state
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			timelines: prevState.timelines.map((timeline: Timeline) => {
+				if (timeline.id === id) {
+					timeline.time = value;
+					timeline.updated = true;
+					return timeline;
+				}
+				return timeline;
+			})
+		}));
+	}
+
 	// if content card is changed
 	onContentChange = (character_id: number, timeline_id: number, e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const value: string = e.target.value;
 		const { contents } = this.state;
 		const id = ((contents.get(character_id) || new Map()).get(timeline_id) || {}).id;
-		const card: ContentCard = { id, content: value };
+		const card: ContentCard = { id, content: value, updated: true };
 		(contents.get(character_id) || new Map()).set(timeline_id, card);
 		this.setState((prevState: MainState) => ({
 			...prevState,
@@ -334,6 +351,29 @@ class Main extends React.Component<MainProps, MainState> {
 						.update(
 							{ name: character.name },
 							{ where: { id: character.id } }
+						)
+				);
+			}
+		});
+
+		// save all created/updated timelines
+		this.state.timelines.forEach((timeline: Timeline) => {
+			if (timeline.created) {
+				// create that timeline
+				promises.push(
+					TimelineModal
+						.create({
+							outline_id: id,
+							time: timeline.time
+						})
+				);
+			} else if (timeline.updated) {
+				// update that timeline
+				promises.push(
+					TimelineModal
+						.update(
+							{ time: timeline.time },
+							{ where: { id: timeline.id } }
 						)
 				);
 			}
@@ -378,6 +418,22 @@ class Main extends React.Component<MainProps, MainState> {
 		}));
 	}
 
+	// create timeline locally (not publish to database yet)
+	createTimelineLocally = (time: string) => {
+		// create a local timeline
+		const newTimeline: Timeline = {
+			time,
+			id: -this.state.timelines.length,
+			created: true
+		};
+
+		// add local timeline to all timelines
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			timelines: prevState.timelines.concat(newTimeline)
+		}));
+	}
+
 	render() {
 		const { expand, refreshSidebar, refreshMain } = this.props;
 		const { title, description, characters, timelines, contents } = this.state;
@@ -397,6 +453,7 @@ class Main extends React.Component<MainProps, MainState> {
 					refresh={refreshSidebar}
 					refreshMain={refreshMain}
 					createCharacterLocally={this.createCharacterLocally}
+					createTimelineLocally={this.createTimelineLocally}
 					onSave={this.onSave}
 				/>
 				<div className="main-content">
@@ -426,7 +483,15 @@ class Main extends React.Component<MainProps, MainState> {
 								timelines.map((timeline: Timeline) => (
 									<tr key={timeline.id}>
 										<td className="timeline-header">
-											<div className="timeline-component-after">{timeline.time}</div>
+											<div className="timeline-component-after">
+												<input
+													type="text"
+													value={timeline.time}
+													onChange={
+														(e: React.ChangeEvent<HTMLInputElement>) => this.onTimelineChange(timeline.id, e)
+													}
+												/>
+											</div>
 										</td>
 										{
 											characters.map((character: Character, index: number) => (

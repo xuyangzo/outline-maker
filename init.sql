@@ -95,18 +95,6 @@ INSERT INTO characters
 VALUES
   (1, '不是我');
 
-
-INSERT INTO characters
-  (outline_id, name)
-VALUES
-  (1, '干我');
-
-
-INSERT INTO characters
-  (outline_id, name)
-VALUES
-  (1, '傻卵');
-
 INSERT INTO timelines
   (outline_id, time)
 VALUES
