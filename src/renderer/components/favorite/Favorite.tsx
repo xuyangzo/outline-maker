@@ -83,7 +83,6 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 
 	// cancel favorite
 	onCancelFavorite = () => {
-		console.log(this.state.selected);
 		Promise
 			.all([
 				// delete outline from favorite table

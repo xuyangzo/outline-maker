@@ -12,6 +12,7 @@ import {
 // custom components
 import CharacterModal from './character-modal/CharacterModal';
 import TimelineModal from './timeline-modal/TimelineModal';
+import IntroModal from './intro-modal/IntroModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -35,6 +36,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			confirmVisible: false,
 			characterVisible: false,
 			timelineVisible: false,
+			introVisible: false,
 			isFav: false
 		};
 	}
@@ -113,6 +115,16 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	// close timeline modal
 	onCancelTimeline = () => {
 		this.setState({ timelineVisible: false });
+	}
+
+	// open intro modal
+	onOpenIntro = () => {
+		this.setState({ introVisible: true });
+	}
+
+	// close intro modal
+	onCancelIntro = () => {
+		this.setState({ introVisible: false });
 	}
 
 	// delete outline
@@ -212,7 +224,9 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			title,
 			description,
 			createCharacterLocally,
-			createTimelineLocally
+			createTimelineLocally,
+			refresh,
+			refreshMain
 		} = this.props;
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
@@ -253,6 +267,9 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		// menu for edit drop down
 		const editmenu = (
 			<Menu>
+				<Menu.Item onClick={this.onOpenIntro}>
+					<Icon type="profile" />编辑简介
+				</Menu.Item>
 				<Menu.Item onClick={this.onOpen} className="delete-outline-menuitem">
 					<Icon type="close-circle" />删除大纲
 				</Menu.Item>
@@ -310,6 +327,15 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					showModal={this.state.timelineVisible}
 					closeModal={this.onCancelTimeline}
 					createTimelineLocally={createTimelineLocally}
+				/>
+				<IntroModal
+					title={title}
+					description={description}
+					id={this.props.location.pathname.slice(9)}
+					refreshSidebar={refresh}
+					refreshMain={refreshMain}
+					showModal={this.state.introVisible}
+					closeModal={this.onCancelIntro}
 				/>
 			</React.Fragment>
 		);

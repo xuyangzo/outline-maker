@@ -15,5 +15,6 @@ export interface MainHeaderState {
   confirmVisible: boolean;
   characterVisible: boolean;
   timelineVisible: boolean;
+  introVisible: boolean;
   isFav: boolean;
 }

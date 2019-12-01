@@ -88,7 +88,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		// grab data
 		Outlines
 			.findAll({
-				order: [['updatedAt', 'DESC']]
+				order: [['id', 'DESC']]
 			})
 			.then((result: any) => {
 				// all outlines including deleted ones
