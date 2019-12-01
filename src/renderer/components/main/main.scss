@@ -38,12 +38,11 @@
 
       // timeline card
       .timeline-header {
-        width: 120px !important;
+        width: 100px !important;
         min-height: 100px;
         position: sticky;
         left: 0px;
         background: white;
-        padding-left: 20px !important;
         transform: translateX(-40px);
         z-index: 500;
       }

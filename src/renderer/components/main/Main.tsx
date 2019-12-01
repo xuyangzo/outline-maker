@@ -40,6 +40,7 @@ class Main extends React.Component<MainProps, MainState> {
 			description: '描述...',
 			characters: [],
 			timelines: [],
+			changed: false,
 			contents: new Map<number, Map<number, ContentCard>>()
 		};
 	}
@@ -157,15 +158,6 @@ class Main extends React.Component<MainProps, MainState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
-	}
-
-	// when control + s is pressed
-	keyPress = (e: KeyboardEvent) => {
-		const controlPress = e.ctrlKey || e.metaKey;
-		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
-		if (controlPress && sPress) {
-			this.onSave();
-		}
 	}
 
 	componentDidMount = () => {
@@ -294,7 +286,8 @@ class Main extends React.Component<MainProps, MainState> {
 					return character;
 				}
 				return character;
-			})
+			}),
+			changed: true
 		}));
 	}
 
@@ -311,7 +304,8 @@ class Main extends React.Component<MainProps, MainState> {
 					return timeline;
 				}
 				return timeline;
-			})
+			}),
+			changed: true
 		}));
 	}
 
@@ -324,12 +318,16 @@ class Main extends React.Component<MainProps, MainState> {
 		(contents.get(character_id) || new Map()).set(timeline_id, newCard);
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			contents
+			contents,
+			changed: true
 		}));
 	}
 
 	// save all changes
 	onSave = () => {
+		// if there is no change, do not save
+		if (!this.state.changed) return;
+
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
 		// save all created/updated characters
@@ -467,8 +465,16 @@ class Main extends React.Component<MainProps, MainState> {
 			.then(() => {
 				// alert success
 				Message.success('保存成功！');
-				// refresh main content
-				this.props.refreshMain();
+				// set changed to false
+				this.setState(
+					{
+						changed: false
+					},
+					() => {
+						// refresh main page
+						this.props.refreshMain();
+					}
+				);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -497,7 +503,8 @@ class Main extends React.Component<MainProps, MainState> {
 		// add local character to all characters
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			characters: prevState.characters.concat(newCharacter)
+			characters: prevState.characters.concat(newCharacter),
+			changed: true
 		}));
 	}
 
@@ -513,7 +520,8 @@ class Main extends React.Component<MainProps, MainState> {
 		// add local timeline to all timelines
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			timelines: prevState.timelines.concat(newTimeline)
+			timelines: prevState.timelines.concat(newTimeline),
+			changed: true
 		}));
 	}
 
@@ -541,8 +549,18 @@ class Main extends React.Component<MainProps, MainState> {
 		// update contents
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			contents
+			contents,
+			changed: true
 		}));
+	}
+
+	// when control + s is pressed
+	keyPress = (e: KeyboardEvent) => {
+		const controlPress = e.ctrlKey || e.metaKey;
+		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
+		if (controlPress && sPress) {
+			this.onSave();
+		}
 	}
 
 	render() {

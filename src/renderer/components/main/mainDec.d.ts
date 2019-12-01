@@ -70,4 +70,5 @@ export interface MainState {
 	characters: Character[];
 	timelines: Timeline[];
 	contents: OutlineContent;
+	changed: boolean;
 }
