@@ -20,7 +20,7 @@ import {
 	OutlineDetailDataValue,
 	ContentCard
 } from './mainDec';
-import { DatabaseError } from 'sequelize';
+import { DatabaseError, ValidationErrorItem } from 'sequelize';
 
 // sequelize modals
 import Outlines from '../../../db/models/Outlines';
@@ -261,6 +261,7 @@ class Main extends React.Component<MainProps, MainState> {
 									})
 							);
 						} else if (content.updated) {
+							console.log(contentText);
 							// update new content card
 							promises.push(
 								OutlineDetails
@@ -272,7 +273,7 @@ class Main extends React.Component<MainProps, MainState> {
 						}
 					});
 				});
-
+				return Promise.all(promises);
 			})
 			.then(() => {
 				// alert success
