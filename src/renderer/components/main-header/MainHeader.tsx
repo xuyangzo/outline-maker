@@ -6,7 +6,8 @@ import {
 	message as Message,
 	Modal,
 	Dropdown,
-	Menu
+	Menu,
+	Tooltip
 } from 'antd';
 
 // custom components
@@ -231,6 +232,9 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
 			<React.Fragment>
+				<Tooltip title={description}>
+					<span className="main-description-short">{description}</span>
+				</Tooltip>
 				{
 					this.state.isFav ? (
 						<Icon
@@ -280,7 +284,6 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			<React.Fragment>
 				<PageHeader
 					title={title}
-					subTitle={description}
 					backIcon={false}
 					tags={<MyIcon />}
 					extra={[

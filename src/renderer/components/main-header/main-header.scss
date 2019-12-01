@@ -1,6 +1,7 @@
 .main-header {
   // heart icon
   .header-add-fav {
+    transform: translateY(-5px);
     font-size: 20px;
     cursor: pointer;
   }
@@ -10,11 +11,13 @@
   }
 
   // add text-overflow to header subtitle
-  .ant-page-header-heading-sub-title {
+  .main-description-short {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: 120px;
+    max-width: 100px;
+    margin-right: 10px;
+    display: inline-block;
   }
 }
 
