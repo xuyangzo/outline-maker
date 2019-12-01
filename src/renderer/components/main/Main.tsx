@@ -32,6 +32,8 @@ import OutlineDetails from '../../../db/models/OutlineDetails';
 import './main.scss';
 
 class Main extends React.Component<MainProps, MainState> {
+	private mainRef = React.createRef<HTMLDivElement>();
+
 	constructor(props: MainProps) {
 		super(props);
 		this.state = {
@@ -41,7 +43,8 @@ class Main extends React.Component<MainProps, MainState> {
 			characters: [],
 			timelines: [],
 			changed: false,
-			contents: new Map<number, Map<number, ContentCard>>()
+			contents: new Map<number, Map<number, ContentCard>>(),
+			shouldScroll: true
 		};
 	}
 
@@ -152,12 +155,19 @@ class Main extends React.Component<MainProps, MainState> {
 				// update contents
 				this.setState((prevState: MainState) => ({
 					...prevState,
-					contents
+					contents,
+					shouldScroll: true
 				}));
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	componentDidUpdate = () => {
+		if (this.state.shouldScroll) {
+			(this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
+		}
 	}
 
 	componentDidMount = () => {
@@ -287,7 +297,8 @@ class Main extends React.Component<MainProps, MainState> {
 				}
 				return character;
 			}),
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -305,7 +316,8 @@ class Main extends React.Component<MainProps, MainState> {
 				}
 				return timeline;
 			}),
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -319,7 +331,8 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents,
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -504,7 +517,8 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			characters: prevState.characters.concat(newCharacter),
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -521,7 +535,8 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			timelines: prevState.timelines.concat(newTimeline),
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -550,7 +565,8 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents,
-			changed: true
+			changed: true,
+			shouldScroll: false
 		}));
 	}
 
@@ -585,7 +601,7 @@ class Main extends React.Component<MainProps, MainState> {
 					createTimelineLocally={this.createTimelineLocally}
 					onSave={this.onSave}
 				/>
-				<div className="main-content">
+				<div className="main-content" ref={this.mainRef}>
 					<table>
 						<thead>
 							<tr>

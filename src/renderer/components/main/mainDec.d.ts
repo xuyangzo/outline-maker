@@ -71,4 +71,5 @@ export interface MainState {
 	timelines: Timeline[];
 	contents: OutlineContent;
 	changed: boolean;
+	shouldScroll: boolean;
 }
