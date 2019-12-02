@@ -50,6 +50,7 @@ class Main extends React.Component<MainProps, MainState> {
 			contents: new Map<number, Map<number, ContentCard>>(),
 			shouldScroll: true,
 			scaling: '1',
+			showPlusIcons: true,
 			colors: [
 				'rgb(248, 187, 208)',	// light pink
 				'rgb(179, 229, 252)',	// light blue
@@ -345,6 +346,11 @@ class Main extends React.Component<MainProps, MainState> {
 			});
 	}
 
+	// hide all the plus icons
+	onTogglePlus = (checked: boolean) => {
+		this.setState({ showPlusIcons: checked });
+	}
+
 	// create character locally (not publish to database yet)
 	createCharacterLocally = (name: string) => {
 		const colorIndex = this.state.characters.length % this.state.colors.length;
@@ -548,7 +554,8 @@ class Main extends React.Component<MainProps, MainState> {
 			characters,
 			timelines,
 			contents,
-			scaling
+			scaling,
+			showPlusIcons
 		} = this.state;
 
 		return (
@@ -569,7 +576,11 @@ class Main extends React.Component<MainProps, MainState> {
 					createTimelineLocally={this.createTimelineLocally}
 					onSave={this.onSave}
 				/>
-				<Toolbar scaling={scaling} onChangeScaling={this.onChangeScaling} />
+				<Toolbar
+					scaling={scaling}
+					onChangeScaling={this.onChangeScaling}
+					onTogglePlus={this.onTogglePlus}
+				/>
 				<div className="main-content" ref={this.mainRef}>
 					<table style={{ zoom: scaling }}>
 						<thead>
@@ -590,7 +601,7 @@ class Main extends React.Component<MainProps, MainState> {
 						</thead>
 						<tbody>
 							{
-								timelines.map((timeline: Timeline) => (
+								timelines.map((timeline: Timeline, index: number) => (
 									<tr key={timeline.id}>
 										<td className="timeline-header">
 											<div className="timeline-component-after">
@@ -611,6 +622,9 @@ class Main extends React.Component<MainProps, MainState> {
 													character_id={character.id}
 													timeline_id={timeline.id}
 													contents={contents}
+													isFirst={index === 0}
+													isLast={index === timelines.length - 1}
+													showPlusIcons={showPlusIcons}
 													onTextareaResize={this.onTextareaResize}
 													onContentChange={this.onContentChange}
 													createTextAreaLocally={this.createTextAreaLocally}

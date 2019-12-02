@@ -75,5 +75,6 @@ export interface MainState {
 	changed: boolean;
 	shouldScroll: boolean;
 	scaling: string;
+	showPlusIcons: boolean;
 	colors: string[];
 }

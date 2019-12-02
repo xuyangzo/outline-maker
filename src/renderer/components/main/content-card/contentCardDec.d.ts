@@ -5,6 +5,9 @@ export interface ContentCardProps {
   character_id: number;
   timeline_id: number;
   contents: OutlineContent;
+  isLast: boolean;
+  isFirst: boolean;
+  showPlusIcons: boolean;
 
   onTextareaResize: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onContentChange: (character_id: number, timeline_id: number, e: React.ChangeEvent<HTMLTextAreaElement>) => void;
