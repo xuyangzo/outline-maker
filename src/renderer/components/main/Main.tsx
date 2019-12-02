@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import MainHeader from '../main-header/MainHeader';
 import Toolbar from '../toolbar/Toolbar';
 
-// enable history
+// enable history and page leave warning
 import { withRouter } from 'react-router-dom';
 
 // type declaration
@@ -33,6 +33,7 @@ import OutlineDetails from '../../../db/models/OutlineDetails';
 import './main.scss';
 
 class Main extends React.Component<MainProps, MainState> {
+	// reference to the main-content
 	private mainRef = React.createRef<HTMLDivElement>();
 
 	constructor(props: MainProps) {
@@ -50,7 +51,12 @@ class Main extends React.Component<MainProps, MainState> {
 		};
 	}
 
-	componentWillReceiveProps = (props: MainProps) => {
+	componentWillReceiveProps = async (props: MainProps) => {
+		// save changed before
+		if (this.state.changed) {
+			await this.onSave();
+		}
+
 		const { id } = props.match.params;
 		// get outline's id, title and description
 		this.getOutline(id);
@@ -81,6 +87,12 @@ class Main extends React.Component<MainProps, MainState> {
 	componentDidUpdate = () => {
 		if (this.state.shouldScroll) {
 			(this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
+		}
+	}
+
+	componentWillUnmount = () => {
+		if (this.state.changed) {
+			this.onSave();
 		}
 	}
 
@@ -243,8 +255,6 @@ class Main extends React.Component<MainProps, MainState> {
 					}
 				});
 
-				console.log(timelineMapping, characterMapping);
-
 				const promises: Promise<any>[] = [];
 				// save all content cards to database
 				this.state.contents.forEach((timelineMap: Map<number, ContentCard>, character_id: number) => {
@@ -265,7 +275,6 @@ class Main extends React.Component<MainProps, MainState> {
 									})
 							);
 						} else if (content.updated) {
-							console.log(contentText);
 							// update new content card
 							promises.push(
 								OutlineDetails
@@ -520,7 +529,14 @@ class Main extends React.Component<MainProps, MainState> {
 
 	render() {
 		const { expand, refreshSidebar, refreshMain } = this.props;
-		const { title, description, characters, timelines, contents, scaling } = this.state;
+		const {
+			title,
+			description,
+			characters,
+			timelines,
+			contents,
+			scaling
+		} = this.state;
 
 		return (
 			<Col
