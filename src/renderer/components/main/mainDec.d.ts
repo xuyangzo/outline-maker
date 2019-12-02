@@ -8,6 +8,7 @@ interface MatchParams {
 export interface Character {
 	id: number;
 	name: string;
+	color: string;
 	created?: boolean;
 	updated?: boolean;
 }
@@ -16,6 +17,7 @@ export interface CharacterDataValue {
 	id: number;
 	outline_id: number;
 	name: string;
+	color: string;
 	createdAt: string;
 	updatedAt: string;
 }

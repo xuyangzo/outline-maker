@@ -5,6 +5,8 @@ import classnames from 'classnames';
 // custom components
 import MainHeader from '../main-header/MainHeader';
 import Toolbar from '../toolbar/Toolbar';
+import CharacterCard from './character-card/CharacterCard';
+import DetailCard from './content-card/ContentCard';
 
 // enable history and page leave warning
 import { withRouter } from 'react-router-dom';
@@ -339,6 +341,7 @@ class Main extends React.Component<MainProps, MainState> {
 		// create a local character
 		const newCharacter: Character = {
 			name,
+			color: 'white',
 			id: -this.state.characters.length,
 			created: true
 		};
@@ -469,8 +472,8 @@ class Main extends React.Component<MainProps, MainState> {
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name } = dataValues;
-					return { id, name };
+					const { id, name, color } = dataValues;
+					return { id, name, color };
 				});
 
 				// set characters
@@ -563,18 +566,14 @@ class Main extends React.Component<MainProps, MainState> {
 							<tr>
 								<th className="timeline-header character-append" />
 								{
-									characters.map((character: Character, index: number) => (
-										<th key={character.id} className="character-header">
-											<div className="main-character-card">
-												<input
-													type="text"
-													value={character.name}
-													onChange={
-														(e: React.ChangeEvent<HTMLInputElement>) => this.onCharacterNameChange(character.id, e)
-													}
-												/>
-											</div>
-										</th>
+									characters.map((character: Character) => (
+										<CharacterCard
+											key={character.id}
+											id={character.id}
+											name={character.name}
+											onCharacterNameChange={this.onCharacterNameChange}
+											color={character.color}
+										/>
 									))
 								}
 							</tr>
@@ -595,35 +594,17 @@ class Main extends React.Component<MainProps, MainState> {
 											</div>
 										</td>
 										{
-											characters.map((character: Character, index: number) => (
-												<td
+											characters.map((character: Character) => (
+												<DetailCard
 													key={character.id}
-												>
-													<div className="main-content-card">
-														{
-															(contents.get(character.id) || new Map()).get(timeline.id) ?
-																(
-																	<textarea
-																		wrap="hard"
-																		onFocus={this.onTextareaResize}
-																		onInput={this.onTextareaResize}
-																		onChange={
-																			(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onContentChange(character.id, timeline.id, e)
-																		}
-																		value={(contents.get(character.id) || new Map()).get(timeline.id).content}
-																		autoFocus
-																	/>
-																) :
-																(
-																	<Icon
-																		type="plus-circle"
-																		className="plus-icon"
-																		onClick={() => this.createTextAreaLocally(character.id, timeline.id)}
-																	/>
-																)
-														}
-													</div>
-												</td>
+													color={character.color}
+													character_id={character.id}
+													timeline_id={timeline.id}
+													contents={contents}
+													onTextareaResize={this.onTextareaResize}
+													onContentChange={this.onContentChange}
+													createTextAreaLocally={this.createTextAreaLocally}
+												/>
 											))
 										}
 									</tr>

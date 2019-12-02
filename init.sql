@@ -25,6 +25,7 @@ CREATE TABLE characters
   character_id INTEGER PRIMARY KEY AUTOINCREMENT,
   outline_id INTEGER,
   name TEXT,
+  color TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
@@ -87,14 +88,14 @@ VALUES
   ('默认模板', '默认介绍...', 0, 0, '1', 0, 0);
 
 INSERT INTO characters
-  (outline_id, name)
+  (outline_id, name, color)
 VALUES
-  (1, '大佬');
+  (1, '大佬', 'pink');
 
 INSERT INTO characters
-  (outline_id, name)
+  (outline_id, name, color)
 VALUES
-  (1, '不是我');
+  (1, '不是我', 'mediumseagreen');
 
 INSERT INTO timelines
   (outline_id, time)

@@ -19,6 +19,10 @@
 		white-space: nowrap;
 		z-index: 800;
 
+		&::-webkit-scrollbar {
+      display: none;
+    }
+
 		// toggle sidebar
 		.toggle-sidebar {
 			height: 100vh;

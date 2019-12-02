@@ -27,6 +27,11 @@ const Character = sequelize.define(
 				}
 			}
 		},
+		color: {
+			field: 'color',
+			type: Sequelize.STRING,
+			defaultValue: 'white'
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,
