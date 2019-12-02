@@ -4,6 +4,9 @@ import { Icon } from 'antd';
 // type declaration
 import { ContentCardProps, ContentCardState } from './contentCardDec';
 
+// sass
+import './content-card.scss';
+
 class ContentCard extends React.Component<ContentCardProps, ContentCardState> {
 	render() {
 		const {
@@ -17,6 +20,7 @@ class ContentCard extends React.Component<ContentCardProps, ContentCardState> {
 		} = this.props;
 		return (
 			<td>
+				<div className="content-vertical-line" style={{ background: color }} />
 				<div className="main-content-card" style={{ borderColor: color }}>
 					{
 						(contents.get(character_id) || new Map()).get(timeline_id) ?

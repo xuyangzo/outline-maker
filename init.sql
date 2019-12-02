@@ -90,12 +90,12 @@ VALUES
 INSERT INTO characters
   (outline_id, name, color)
 VALUES
-  (1, '大佬', 'pink');
+  (1, '大佬', 'rgb(248, 187, 208)');
 
 INSERT INTO characters
   (outline_id, name, color)
 VALUES
-  (1, '不是我', 'mediumseagreen');
+  (1, '不是我', 'rgb(179, 229, 252)');
 
 INSERT INTO timelines
   (outline_id, time)

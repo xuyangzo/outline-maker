@@ -73,39 +73,6 @@
         word-break: break-all;
       }
 
-      // table body
-      td {
-        width: 240px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        word-break: break-all;
-        min-height: 100px;
-        padding: 0 20px;
-
-        // content card
-        .main-content-card {
-          margin-bottom: 20px;
-          margin-top: 20px;
-          min-height: 60px;
-          width: 200px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          text-align: center;
-          border-radius: 5px;
-          border: 2px solid black;
-          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
-                      0 1px 2px 0 rgba(0, 0, 0, 0.06);
-
-          // plus icon
-          .plus-icon {
-            font-size: 20px;
-            cursor: pointer;
-          }
-        }
-      }
-
       // table head, only for characters row
       th {
         width: 240px;
@@ -128,19 +95,11 @@
 
         }
       }
-
-      // clear float
-      &:after {
-        content: '';
-        display: block;
-        clear: both;
-        visibility: hidden;
-        height: 0;
-      }
     }
   }
 }
 
+// animation for toggling sidebar
 .main-grow {
   width: calc(100% - 25px) !important;
 }

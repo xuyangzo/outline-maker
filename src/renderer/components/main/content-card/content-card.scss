@@ -1,0 +1,53 @@
+.main {
+  .main-content {
+    table {
+      // table body
+      td {
+        width: 240px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        min-height: 100px;
+        padding: 0 20px;
+        position: relative;
+
+        // content card
+        .main-content-card {
+          margin-bottom: 20px;
+          margin-top: 20px;
+          min-height: 60px;
+          width: 200px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+          border-radius: 5px;
+          z-index: 10;
+          background: white;
+          border: 2px solid black;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+                      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+          // plus icon
+          .plus-icon {
+            font-size: 20px;
+            cursor: pointer;
+          }
+
+        }
+
+        // the vertical colored line
+        .content-vertical-line {
+          width: 2px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          z-index: -1;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+    }
+  }
+}

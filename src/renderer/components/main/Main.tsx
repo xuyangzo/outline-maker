@@ -49,15 +49,23 @@ class Main extends React.Component<MainProps, MainState> {
 			changed: false,
 			contents: new Map<number, Map<number, ContentCard>>(),
 			shouldScroll: true,
-			scaling: '1'
+			scaling: '1',
+			colors: [
+				'rgb(248, 187, 208)',	// light pink
+				'rgb(179, 229, 252)',	// light blue
+				'rgb(177, 221, 178)', // light green
+				'rgb(253, 253, 180)', // light yellow
+				'rgb(255, 209, 128)', // light orange
+				'rgb(130, 223, 218)', // light teal
+				'rgb(204, 184, 240)', // light purple
+				'rgb(224, 224, 224)' // light gray
+			]
 		};
 	}
 
-	componentWillReceiveProps = async (props: MainProps) => {
+	componentWillReceiveProps = (props: MainProps) => {
 		// save changed before
-		if (this.state.changed) {
-			await this.onSave();
-		}
+		this.onSave();
 
 		const { id } = props.match.params;
 		// get outline's id, title and description
@@ -166,7 +174,8 @@ class Main extends React.Component<MainProps, MainState> {
 					CharacterModal
 						.create({
 							outline_id: id,
-							name: character.name
+							name: character.name,
+							color: character.color
 						})
 				);
 			} else if (character.updated) {
@@ -338,10 +347,11 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// create character locally (not publish to database yet)
 	createCharacterLocally = (name: string) => {
+		const colorIndex = this.state.characters.length % this.state.colors.length;
 		// create a local character
 		const newCharacter: Character = {
 			name,
-			color: 'white',
+			color: this.state.colors[colorIndex],
 			id: -this.state.characters.length,
 			created: true
 		};
