@@ -4,9 +4,9 @@
   position: relative;
 
   .main-content {
-    padding: 30px;
+    padding: 0 30px;
     overflow-x: auto;
-    height: calc(100vh - 94px);
+    height: calc(100vh - 114px);
 
     &::-webkit-scrollbar {
       display: none;

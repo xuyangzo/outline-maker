@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 // custom components
 import MainHeader from '../main-header/MainHeader';
+import Toolbar from '../toolbar/Toolbar';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -20,7 +21,7 @@ import {
 	OutlineDetailDataValue,
 	ContentCard
 } from './mainDec';
-import { DatabaseError, ValidationErrorItem } from 'sequelize';
+import { DatabaseError } from 'sequelize';
 
 // sequelize modals
 import Outlines from '../../../db/models/Outlines';
@@ -44,7 +45,8 @@ class Main extends React.Component<MainProps, MainState> {
 			timelines: [],
 			changed: false,
 			contents: new Map<number, Map<number, ContentCard>>(),
-			shouldScroll: true
+			shouldScroll: true,
+			scaling: '1'
 		};
 	}
 
@@ -228,18 +230,20 @@ class Main extends React.Component<MainProps, MainState> {
 				let timelineIndex: number = 0;
 				// create mapping for character id
 				this.state.characters.forEach((character: Character) => {
-					if (character.id < 0) {
+					if (character.id <= 0) {
 						characterMapping.set(character.id, characters[characterIndex]);
 						characterIndex += 1;
 					}
 				});
 				// create mapping for timeline id
 				this.state.timelines.forEach((timeline: Timeline) => {
-					if (timeline.id < 0) {
+					if (timeline.id <= 0) {
 						timelineMapping.set(timeline.id, timelines[timelineIndex]);
 						timelineIndex += 1;
 					}
 				});
+
+				console.log(timelineMapping, characterMapping);
 
 				const promises: Promise<any>[] = [];
 				// save all content cards to database
@@ -302,6 +306,23 @@ class Main extends React.Component<MainProps, MainState> {
 		 */
 		e.target.style.height = '1px';
 		e.target.style.height = `${e.target.scrollHeight}px`;
+	}
+
+	// set scaling of page
+	onChangeScaling = (scaling: string) => {
+		const { id } = this.props.match.params;
+		// insert scaling to database
+		Outlines
+			.update(
+				{ scaling },
+				{ where: { id } }
+			)
+			.then(() => {
+				this.setState({ scaling });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
 	// create character locally (not publish to database yet)
@@ -388,11 +409,12 @@ class Main extends React.Component<MainProps, MainState> {
 				}
 			})
 			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
-				const { id, title, description } = dataValues;
+				const { id, title, description, scaling } = dataValues;
 				this.setState({
 					id,
 					title,
-					description
+					description,
+					scaling
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -498,7 +520,7 @@ class Main extends React.Component<MainProps, MainState> {
 
 	render() {
 		const { expand, refreshSidebar, refreshMain } = this.props;
-		const { title, description, characters, timelines, contents } = this.state;
+		const { title, description, characters, timelines, contents, scaling } = this.state;
 
 		return (
 			<Col
@@ -518,8 +540,9 @@ class Main extends React.Component<MainProps, MainState> {
 					createTimelineLocally={this.createTimelineLocally}
 					onSave={this.onSave}
 				/>
+				<Toolbar scaling={scaling} onChangeScaling={this.onChangeScaling} />
 				<div className="main-content" ref={this.mainRef}>
-					<table>
+					<table style={{ zoom: scaling }}>
 						<thead>
 							<tr>
 								<th className="timeline-header character-append" />

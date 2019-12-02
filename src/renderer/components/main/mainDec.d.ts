@@ -72,4 +72,5 @@ export interface MainState {
 	contents: OutlineContent;
 	changed: boolean;
 	shouldScroll: boolean;
+	scaling: string;
 }

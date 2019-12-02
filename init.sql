@@ -13,6 +13,7 @@ CREATE TABLE outlines
   description TEXT,
   category_id INTEGER,
   category_title TEXT,
+  scaling TEXT,
   fav INTEGER,
   deleted INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -81,9 +82,9 @@ CREATE TABLE categories
 );
 
 INSERT INTO outlines
-  (title, description, category_id, category_title, fav, deleted)
+  (title, description, category_id, category_title, scaling, fav, deleted)
 VALUES
-  ('默认模板', '默认介绍...', 0, 0, 0, 0);
+  ('默认模板', '默认介绍...', 0, 0, '1', 0, 0);
 
 INSERT INTO characters
   (outline_id, name)

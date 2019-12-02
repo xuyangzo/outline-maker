@@ -13,6 +13,7 @@ export interface OutlineDataValue {
 	description: string;
 	category_id: number;
 	category_title: string;
+	scaling: string;
 	fav: number;
 	deleted: number;
 }

@@ -46,6 +46,11 @@ const Outlines = sequelize.define(
 			field: 'category_title',
 			type: Sequelize.STRING
 		},
+		scaling: {
+			field: 'scaling',
+			type: Sequelize.STRING,
+			defaultValue: '1'
+		},
 		fav: {
 			field: 'fav',
 			type: Sequelize.INTEGER,
