@@ -13,7 +13,8 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 		this.state = {
 			showEdit: false,
 			showToolbar: false,
-			deleteModal: false
+			deleteModal: false,
+			showColorPalette: false
 		};
 	}
 
@@ -24,7 +25,7 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 
 	// hide edit icon
 	onHideEditIcon = () => {
-		this.setState({ showEdit: false, showToolbar: false });
+		this.setState({ showEdit: false, showToolbar: false, showColorPalette: false });
 	}
 
 	// show toolbar
@@ -53,9 +54,19 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 		this.setState({ deleteModal: false, showToolbar: false });
 	}
 
+	// show color palette
+	onShowColorPalette = () => {
+		this.setState({ showColorPalette: true });
+	}
+
+	// hide color palette
+	onHideColorPalette = () => {
+		this.setState({ showColorPalette: false });
+	}
+
 	render() {
-		const { name, id, onCharacterNameChange, color } = this.props;
-		const { showEdit, showToolbar, deleteModal } = this.state;
+		const { name, id, onCharacterNameChange, color, setColorLocally } = this.props;
+		const { showEdit, showToolbar, deleteModal, showColorPalette } = this.state;
 		return (
 			<th
 				className="character-header"
@@ -72,7 +83,69 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 						<div className="character-toolbar">
 							<div onClick={this.onOpenDelete}><Icon type="close" /> &nbsp;删除人物</div>
 							<div><Icon type="star" /> &nbsp;设为主角</div>
-							<div><Icon type="bg-colors" /> &nbsp;设置颜色</div>
+							<div
+								style={{ position: 'relative' }}
+								onMouseEnter={this.onShowColorPalette}
+								onMouseLeave={this.onHideColorPalette}
+							>
+								<Icon type="bg-colors" /> &nbsp;设置颜色
+								{
+									showColorPalette && (
+										<div className="color-palette">
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#ffa39e' }}
+												onClick={() => { setColorLocally(id, '#ffa39e'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#ffbb96' }}
+												onClick={() => { setColorLocally(id, '#ffbb96'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#ffe7ba' }}
+												onClick={() => { setColorLocally(id, '#ffe7ba'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#fff1b8' }}
+												onClick={() => { setColorLocally(id, '#fff1b8'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#d9f7be' }}
+												onClick={() => { setColorLocally(id, '#d9f7be'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#b5f5ec' }}
+												onClick={() => { setColorLocally(id, '#b5f5ec'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#bae7ff' }}
+												onClick={() => { setColorLocally(id, '#bae7ff'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#efdbff' }}
+												onClick={() => { setColorLocally(id, '#efdbff'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#ffd6e7' }}
+												onClick={() => { setColorLocally(id, '#ffd6e7'); }}
+											/>
+											<div
+												className="color-circle"
+												style={{ backgroundColor: '#e8e8e8' }}
+												onClick={() => { setColorLocally(id, '#e8e8e8'); }}
+											/>
+										</div>
+									)
+								}
+							</div>
 						</div>
 					)
 				}

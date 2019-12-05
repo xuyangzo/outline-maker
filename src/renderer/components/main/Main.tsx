@@ -30,7 +30,7 @@ import { getAllOutlineDetails, createOutlineDetail, updateOutlineDetail } from '
 
 // utils
 import { colors } from '../../utils/constants';
-import { onTextAreaResize, filterUpdateById, ctrlsPress } from '../../utils/utils';
+import { onTextAreaResize, filterUpdateById, ctrlsPress, filterSaveResult } from '../../utils/utils';
 
 // sass
 import './main.scss';
@@ -147,7 +147,7 @@ class Main extends React.Component<MainProps, MainState> {
 			// create that character
 			if (character.created) promises.push(createCharacter(id, character.name, character.color));
 			// update that character
-			else if (character.updated) promises.push(updateCharacter(character.id, character.name));
+			else if (character.updated) promises.push(updateCharacter(character.id, character.name, character.color));
 		});
 
 		// delete all previous characters
@@ -176,7 +176,7 @@ class Main extends React.Component<MainProps, MainState> {
 				 * filter all records that are created
 				 * for update operation, the record is an array, otherwise object
 				 */
-				const created = result.filter((r: any) => typeof r !== 'number' && typeof r !== 'undefined');
+				const created = filterSaveResult(result);
 				/**
 				 * filter character or timeline based on property
 				 * character has 'name' and timeline has 'time'
@@ -240,6 +240,8 @@ class Main extends React.Component<MainProps, MainState> {
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
+				// set changed to false and refresh main page
+				this.setState({ changed: false }, () => { this.props.refreshMain(); });
 			});
 	}
 
@@ -340,6 +342,22 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents,
+			changed: true,
+			shouldScroll: false
+		}));
+	}
+
+	// set color of a character locally
+	setColorLocally = (id: number, color: string) => {
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			characters: prevState.characters.map((character: Character) => {
+				if (character.id === id) {
+					character.color = color;
+					character.updated = true;
+				}
+				return character;
+			}),
 			changed: true,
 			shouldScroll: false
 		}));
@@ -476,6 +494,7 @@ class Main extends React.Component<MainProps, MainState> {
 											name={character.name}
 											onCharacterNameChange={this.onCharacterNameChange}
 											deleteCharacterLocally={this.deleteCharacterLocally}
+											setColorLocally={this.setColorLocally}
 											color={character.color}
 										/>
 									))

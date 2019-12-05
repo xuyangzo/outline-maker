@@ -32,3 +32,12 @@ export const ctrlsPress = (e: KeyboardEvent, callback: Function) => {
 		callback();
 	}
 };
+
+// filter result of save
+export const filterSaveResult = (result: any[]): any[] => {
+	return result.filter((r: any) => {
+		return typeof r !== 'number' &&
+			typeof r !== 'undefined' &&
+			!Array.isArray(r);
+	});
+};

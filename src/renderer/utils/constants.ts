@@ -1,10 +1,12 @@
 export const colors = [
-	'rgb(248, 187, 208)',	// light pink
-	'rgb(179, 229, 252)',	// light blue
-	'rgb(177, 221, 178)', // light green
-	'rgb(253, 253, 180)', // light yellow
-	'rgb(255, 209, 128)', // light orange
-	'rgb(130, 223, 218)', // light teal
-	'rgb(204, 184, 240)', // light purple
-	'rgb(224, 224, 224)' // light gray
+	'#ffa39e', // dust red
+	'#ffbb96', // orange
+	'#ffe7ba', // light orange
+	'#fff1b8', // light gold
+	'#d9f7be', // light green
+	'#b5f5ec', // light cyan
+	'#bae7ff', // light blue
+	'#efdbff', // light purple
+	'#ffd6e7', // light pink
+	'#e8e8e8'  // light gray
 ];

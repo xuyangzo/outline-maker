@@ -22,10 +22,13 @@ export const createCharacter = (id: string, name: string, color: string): Promis
 };
 
 // update current character
-export const updateCharacter = (id: string | number, name: string): Promise<any> => {
+export const updateCharacter = (id: string | number, name: string, color: string): Promise<any> => {
+	const modalToUpdate: { name?: string, color?: string } = {};
+	if (name) modalToUpdate.name = name;
+	if (color) modalToUpdate.color = color;
 	return CharacterModal
 		.update(
-			{ name },
+			modalToUpdate,
 			{ where: { id } }
 		);
 };
