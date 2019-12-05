@@ -26,7 +26,8 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 		this.state = {
 			outlines: [],
 			confirmVisible: false,
-			selected: 0
+			selected: 0,
+			shouldRender: false
 		};
 	}
 
@@ -47,7 +48,8 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 					return { id: dataValues.id, title: dataValues.title, description: dataValues.description };
 				});
 				this.setState({
-					outlines
+					outlines,
+					shouldRender: true
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -102,6 +104,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 
 	render() {
 		const { expand } = this.props;
+		const { shouldRender } = this.state;
 
 		return (
 			<Col
@@ -113,7 +116,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 				}
 			>
 				{
-					(this.state.outlines.length === 0) && (
+					(this.state.outlines.length === 0 && shouldRender) && (
 						<div className="empty-fav">
 							<h2>收藏夹是空的哟...</h2>
 							<br />

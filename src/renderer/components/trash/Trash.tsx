@@ -28,7 +28,8 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			outlines: [],
 			confirmVisible: false,
 			backVisible: false,
-			selected: 0
+			selected: 0,
+			shouldRender: false
 		};
 	}
 
@@ -47,7 +48,8 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				this.setState({
 					outlines: result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
 						return { id: dataValues.id, title: dataValues.title, description: dataValues.description };
-					})
+					}),
+					shouldRender: true
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -144,6 +146,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	render() {
 		const { expand } = this.props;
+		const { shouldRender } = this.state;
 
 		return (
 			<Col
@@ -155,7 +158,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				}
 			>
 				{
-					(this.state.outlines.length === 0) && (
+					(this.state.outlines.length === 0 && shouldRender) && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
