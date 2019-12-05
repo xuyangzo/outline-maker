@@ -10,6 +10,11 @@ export const findFavorite = (id: string): Promise<any> => {
 		});
 };
 
+// find all favorites
+export const findAllFav = (): Promise<any> => {
+	return Favorite.findAll();
+};
+
 // add current outline to favorite table
 export const addFavorite = (id: string): Promise<any> => {
 	return Favorite

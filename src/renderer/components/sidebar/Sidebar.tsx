@@ -14,9 +14,6 @@ import { ClickParam } from 'antd/lib/menu';
 // database operation
 import { getAllOutlines } from '../../../db/operations/outline-ops';
 
-// sequelize modals
-import Outlines from '../../../db/models/Outlines';
-
 // sidebar
 import './sidebar.scss';
 

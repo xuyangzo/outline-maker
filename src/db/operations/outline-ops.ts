@@ -1,4 +1,5 @@
 import Outlines from '../models/Outlines';
+const Op = require('sequelize').Op;
 
 // get outline given id
 export const getOutline = (id: string): Promise<any> => {
@@ -15,6 +16,20 @@ export const getAllOutlines = (): Promise<any> => {
 	return Outlines
 		.findAll({
 			order: [['id', 'DESC']]
+		});
+};
+
+// get all non-deleted outlines
+export const getAllNonDeletedOutlinesRange = (outlines: string[] | number[]): Promise<any> => {
+	return Outlines.
+		findAll({
+			where: {
+				id: outlines,
+				deleted: {
+					[Op.ne]: 1
+				}
+			},
+			order: [['updatedAt', 'DESC']]
 		});
 };
 

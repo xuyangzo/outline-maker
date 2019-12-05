@@ -10,17 +10,15 @@ import { DatabaseError } from 'sequelize';
 import { FavoriteProps, FavoriteState, FavoriteDataValue } from './favoriteDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
-// sequelize modals
-const Op = require('sequelize').Op;
-import Outlines from '../../../db/models/Outlines';
-import FavoriteModal from '../../../db/models/Favorite';
+// database operations
+import { findAllFav, deleteFavorite } from '../../../db/operations/fav-ops';
+import { getAllNonDeletedOutlinesRange, updateOutlineFav } from '../../../db/operations/outline-ops';
 
 // sass
 import './favorite.scss';
 
 // image
 import empty from '../../../public/empty-fav.png';
-import { ClickParam } from 'antd/lib/menu';
 
 class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 	constructor(props: FavoriteProps) {
@@ -33,32 +31,20 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 	}
 
 	componentDidMount = () => {
-		FavoriteModal
-			.findAll()
+		findAllFav()
 			.then((result: any) => {
 				// all outlines in favorite
 				const outlines: string[] = result.map(({ dataValues }: { dataValues: FavoriteDataValue }) => {
-					const { outline_id } = dataValues;
-					return outline_id;
+					return dataValues.outline_id;
 				});
 
 				// grab title and description for those outlines
-				return Outlines.
-					findAll({
-						where: {
-							id: outlines,
-							deleted: {
-								[Op.ne]: 1
-							}
-						},
-						order: [['updatedAt', 'DESC']]
-					});
+				return getAllNonDeletedOutlinesRange(outlines);
 			})
 			.then((result: any) => {
 				// all detailed outlines in favorite
 				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, description } = dataValues;
-					return { id, title, description };
+					return { id: dataValues.id, title: dataValues.title, description: dataValues.description };
 				});
 				this.setState({
 					outlines
@@ -84,21 +70,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 	// cancel favorite
 	onCancelFavorite = () => {
 		Promise
-			.all([
-				// delete outline from favorite table
-				FavoriteModal
-					.destroy({
-						where: {
-							outline_id: this.state.selected
-						}
-					}),
-				// update outline's fav in outlines table
-				Outlines
-					.update(
-						{ fav: 0 },
-						{ where: { id: this.state.selected } }
-					)
-			])
+			.all([deleteFavorite(this.state.selected), updateOutlineFav(this.state.selected, 0)])
 			.then(() => {
 				// alert success
 				Message.success('已取消收藏！');

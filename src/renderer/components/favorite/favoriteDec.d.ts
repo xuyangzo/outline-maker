@@ -18,4 +18,5 @@ export interface FavoriteState {
   outlines: Outline[];
   confirmVisible: boolean;
   selected: number;
+  shouldRender: boolean;
 }
