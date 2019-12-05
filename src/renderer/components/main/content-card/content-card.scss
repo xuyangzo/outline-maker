@@ -1,24 +1,6 @@
 .main {
   .main-content {
     table {
-      // timeline card
-      .timeline-header {
-        width: 100px !important;
-        min-height: 100px;
-        position: sticky;
-        left: 0px;
-        background: white;
-        transform: translateX(-40px);
-        z-index: 500;
-
-        .timeline-component-after {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          min-height: 100px;
-        }
-      }
-
       // table body
       td {
         width: 240px;

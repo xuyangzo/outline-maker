@@ -39,3 +39,13 @@ export const deleteOutlineDetailsGivenChar = (character_id: number | string): Pr
 			}
 		});
 };
+
+// delete all outline details related to a timeline
+export const deleteOutlineDetailsGivenTime = (timeline_id: number | string): Promise<any> => {
+	return OutlineDetails
+		.destroy({
+			where: {
+				timeline_id
+			}
+		});
+};

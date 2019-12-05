@@ -22,7 +22,7 @@ class ContentCard extends React.Component<ContentCardProps, ContentCardState> {
 			showPlusIcons
 		} = this.props;
 		return (
-			<td style={{ paddingTop: isFirst ? '50px' : '20px' }}>
+			<td style={{ paddingTop: isFirst ? '50px' : '0' }}>
 				<div
 					className={isLast ? 'last-content-vertical-line' : 'content-vertical-line'}
 					style={{ background: color }}

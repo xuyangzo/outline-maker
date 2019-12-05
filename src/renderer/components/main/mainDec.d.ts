@@ -78,4 +78,5 @@ export interface MainState {
 	showPlusIcons: boolean;
 	colors: string[];
 	deletedCharacters: number[];
+	deletedTimelines: number[];
 }

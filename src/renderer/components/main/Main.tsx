@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import MainHeader from '../main-header/MainHeader';
 import Toolbar from '../toolbar/Toolbar';
 import CharacterCard from './character-card/CharacterCard';
+import TimelineCard from './timeline-card/TimelineCard';
 import DetailCard from './content-card/ContentCard';
 
 // enable history and page leave warning
@@ -25,7 +26,10 @@ import {
 	getAllCharacters, createCharacter,
 	updateCharacter, deleteCharacter
 } from '../../../db/operations/character-ops';
-import { getAllTimelines, createTimeline, updateTimeline } from '../../../db/operations/timeline-ops';
+import {
+	getAllTimelines, createTimeline,
+	updateTimeline, deleteTimeline
+} from '../../../db/operations/timeline-ops';
 import { getAllOutlineDetails, createOutlineDetail, updateOutlineDetail } from '../../../db/operations/detail-ops';
 
 // utils
@@ -53,7 +57,8 @@ class Main extends React.Component<MainProps, MainState> {
 			shouldScroll: true,
 			scaling: '1',
 			showPlusIcons: true,
-			deletedCharacters: []
+			deletedCharacters: [],
+			deletedTimelines: []
 		};
 	}
 
@@ -161,6 +166,11 @@ class Main extends React.Component<MainProps, MainState> {
 			if (timeline.created) promises.push(createTimeline(id, timeline.time));
 			// update that timeline
 			else if (timeline.updated) promises.push(updateTimeline(timeline.id, timeline.time));
+		});
+
+		// delete all previous timelines
+		this.state.deletedTimelines.forEach((id: number) => {
+			if (id >= 0) promises.push(deleteTimeline(id));
 		});
 
 		/**
@@ -294,6 +304,25 @@ class Main extends React.Component<MainProps, MainState> {
 			contents,
 			characters: prevState.characters.filter((character: Character) => character.id !== id),
 			deletedCharacters: prevState.deletedCharacters.concat(id),
+			changed: true,
+			shouldScroll: false
+		}));
+	}
+
+	// delete timeline locally (not publish to database yet)
+	deleteTimelineLocally = (id: number) => {
+		// remove timeline from contents
+		const contents = this.state.contents;
+		contents.forEach((timelineMap: Map<number, ContentCard>) => {
+			timelineMap.delete(id);
+		});
+
+		// delete all contents about this character
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			contents,
+			timelines: prevState.timelines.filter((timeline: Timeline) => timeline.id !== id),
+			deletedTimelines: prevState.deletedTimelines.concat(id),
 			changed: true,
 			shouldScroll: false
 		}));
@@ -505,17 +534,13 @@ class Main extends React.Component<MainProps, MainState> {
 							{
 								timelines.map((timeline: Timeline, index: number) => (
 									<tr key={timeline.id}>
-										<td className="timeline-header">
-											<div className="timeline-component-after">
-												<input
-													type="text"
-													value={timeline.time}
-													onChange={
-														(e: React.ChangeEvent<HTMLInputElement>) => this.onTimelineChange(timeline.id, e)
-													}
-												/>
-											</div>
-										</td>
+										<TimelineCard
+											id={timeline.id}
+											time={timeline.time}
+											isFirst={index === 0}
+											onTimelineChange={this.onTimelineChange}
+											deleteTimelineLocally={this.deleteTimelineLocally}
+										/>
 										{
 											characters.map((character: Character) => (
 												<DetailCard

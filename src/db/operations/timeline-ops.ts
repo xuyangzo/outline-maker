@@ -1,4 +1,5 @@
 import TimelineModal from '../models/Timeline';
+import { deleteOutlineDetailsGivenTime } from './detail-ops';
 
 // get all timelines givend outline id
 export const getAllTimelines = (id: string): Promise<any> => {
@@ -26,4 +27,13 @@ export const updateTimeline = (id: string | number, time: string): Promise<any> 
 			{ time },
 			{ where: { id } }
 		);
+};
+
+// delete timeline
+export const deleteTimeline = async (id: string | number): Promise<any> => {
+	await deleteOutlineDetailsGivenTime(id);
+	return TimelineModal
+		.destroy({
+			where: { id }
+		});
 };
