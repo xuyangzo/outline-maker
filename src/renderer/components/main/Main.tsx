@@ -14,22 +14,20 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import { OutlineDataValue } from '../sidebar/sidebarDec';
 import {
-	MainProps,
-	MainState,
-	CharacterDataValue,
-	Character,
-	TimelineDataValue,
-	Timeline,
-	OutlineDetailDataValue,
-	ContentCard
+	MainProps, MainState, CharacterDataValue, Character,
+	TimelineDataValue, Timeline, OutlineDetailDataValue, ContentCard
 } from './mainDec';
 import { DatabaseError } from 'sequelize';
 
-// sequelize modals
-import Outlines from '../../../db/models/Outlines';
-import CharacterModal from '../../../db/models/Character';
-import TimelineModal from '../../../db/models/Timeline';
-import OutlineDetails from '../../../db/models/OutlineDetails';
+// database operations
+import { updateScaling, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
+import { getAllCharacters, createCharacter, updateCharacter } from '../../../db/operations/character-ops';
+import { getAllTimelines, createTimeline, updateTimeline } from '../../../db/operations/timeline-ops';
+import { getAllOutlineDetails, createOutlineDetail, updateOutlineDetail } from '../../../db/operations/detail-ops';
+
+// utils
+import { colors } from '../../utils/constants';
+import { onTextAreaResize, filterUpdateById, ctrlsPress } from '../../utils/utils';
 
 // sass
 import './main.scss';
@@ -41,6 +39,7 @@ class Main extends React.Component<MainProps, MainState> {
 	constructor(props: MainProps) {
 		super(props);
 		this.state = {
+			colors,
 			id: -1,
 			title: '标题',
 			description: '描述...',
@@ -50,17 +49,7 @@ class Main extends React.Component<MainProps, MainState> {
 			contents: new Map<number, Map<number, ContentCard>>(),
 			shouldScroll: true,
 			scaling: '1',
-			showPlusIcons: true,
-			colors: [
-				'rgb(248, 187, 208)',	// light pink
-				'rgb(179, 229, 252)',	// light blue
-				'rgb(177, 221, 178)', // light green
-				'rgb(253, 253, 180)', // light yellow
-				'rgb(255, 209, 128)', // light orange
-				'rgb(130, 223, 218)', // light teal
-				'rgb(204, 184, 240)', // light purple
-				'rgb(224, 224, 224)' // light gray
-			]
+			showPlusIcons: true
 		};
 	}
 
@@ -80,8 +69,8 @@ class Main extends React.Component<MainProps, MainState> {
 	}
 
 	componentDidMount = () => {
-		// add event listener
-		document.addEventListener('keydown', this.keyPress);
+		// add event listener for control + s event
+		document.addEventListener('keydown', (e) => { ctrlsPress(e, this.onSave); });
 
 		const { id } = this.props.match.params;
 		// get outline's id, title and description
@@ -96,50 +85,31 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// scroll to top left when first enters the page
 	componentDidUpdate = () => {
-		if (this.state.shouldScroll) {
-			(this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
-		}
+		if (this.state.shouldScroll) (this.mainRef.current as HTMLDivElement).scrollTo(0, 0);
 	}
 
+	// save unsaved contents after leaving the page
 	componentWillUnmount = () => {
-		if (this.state.changed) {
-			this.onSave();
-		}
+		if (this.state.changed) this.onSave();
 	}
 
 	// if character's name is changed
 	onCharacterNameChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
-		const value: string = e.target.value;
-		// update state
+		const value = e.target.value;
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			characters: prevState.characters.map((character: Character) => {
-				if (character.id === id) {
-					character.name = value;
-					character.updated = true;
-					return character;
-				}
-				return character;
-			}),
+			characters: filterUpdateById(prevState.characters, id, value, false),
 			changed: true,
 			shouldScroll: false
 		}));
 	}
 
-	// if timeline is changed
+	// if timeline's time is changed
 	onTimelineChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
-		const value: string = e.target.value;
-		// update state
+		const value = e.target.value;
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			timelines: prevState.timelines.map((timeline: Timeline) => {
-				if (timeline.id === id) {
-					timeline.time = value;
-					timeline.updated = true;
-					return timeline;
-				}
-				return timeline;
-			}),
+			timelines: filterUpdateById(prevState.timelines, id, value, true),
 			changed: true,
 			shouldScroll: false
 		}));
@@ -162,56 +132,26 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// save all changes
 	onSave = () => {
-		// if there is no change, do not save
+		// if there is no change, directly return
 		if (!this.state.changed) return;
 
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
+
 		// save all created/updated characters
 		this.state.characters.forEach((character: Character) => {
-			if (character.created) {
-				// create that character
-				promises.push(
-					CharacterModal
-						.create({
-							outline_id: id,
-							name: character.name,
-							color: character.color
-						})
-				);
-			} else if (character.updated) {
-				// update that character
-				promises.push(
-					CharacterModal
-						.update(
-							{ name: character.name },
-							{ where: { id: character.id } }
-						)
-				);
-			}
+			// create that character
+			if (character.created) promises.push(createCharacter(id, character.name, character.color));
+			// update that character
+			else if (character.updated) promises.push(updateCharacter(character.id, character.name));
 		});
 
 		// save all created/updated timelines
 		this.state.timelines.forEach((timeline: Timeline) => {
-			if (timeline.created) {
-				// create that timeline
-				promises.push(
-					TimelineModal
-						.create({
-							outline_id: id,
-							time: timeline.time
-						})
-				);
-			} else if (timeline.updated) {
-				// update that timeline
-				promises.push(
-					TimelineModal
-						.update(
-							{ time: timeline.time },
-							{ where: { id: timeline.id } }
-						)
-				);
-			}
+			// create that timeline
+			if (timeline.created) promises.push(createTimeline(id, timeline.time));
+			// update that timeline
+			else if (timeline.updated) promises.push(updateTimeline(timeline.id, timeline.time));
 		});
 
 		/**
@@ -272,30 +212,13 @@ class Main extends React.Component<MainProps, MainState> {
 				this.state.contents.forEach((timelineMap: Map<number, ContentCard>, character_id: number) => {
 					timelineMap.forEach((content: ContentCard, timeline_id: number) => {
 						const contentText: string = content.content;
-						const c_id = character_id > 0 ? character_id : characterMapping.get(character_id);
-						const t_id = timeline_id > 0 ? timeline_id : timelineMapping.get(timeline_id);
+						const c_id = character_id > 0 ? character_id : (characterMapping.get(character_id) || -1);
+						const t_id = timeline_id > 0 ? timeline_id : (timelineMapping.get(timeline_id) || -1);
 
 						// create new content card
-						if (content.created) {
-							promises.push(
-								OutlineDetails
-									.create({
-										outline_id: id,
-										character_id: c_id,
-										timeline_id: t_id,
-										content: contentText
-									})
-							);
-						} else if (content.updated) {
-							// update new content card
-							promises.push(
-								OutlineDetails
-									.update(
-										{ content: contentText },
-										{ where: { id: content.id } }
-									)
-							);
-						}
+						if (content.created) promises.push(createOutlineDetail(id, c_id, t_id, contentText));
+						// update new content card
+						else if (content.updated) promises.push(updateOutlineDetail(content.id, contentText));
 					});
 				});
 				return Promise.all(promises);
@@ -303,41 +226,19 @@ class Main extends React.Component<MainProps, MainState> {
 			.then(() => {
 				// alert success
 				Message.success('保存成功！');
-				// set changed to false
-				this.setState(
-					{
-						changed: false
-					},
-					() => {
-						// refresh main page
-						this.props.refreshMain();
-					}
-				);
+				// set changed to false and refresh main page
+				this.setState({ changed: false }, () => { this.props.refreshMain(); });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
 	}
 
-	// textarea height auto grow
-	onTextareaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		/**
-		 * scrollHeight is restricted by height
-		 * therefore need to set height to 1 first
-		 */
-		e.target.style.height = '1px';
-		e.target.style.height = `${e.target.scrollHeight}px`;
-	}
-
 	// set scaling of page
 	onChangeScaling = (scaling: string) => {
 		const { id } = this.props.match.params;
 		// insert scaling to database
-		Outlines
-			.update(
-				{ scaling },
-				{ where: { id } }
-			)
+		updateScaling(id, scaling)
 			.then(() => {
 				this.setState({ scaling });
 			})
@@ -419,23 +320,9 @@ class Main extends React.Component<MainProps, MainState> {
 		}));
 	}
 
-	// when control + s is pressed
-	keyPress = (e: KeyboardEvent) => {
-		const controlPress = e.ctrlKey || e.metaKey;
-		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
-		if (controlPress && sPress) {
-			this.onSave();
-		}
-	}
-
 	// get outline intro
 	getOutline = (id: string) => {
-		Outlines
-			.findOne({
-				where: {
-					id
-				}
-			})
+		getOutlineOp(id)
 			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
 				const { id, title, description, scaling } = dataValues;
 				this.setState({
@@ -453,24 +340,14 @@ class Main extends React.Component<MainProps, MainState> {
 	// get all timelines
 	getTimelines = (id: string) => {
 		// get all timelines
-		TimelineModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
+		getAllTimelines(id)
 			.then((result: any) => {
 				// grab all timelines
 				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
-					const { id, time } = dataValues;
-					return { id, time };
+					return { id: dataValues.id, time: dataValues.time };
 				});
-
 				// set timelines
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					timelines
-				}));
+				this.setState({ timelines });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -479,24 +356,14 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// get all characters
 	getCharacters = (id: string) => {
-		CharacterModal
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
+		getAllCharacters(id)
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, color } = dataValues;
-					return { id, name, color };
+					return { id: dataValues.id, name: dataValues.name, color: dataValues.color };
 				});
-
 				// set characters
-				this.setState((prevState: MainState) => ({
-					...prevState,
-					characters
-				}));
+				this.setState({ characters });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -505,12 +372,7 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// get all content cards
 	getContents = (id: string) => {
-		OutlineDetails
-			.findAll({
-				where: {
-					outline_id: id
-				}
-			})
+		getAllOutlineDetails(id)
 			.then((result: any) => {
 				const { contents } = this.state;
 				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
@@ -549,13 +411,8 @@ class Main extends React.Component<MainProps, MainState> {
 	render() {
 		const { expand, refreshSidebar, refreshMain } = this.props;
 		const {
-			title,
-			description,
-			characters,
-			timelines,
-			contents,
-			scaling,
-			showPlusIcons
+			title, description, characters, timelines,
+			contents, scaling, showPlusIcons
 		} = this.state;
 
 		return (
@@ -625,7 +482,7 @@ class Main extends React.Component<MainProps, MainState> {
 													isFirst={index === 0}
 													isLast={index === timelines.length - 1}
 													showPlusIcons={showPlusIcons}
-													onTextareaResize={this.onTextareaResize}
+													onTextareaResize={onTextAreaResize}
 													onContentChange={this.onContentChange}
 													createTextAreaLocally={this.createTextAreaLocally}
 												/>

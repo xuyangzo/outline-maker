@@ -7,5 +7,7 @@ export interface CharacterCardProps {
 }
 
 export interface CharacterCardState {
-
+  showEdit: boolean;
+  showToolbar: boolean;
+  deleteModal: boolean;
 }

@@ -10,10 +10,10 @@ import { DatabaseError } from 'sequelize';
 import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
-// sequelize modals
-import TrashModal from '../../../db/models/Trash';
-import FavoriteModal from '../../../db/models/Favorite';
-import Outlines from '../../../db/models/Outlines';
+// database operations
+import { getAllTrashes, deleteTrash } from '../../../db/operations/trash-ops';
+import { getOutlinesRange, deleteOutline, updateDeleted } from '../../../db/operations/outline-ops';
+import { deleteFavorite } from '../../../db/operations/fav-ops';
 
 // sass
 import './trash.scss';
@@ -33,30 +33,21 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	}
 
 	componentDidMount = () => {
-		TrashModal
-			.findAll()
+		getAllTrashes()
 			.then((result: any) => {
 				// all outlines in trash
-				const outlines: string[] = result.map(({ dataValues }: { dataValues: TrashDataValue }) => {
-					const { outline_id } = dataValues;
-					return outline_id;
+				const outlines: number[] = result.map(({ dataValues }: { dataValues: TrashDataValue }) => {
+					return dataValues.outline_id;
 				});
-
 				// grab title and description for those outlines
-				return Outlines.
-					findAll({
-						where: { id: outlines },
-						order: [['updatedAt', 'DESC']]
-					});
+				return getOutlinesRange(outlines);
 			})
 			.then((result: any) => {
 				// all detailed outlines in trash
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, description } = dataValues;
-					return { id, title, description };
-				});
 				this.setState({
-					outlines
+					outlines: result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+						return { id: dataValues.id, title: dataValues.title, description: dataValues.description };
+					})
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -88,27 +79,9 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	onDelete = () => {
 		Promise
 			.all([
-				// delete outline from trash table
-				TrashModal
-					.destroy({
-						where: {
-							outline_id: this.state.selected
-						}
-					}),
-				// delete outline from favorite table
-				FavoriteModal
-					.destroy({
-						where: {
-							outline_id: this.state.selected
-						}
-					}),
-				// delete outline from outlines table
-				Outlines
-					.destroy({
-						where: {
-							id: this.state.selected
-						}
-					})
+				deleteTrash(this.state.selected),
+				deleteFavorite(this.state.selected),
+				deleteOutline(this.state.selected)
 			])
 			.then(() => {
 				// alert success
@@ -136,21 +109,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	// put back outline
 	onBack = () => {
 		Promise
-			.all([
-				// delete outline from trash table
-				TrashModal
-					.destroy({
-						where: {
-							outline_id: this.state.selected
-						}
-					}),
-				// update outline's deleted in outlines table
-				Outlines
-					.update(
-						{ deleted: 0 },
-						{ where: { id: this.state.selected } }
-					)
-			])
+			.all([deleteTrash(this.state.selected), updateDeleted(this.state.selected, 0)])
 			.then(() => {
 				// alert success
 				Message.success('大纲已放回原处！');

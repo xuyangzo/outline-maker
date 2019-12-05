@@ -1,9 +1,36 @@
 import { app, BrowserWindow } from 'electron';
+const contextMenu = require('electron-context-menu');
 
 import * as path from 'path';
 import * as url from 'url';
 
 let win: BrowserWindow | null;
+
+// add right click property
+contextMenu({
+	prepend: (defaultActions: any, params: any, browserWindow: any) => [
+		{
+			label: 'Rainbow',
+			// Only show it when right-clicking images
+			visible: params.mediaType === 'image'
+		},
+		{
+			label: '添加到收藏',
+			visible: params.selectionText.trim().length > 0,
+			click: () => { console.log(params); }
+		}
+	],
+	labels: {
+		cut: '剪切',
+		copy: '复制',
+		paste: '粘贴',
+		save: 'Custom Save Image Text',
+		saveImageAs: 'Custom Save Image As… Text',
+		copyLink: 'Custom Copy Link Text',
+		copyImageAddress: 'Custom Copy Image Address Text',
+		inspect: 'inspect！！！'
+	}
+});
 
 const installExtensions = async () => {
 	const installer = require('electron-devtools-installer');

@@ -1,15 +1,44 @@
 .main {
   .main-content {
+    // character toolbar
+    .character-toolbar {
+      min-width: 100px;
+      position: absolute;
+      background: white;
+      top: 0;
+      left: 110px;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+      font-size: 14px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+      div {
+        cursor: pointer;
+        border-bottom: 1px solid lightgray;
+        padding: 10px 15px;
+        border: 4px solid white;
+
+        &:hover {
+          background-color: rgb(255, 176, 176);
+        }
+      }
+    }
+
     table {
-      // table head, only for characters row
-      th {
+      // character card
+      .character-header {
         width: 240px;
-        overflow: hidden;
         white-space: nowrap;
+        position: sticky;
+        top: 0;
         text-overflow: ellipsis;
         word-break: break-all;
         height: 60px;
+        background: white;
+        opacity: 0.99;
+        overflow: visible;
         padding: 0 20px;
+        z-index: 100;
 
         // character card
         .main-character-card {
@@ -18,20 +47,19 @@
           line-height: 60px;
           text-align: center;
           border-radius: 5px;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          // box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          //             0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
         }
-      }
 
-      .character-header {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 100;
-        height: 60px;
-        vertical-align: center;
-        background: white;
+        // setting icon
+        .character-setting-icon {
+          position: absolute;
+          top: 5px;
+          right: 25px;
+          cursor: pointer;
+          font-size: 16px;
+        }
       }
 
       // top-left card

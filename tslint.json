@@ -30,7 +30,8 @@
 		"jsx-no-multiline-js": false,
 		"jsx-boolean-value": false,
 		"import-name": false,
-		"jsx-no-lambda": false
+		"jsx-no-lambda": false,
+		"function-name": false
 	},
 	"rulesDirectory": []
 }

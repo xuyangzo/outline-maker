@@ -11,6 +11,9 @@ import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebar
 import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
 
+// database operation
+import { getAllOutlines } from '../../../db/operations/outline-ops';
+
 // sequelize modals
 import Outlines from '../../../db/models/Outlines';
 
@@ -29,88 +32,16 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	componentWillReceiveProps = (newProps: SidebarProps) => {
 		// set selected keys
-		let selected = 'tutorial';
-		if (newProps.location.pathname.indexOf('trash') !== -1) {
-			selected = 'trash';
-		} else if (newProps.location.pathname.indexOf('favorite') !== -1) {
-			selected = 'fav';
-		} else if (newProps.location.pathname.indexOf('outline') !== -1) {
-			selected = newProps.location.pathname.slice(9);
-		}
-		this.setState((prevState: SidebarState) => ({
-			...prevState,
-			selected: [selected]
-		}));
-
+		this.setSelectedKey(newProps);
 		// if need to refresh, refresh
-		if (newProps.refresh) {
-			Outlines
-				.findAll({
-					order: [['id', 'DESC']]
-				})
-				.then((result: any) => {
-					// all outlines including deleted ones
-					const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-						const { id, title, deleted } = dataValues;
-						return { id, title, deleted };
-					});
-
-					// filter trash to get all non-deleted ones
-					const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
-
-					this.setState((prevState: SidebarState) => ({
-						...prevState,
-						outlines,
-						all
-					}));
-				})
-				.catch((err: DatabaseError) => {
-					Message.error(err.message);
-				});
-		}
+		if (newProps.refresh) this.getOutlines();
 	}
 
 	componentDidMount = () => {
 		// set selected keys
-		let selected = 'tutorial';
-		if (this.props.location.pathname.indexOf('trash') !== -1) {
-			selected = 'trash';
-		} else if (this.props.location.pathname.indexOf('favorite') !== -1) {
-			selected = 'fav';
-		} else if (this.props.location.pathname.indexOf('outline') !== -1) {
-			selected = this.props.location.pathname.slice(9);
-		}
-		this.setState((prevState: SidebarState) => ({
-			...prevState,
-			selected: [selected]
-		}));
-
-		// grab data
-		Outlines
-			.findAll({
-				order: [['id', 'DESC']]
-			})
-			.then((result: any) => {
-				// all outlines including deleted ones
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, deleted } = dataValues;
-					return { id, title, deleted };
-				});
-
-				// filter trash to get all non-deleted ones
-				const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
-				const trash: Outline[] = outlines.filter((outline: Outline) => outline.deleted);
-
-				this.setState((prevState: SidebarState) => ({
-					...prevState,
-					outlines,
-					all,
-					trash
-				}));
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
+		this.setSelectedKey(this.props);
+		// get all outlines
+		this.getOutlines();
 	}
 
 	// once a menu is selected
@@ -141,13 +72,49 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		this.props.history.push('/favorite');
 	}
 
+	// get selected key
+	setSelectedKey = (props: SidebarProps) => {
+		// set selected keys
+		let selected = 'tutorial';
+		if (props.location.pathname.indexOf('trash') !== -1) {
+			selected = 'trash';
+		} else if (props.location.pathname.indexOf('favorite') !== -1) {
+			selected = 'fav';
+		} else if (props.location.pathname.indexOf('outline') !== -1) {
+			selected = props.location.pathname.slice(9);
+		}
+		this.setState((prevState: SidebarState) => ({
+			...prevState,
+			selected: [selected]
+		}));
+	}
+
+	// get all outlines
+	getOutlines = () => {
+		getAllOutlines()
+			.then((result: any) => {
+				// all outlines including deleted ones
+				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+					const { id, title, deleted } = dataValues;
+					return { id, title, deleted };
+				});
+
+				// filter trash to get all non-deleted ones
+				const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
+
+				this.setState((prevState: SidebarState) => ({
+					...prevState,
+					outlines,
+					all
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	render() {
-		const {
-			expand,
-			growSidebar,
-			shrinkSidebar,
-			createOutline
-		} = this.props;
+		const { expand, growSidebar, shrinkSidebar, createOutline } = this.props;
 
 		// sets the toggle action of sidebar
 		const arrow: string = expand ? 'double-left' : 'double-right';
@@ -191,10 +158,12 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						<SubMenu
 							key="all"
 							title={
-								<span>
-									<Icon type="file-text" />
-									<span>全部大纲</span>
-								</span>
+								(
+									<span>
+										<Icon type="file-text" />
+										<span>全部大纲</span>
+									</span>
+								)
 							}
 						>
 							{
@@ -206,18 +175,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						<Menu.Item key="fav" onClick={this.toFavorite}>
 							<Icon type="heart" />收藏夹
 						</Menu.Item>
-						<SubMenu
-							key="draft"
-							title={
-								<span>
-									<Icon type="file" />
-									<span>草稿箱</span>
-								</span>
-							}
-						>
-							<Menu.Item key="draft-1">Option 5</Menu.Item>
-							<Menu.Item key="draft-2">Option 6</Menu.Item>
-						</SubMenu>
+						<Menu.Item key="draft" onClick={this.toFavorite}>
+							<Icon type="file" />草稿箱
+						</Menu.Item>
 						<Menu.Item key="trash" onClick={this.toTrash}>
 							<Icon type="delete" />垃圾箱
 						</Menu.Item>
