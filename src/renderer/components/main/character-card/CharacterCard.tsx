@@ -24,8 +24,7 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 
 	// hide edit icon
 	onHideEditIcon = () => {
-		this.setState({ showEdit: false });
-		this.onHideToolbar();
+		this.setState({ showEdit: false, showToolbar: false });
 	}
 
 	// show toolbar
@@ -48,6 +47,12 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 		this.setState({ deleteModal: false });
 	}
 
+	// delete character locally
+	onDelete = () => {
+		this.props.deleteCharacterLocally(this.props.id);
+		this.setState({ deleteModal: false, showToolbar: false });
+	}
+
 	render() {
 		const { name, id, onCharacterNameChange, color } = this.props;
 		const { showEdit, showToolbar, deleteModal } = this.state;
@@ -65,7 +70,7 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 				{
 					showToolbar && (
 						<div className="character-toolbar">
-							<div><Icon type="close" style={{ color: 'crimson' }} /> &nbsp;删除人物</div>
+							<div onClick={this.onOpenDelete}><Icon type="close" /> &nbsp;删除人物</div>
 							<div><Icon type="star" /> &nbsp;设为主角</div>
 							<div><Icon type="bg-colors" /> &nbsp;设置颜色</div>
 						</div>
@@ -74,11 +79,11 @@ class CharacterCard extends React.Component<CharacterCardProps, CharacterCardSta
 				<Modal
 					title="删除人物确认"
 					visible={deleteModal}
-					// onOk={this.onDelete}
+					onOk={this.onDelete}
 					onCancel={this.onCancelDelete}
 					footer={[
 						<Button type="danger" key="back" onClick={this.onCancelDelete} ghost>取消</Button>,
-						// <Button type="primary" key="submit" onClick={this.onDelete} ghost>确认</Button>
+						<Button type="primary" key="submit" onClick={this.onDelete} ghost>确认</Button>
 					]}
 				>
 					<p>删除人物会将其所有事迹都删除！确认要删除吗？</p>

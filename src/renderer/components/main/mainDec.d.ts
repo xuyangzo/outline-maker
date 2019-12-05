@@ -77,4 +77,5 @@ export interface MainState {
 	scaling: string;
 	showPlusIcons: boolean;
 	colors: string[];
+	deletedCharacters: number[];
 }

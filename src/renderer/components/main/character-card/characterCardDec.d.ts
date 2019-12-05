@@ -4,6 +4,7 @@ export interface CharacterCardProps {
   color: string;
 
   onCharacterNameChange: (id: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+  deleteCharacterLocally: (id: number) => void;
 }
 
 export interface CharacterCardState {

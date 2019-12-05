@@ -1,4 +1,5 @@
 import CharacterModal from '../models/Character';
+import { deleteOutlineDetailsGivenChar } from './detail-ops';
 
 // get all characters given outline id
 export const getAllCharacters = (id: string): Promise<any> => {
@@ -27,4 +28,15 @@ export const updateCharacter = (id: string | number, name: string): Promise<any>
 			{ name },
 			{ where: { id } }
 		);
+};
+
+// delete character
+export const deleteCharacter = (id: string | number): Promise<any> => {
+	return deleteOutlineDetailsGivenChar(id)
+		.then(() => {
+			CharacterModal
+				.destroy({
+					where: { id }
+				});
+		});
 };

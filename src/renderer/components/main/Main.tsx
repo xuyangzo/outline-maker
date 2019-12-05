@@ -21,7 +21,10 @@ import { DatabaseError } from 'sequelize';
 
 // database operations
 import { updateScaling, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
-import { getAllCharacters, createCharacter, updateCharacter } from '../../../db/operations/character-ops';
+import {
+	getAllCharacters, createCharacter,
+	updateCharacter, deleteCharacter
+} from '../../../db/operations/character-ops';
 import { getAllTimelines, createTimeline, updateTimeline } from '../../../db/operations/timeline-ops';
 import { getAllOutlineDetails, createOutlineDetail, updateOutlineDetail } from '../../../db/operations/detail-ops';
 
@@ -49,7 +52,8 @@ class Main extends React.Component<MainProps, MainState> {
 			contents: new Map<number, Map<number, ContentCard>>(),
 			shouldScroll: true,
 			scaling: '1',
-			showPlusIcons: true
+			showPlusIcons: true,
+			deletedCharacters: []
 		};
 	}
 
@@ -146,6 +150,11 @@ class Main extends React.Component<MainProps, MainState> {
 			else if (character.updated) promises.push(updateCharacter(character.id, character.name));
 		});
 
+		// delete all previous characters
+		this.state.deletedCharacters.forEach((id: number) => {
+			if (id >= 0) promises.push(deleteCharacter(id));
+		});
+
 		// save all created/updated timelines
 		this.state.timelines.forEach((timeline: Timeline) => {
 			// create that timeline
@@ -167,7 +176,7 @@ class Main extends React.Component<MainProps, MainState> {
 				 * filter all records that are created
 				 * for update operation, the record is an array, otherwise object
 				 */
-				const created = result.filter((r: any) => !Array.isArray(r));
+				const created = result.filter((r: any) => typeof r !== 'number' && typeof r !== 'undefined');
 				/**
 				 * filter character or timeline based on property
 				 * character has 'name' and timeline has 'time'
@@ -267,6 +276,22 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			characters: prevState.characters.concat(newCharacter),
+			changed: true,
+			shouldScroll: false
+		}));
+	}
+
+	// delete character locally (not publish to database yet)
+	deleteCharacterLocally = (id: number) => {
+		// remove character from contents
+		const contents = this.state.contents;
+		contents.delete(id);
+		// delete all contents about this character
+		this.setState((prevState: MainState) => ({
+			...prevState,
+			contents,
+			characters: prevState.characters.filter((character: Character) => character.id !== id),
+			deletedCharacters: prevState.deletedCharacters.concat(id),
 			changed: true,
 			shouldScroll: false
 		}));
@@ -450,6 +475,7 @@ class Main extends React.Component<MainProps, MainState> {
 											id={character.id}
 											name={character.name}
 											onCharacterNameChange={this.onCharacterNameChange}
+											deleteCharacterLocally={this.deleteCharacterLocally}
 											color={character.color}
 										/>
 									))
