@@ -164,7 +164,8 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			createCharacterLocally,
 			createTimelineLocally,
 			refresh,
-			refreshMain
+			refreshMain,
+			onSave
 		} = this.props;
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (
@@ -238,7 +239,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 							key="save"
 							type="danger"
 							className="green-button"
-							onClick={this.props.onSave}
+							onClick={onSave}
 							ghost
 						>
 							<Icon type="save" />保存

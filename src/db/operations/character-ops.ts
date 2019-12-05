@@ -31,12 +31,10 @@ export const updateCharacter = (id: string | number, name: string): Promise<any>
 };
 
 // delete character
-export const deleteCharacter = (id: string | number): Promise<any> => {
-	return deleteOutlineDetailsGivenChar(id)
-		.then(() => {
-			CharacterModal
-				.destroy({
-					where: { id }
-				});
+export const deleteCharacter = async (id: string | number): Promise<any> => {
+	await deleteOutlineDetailsGivenChar(id);
+	return CharacterModal
+		.destroy({
+			where: { id }
 		});
 };
