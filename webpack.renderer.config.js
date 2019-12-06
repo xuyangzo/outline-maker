@@ -84,7 +84,7 @@ module.exports = merge.smart(baseConfig, {
 		}),
 		new webpack.NamedModulesPlugin(),
 		new HtmlWebpackPlugin({
-			title: '小说大纲编辑器'
+			title: '朝思 - 小说大纲编辑器'
 		}),
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')

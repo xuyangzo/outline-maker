@@ -5,10 +5,25 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: white;
+  background: ghostwhite;
   opacity: 0;
   z-index: -1;
   animation: openDisappear 2.5s linear forwards;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  .app-icon {
+    width: 120px;
+  }
+
+  .app-name {
+    margin-left: 30px;
+    font-size: 40px;
+    font-weight: 200;
+  }
 }
 
 @keyframes openDisappear {

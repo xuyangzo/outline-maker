@@ -38,7 +38,7 @@
     }
   },
   "build": {
-    "productName": "OutlineMaker",
+    "productName": "朝思",
     "appId": "org.outlinemaker",
     "mac": {
       "category": "your.fun",

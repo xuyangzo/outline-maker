@@ -24,11 +24,16 @@ import FavoriteContainer from '../containers/FavoriteContainer';
 import './overwrite.scss';
 import './app.scss';
 
+// image
+import icon from '../../public/icons/png/icon-512@2x.png';
+
 const Application = () => {
 
 	return (
 		<div>
-			<div className="open-theme">wori</div>
+			<div className="open-theme">
+				<img src={icon} alt="app-icon" className="app-icon" /> <span className="app-name">朝思</span>
+			</div>
 			<Row>
 				<Router>
 					<ModalContainer />

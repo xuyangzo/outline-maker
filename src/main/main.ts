@@ -48,7 +48,6 @@ const createWindow = async () => {
 		await installExtensions();
 	}
 
-	console.log(mypath.join(__dirname, '../src/public/icons/mac/icon-512@2x.icns'));
 	win = new BrowserWindow({
 		width: 1200,
 		height: 800,
