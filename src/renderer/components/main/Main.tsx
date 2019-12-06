@@ -62,19 +62,12 @@ class Main extends React.Component<MainProps, MainState> {
 		};
 	}
 
-	componentWillReceiveProps = (props: MainProps) => {
+	componentWillReceiveProps = async (props: MainProps) => {
 		// save changed before
-		this.onSave();
+		// await this.onSave(true);
 
 		const { id } = props.match.params;
-		// get outline's id, title and description
-		this.getOutline(id);
-		// get characters
-		this.getCharacters(id);
-		// get all timelines
-		this.getTimelines(id);
-		// get all outline details
-		this.getContents(id);
+		this.onInit(id);
 	}
 
 	componentDidMount = () => {
@@ -82,14 +75,7 @@ class Main extends React.Component<MainProps, MainState> {
 		document.addEventListener('keydown', (e) => { ctrlsPress(e, this.onSave); });
 
 		const { id } = this.props.match.params;
-		// get outline's id, title and description
-		this.getOutline(id);
-		// get characters
-		this.getCharacters(id);
-		// get all timelines
-		this.getTimelines(id);
-		// get all outline details
-		this.getContents(id);
+		this.onInit(id);
 	}
 
 	// scroll to top left when first enters the page
@@ -99,7 +85,19 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// save unsaved contents after leaving the page
 	componentWillUnmount = () => {
-		if (this.state.changed) this.onSave();
+		if (this.state.changed) this.onSave(true);
+	}
+
+	// on init
+	onInit = (id: string) => {
+		// get outline's id, title and description
+		this.getOutline(id);
+		// get characters
+		this.getCharacters(id);
+		// get all timelines
+		this.getTimelines(id);
+		// get all outline details
+		this.getContents(id);
 	}
 
 	// if character's name is changed
@@ -140,12 +138,22 @@ class Main extends React.Component<MainProps, MainState> {
 	}
 
 	// save all changes
-	onSave = () => {
+	onSave = (notUpdateState: boolean) => {
 		// if there is no change, directly return
 		if (!this.state.changed) return;
 
 		const { id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
+
+		// delete all previous characters
+		this.state.deletedCharacters.forEach((id: number) => {
+			if (id >= 0) promises.push(deleteCharacter(id));
+		});
+
+		// delete all previous timelines
+		this.state.deletedTimelines.forEach((id: number) => {
+			if (id >= 0) promises.push(deleteTimeline(id));
+		});
 
 		// save all created/updated characters
 		this.state.characters.forEach((character: Character) => {
@@ -155,22 +163,12 @@ class Main extends React.Component<MainProps, MainState> {
 			else if (character.updated) promises.push(updateCharacter(character.id, character.name, character.color));
 		});
 
-		// delete all previous characters
-		this.state.deletedCharacters.forEach((id: number) => {
-			if (id >= 0) promises.push(deleteCharacter(id));
-		});
-
 		// save all created/updated timelines
 		this.state.timelines.forEach((timeline: Timeline) => {
 			// create that timeline
 			if (timeline.created) promises.push(createTimeline(id, timeline.time));
 			// update that timeline
 			else if (timeline.updated) promises.push(updateTimeline(timeline.id, timeline.time));
-		});
-
-		// delete all previous timelines
-		this.state.deletedTimelines.forEach((id: number) => {
-			if (id >= 0) promises.push(deleteTimeline(id));
 		});
 
 		/**
@@ -246,12 +244,14 @@ class Main extends React.Component<MainProps, MainState> {
 				// alert success
 				Message.success('保存成功！');
 				// set changed to false and refresh main page
-				this.setState({ changed: false }, () => { this.props.refreshMain(); });
+				if (!notUpdateState) this.setState({ changed: false }, () => { this.props.refreshMain(); });
+				else this.props.refreshMain();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 				// set changed to false and refresh main page
-				this.setState({ changed: false }, () => { this.props.refreshMain(); });
+				if (!notUpdateState) this.setState({ changed: false }, () => { this.props.refreshMain(); });
+				else this.props.refreshMain();
 			});
 	}
 

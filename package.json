@@ -41,7 +41,8 @@
     "productName": "OutlineMaker",
     "appId": "org.outlinemaker",
     "mac": {
-      "category": "your.fun"
+      "category": "your.fun",
+      "icon": "src/public/icons/mac/icon-512@2x.icns"
     },
     "directories": {
       "output": "release"

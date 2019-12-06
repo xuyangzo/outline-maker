@@ -19,4 +19,5 @@ export interface TrashState {
 	confirmVisible: boolean;
 	backVisible: boolean;
 	selected: number;
+	shouldRender: boolean;
 }

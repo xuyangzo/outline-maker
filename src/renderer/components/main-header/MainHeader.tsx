@@ -239,7 +239,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 							key="save"
 							type="danger"
 							className="green-button"
-							onClick={onSave}
+							onClick={() => onSave(false)}
 							ghost
 						>
 							<Icon type="save" />保存

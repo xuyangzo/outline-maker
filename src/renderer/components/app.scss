@@ -1,0 +1,31 @@
+// screen to show when first open app
+.open-theme {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  opacity: 0;
+  z-index: -1;
+  animation: openDisappear 2.5s linear forwards;
+}
+
+@keyframes openDisappear {
+  0% {
+    opacity: 1;
+    z-index: 1000;
+  }
+  80% {
+    opacity: 1;
+    z-index: 1000;
+  }
+  99% {
+    opacity: 0;
+    z-index: 1000;
+  }
+  100% {
+    opacity: 0;
+    z-index: -1;
+  }
+}

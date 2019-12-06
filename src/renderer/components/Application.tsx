@@ -22,22 +22,27 @@ import FavoriteContainer from '../containers/FavoriteContainer';
 
 // sass
 import './overwrite.scss';
+import './app.scss';
 
-const Application = () => (
-	<div>
-		<Row>
-			<Router>
-				<ModalContainer />
-				<SidebarContainer />
-				<Switch>
-					<Route path="/" exact><TutorialContainer /></Route>
-					<Route path="/outline/:id" exact><MainContainer /></Route>
-					<Route path="/trash" exact><TrashContainer /></Route>
-					<Route path="/favorite" exact><FavoriteContainer /></Route>
-				</Switch>
-			</Router>
-		</Row>
-	</div>
-);
+const Application = () => {
+
+	return (
+		<div>
+			<div className="open-theme">wori</div>
+			<Row>
+				<Router>
+					<ModalContainer />
+					<SidebarContainer />
+					<Switch>
+						<Route path="/" exact><TutorialContainer /></Route>
+						<Route path="/outline/:id" exact><MainContainer /></Route>
+						<Route path="/trash" exact><TrashContainer /></Route>
+						<Route path="/favorite" exact><FavoriteContainer /></Route>
+					</Switch>
+				</Router>
+			</Row>
+		</div>
+	);
+};
 
 export default hot(Application);

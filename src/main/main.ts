@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 const contextMenu = require('electron-context-menu');
+const mypath = require('path');
 
 import * as path from 'path';
 import * as url from 'url';
@@ -47,13 +48,15 @@ const createWindow = async () => {
 		await installExtensions();
 	}
 
+	console.log(mypath.join(__dirname, '../src/public/icons/mac/icon-512@2x.icns'));
 	win = new BrowserWindow({
 		width: 1200,
 		height: 800,
 		resizable: false,
 		webPreferences: {
 			nodeIntegration: true
-		}
+		},
+		icon: mypath.join(__dirname, '../src/public/icons/mac/icon-512@2x.icns')
 	});
 
 	if (process.env.NODE_ENV !== 'production') {
@@ -82,6 +85,11 @@ const createWindow = async () => {
 };
 
 app.on('ready', createWindow);
+
+const image = nativeImage.createFromPath(
+	app.getAppPath().concat('/src/public/icons/mac/icon-512@2x.icns')
+);
+app.dock.setIcon(image);
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
