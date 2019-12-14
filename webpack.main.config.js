@@ -27,7 +27,8 @@ module.exports = merge.smart(baseConfig, {
 						'@babel/preset-typescript'
 					],
 					plugins: [
-						['@babel/plugin-proposal-class-properties', { loose: true }]
+						['@babel/plugin-proposal-class-properties', { loose: true }],
+						'react-hot-loader/babel'
 					]
 				}
 			}

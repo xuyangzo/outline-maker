@@ -10,26 +10,34 @@ module.exports = merge.smart(baseConfig, {
 	entry: {
 		app: ['@babel/polyfill', './src/renderer/app.tsx']
 	},
+	resolve: {
+		alias: {
+			'react-dom': '@hot-loader/react-dom'
+		}
+	},
 	module: {
 		rules: [
 			{
-				test: /\.tsx?$/,
+				test: /\.(j|t)s(x)?$/,
 				exclude: /node_modules/,
-				loader: 'babel-loader',
-				options: {
-					cacheDirectory: true,
-					babelrc: false,
-					presets: [
-						[
-							'@babel/preset-env',
-							{ targets: { browsers: 'last 2 versions ' } }
+				use: {
+					loader: 'babel-loader',
+					options: {
+						cacheDirectory: true,
+						babelrc: false,
+						presets: [
+							[
+								'@babel/preset-env',
+								{ targets: { browsers: 'last 2 versions ' } }
+							],
+							'@babel/preset-typescript',
+							'@babel/preset-react'
 						],
-						'@babel/preset-typescript',
-						'@babel/preset-react'
-					],
-					plugins: [
-						['@babel/plugin-proposal-class-properties', { loose: true }]
-					]
+						plugins: [
+							['@babel/plugin-proposal-class-properties', { loose: true }],
+							'react-hot-loader/babel'
+						]
+					}
 				}
 			},
 			{
@@ -84,6 +92,7 @@ module.exports = merge.smart(baseConfig, {
 		}),
 		new webpack.NamedModulesPlugin(),
 		new HtmlWebpackPlugin({
+			template: 'src/public/index.html',
 			title: '朝思 - 小说大纲编辑器'
 		}),
 		new webpack.DefinePlugin({

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow, nativeImage, shell, Menu } from 'electron';
 const contextMenu = require('electron-context-menu');
 const mypath = require('path');
 
@@ -52,6 +52,8 @@ const createWindow = async () => {
 		width: 1200,
 		height: 800,
 		resizable: false,
+		// frame: false, // remove native titlebar
+		// titleBarStyle: 'hidden',
 		webPreferences: {
 			nodeIntegration: true
 		},
@@ -101,3 +103,29 @@ app.on('activate', () => {
 		createWindow();
 	}
 });
+
+// custom menu
+const template: Electron.MenuItemConstructorOptions[] = [
+	{
+		label: ''
+	},
+	{
+		label: 'Edit',
+		submenu: [
+			{ role: 'undo' },
+			{ role: 'redo' },
+			{ role: 'cut' },
+			{ role: 'copy' },
+			{ role: 'paste' },
+			{ role: 'delete' },
+			{
+				label: 'Refresh Page',
+				accelerator: 'CmdOrCtrl+R',
+				click() {
+					(win || { reload: () => { } }).reload();
+				}
+			}
+		]
+	}
+];
+Menu.setApplicationMenu(Menu.buildFromTemplate(template));

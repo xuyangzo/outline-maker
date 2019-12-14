@@ -1,9 +1,17 @@
 .novel {
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
-  padding-left: 40px;
   height: 100vh;
   overflow-y: scroll;
+
+  .novel-content {
+    padding-left: 40px;
+  }
+
+  // overwrite ant design style
+  .ant-page-header-back {
+    margin-left: 18px;
+  }
 
   // novel's description
   .novel-description {
@@ -11,6 +19,18 @@
     word-break: break-all;
     width: 650px;
     line-height: 30px;
+  }
+
+  // card to add new character
+  .add-character-card {
+    .ant-card-body {
+      height: 100px !important;
+      line-height: 80px;
+    }
+
+    .ant-card-head-title {
+      color: palevioletred;
+    }
   }
 
   // custom card

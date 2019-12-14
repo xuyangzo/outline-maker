@@ -163,7 +163,7 @@ class Main extends React.Component<MainProps, MainState> {
 		// save all created/updated characters
 		this.state.characters.forEach((character: Character) => {
 			// create that character
-			if (character.created) promises.push(createCharacter(id, character.name, character.color));
+			if (character.created) promises.push(createCharacter(id, id, character.name, character.color));
 			// update that character
 			else if (character.updated) promises.push(updateCharacter(character.id, character.name, character.color));
 		});

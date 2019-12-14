@@ -13,9 +13,9 @@ module.exports = {
         __filename: false
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json']
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.json']
     },
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
     plugins: [
     ],
     externals: {

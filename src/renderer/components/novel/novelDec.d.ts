@@ -20,4 +20,5 @@ export interface NovelState {
   categories: string[];
   characters: Character[];
   outlines: Outline[];
+  createCharacter: boolean;
 }

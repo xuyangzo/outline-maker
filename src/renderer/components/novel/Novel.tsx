@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Collapse } from 'antd';
+import { Col, message as Message, Card, Row, Collapse, Icon } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
 
@@ -34,7 +34,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			description: '',
 			categories: [],
 			characters: [],
-			outlines: []
+			outlines: [],
+			createCharacter: false
 		};
 	}
 
@@ -50,6 +51,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
+	}
+
+	// cancel create character
+	onCancelCreateCharacter = () => {
+		this.setState({ createCharacter: false });
 	}
 
 	// get novel content
@@ -98,7 +104,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	render() {
 		const { expand } = this.props;
-		const { name, description, characters, outlines } = this.state;
+		const { name, description, characters, outlines, createCharacter } = this.state;
 
 		return (
 			<Col
@@ -111,6 +117,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			>
 				<NovelHeader
 					refreshCharacter={this.getCharacters}
+					createCharacter={createCharacter}
+					cancelCreateCharacter={this.onCancelCreateCharacter}
 				/>
 				<div className="novel-content">
 					<h2>{name}</h2>
@@ -132,6 +140,21 @@ class Novel extends React.Component<NovelProps, NovelState> {
 											</Card>
 										</Col>
 									))
+								}
+								{
+									!characters.length && (
+										<Col span={6}>
+											<Card
+												title="还没有角色哦..."
+												bordered={false}
+												hoverable
+												className="custom-card add-character-card"
+												onClick={() => { this.setState({ createCharacter: true }); }}
+											>
+												<Icon type="user-add" /> 新建角色
+											</Card>
+										</Col>
+									)
 								}
 							</Row>
 						</Panel>

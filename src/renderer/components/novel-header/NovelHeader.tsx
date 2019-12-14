@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
 	Icon, Button, PageHeader, message as Message,
-	Modal, Dropdown, Menu, Tooltip
+	Modal, Dropdown, Menu
 } from 'antd';
 
 // custom components
@@ -37,10 +37,15 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 	// on close create character modal
 	onCloseCharacterModal = () => {
 		this.setState({ characterVisible: false });
+		this.props.cancelCreateCharacter();
 	}
 
 	componentWillReceiveProps = (props: NovelHeaderProps) => {
-		this.setState({ id: props.location.pathname.slice(7) });
+		if (props.createCharacter) {
+			this.setState({ id: props.location.pathname.slice(7), characterVisible: true });
+		} else {
+			this.setState({ id: props.location.pathname.slice(7) });
+		}
 	}
 
 	render() {
@@ -72,11 +77,11 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 			<React.Fragment>
 				<PageHeader
 					title={''}
-					backIcon={false}
+					onBack={() => { this.props.history.go(-1); }}
 					extra={[
 						<Dropdown key="add" overlay={addmenu} placement="bottomCenter">
 							<Button type="primary" key="add-person" ghost>
-								<Icon type="folder-add" />新建...
+								<Icon type="folder-add" />新建 ...
 							</Button>
 						</Dropdown>,
 						<Dropdown key="edit" overlay={editmenu} placement="bottomCenter">
