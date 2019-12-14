@@ -2,11 +2,7 @@ import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
 
 // react router
-import {
-	HashRouter as Router,
-	Switch,
-	Route
-} from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 // ant design
 import { Row } from 'antd';
@@ -19,6 +15,7 @@ import ModalContainer from '../containers/ModalContainer';
 import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
 import FavoriteContainer from '../containers/FavoriteContainer';
+import NovelContainer from '../containers/NovelContainer';
 
 // sass
 import './overwrite.scss';
@@ -28,7 +25,6 @@ import './app.scss';
 import icon from '../../public/icons/png/icon-512@2x.png';
 
 const Application = () => {
-
 	return (
 		<div>
 			<div className="open-theme">
@@ -40,6 +36,7 @@ const Application = () => {
 					<SidebarContainer />
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
+						<Route path="/novel/:id" exact><NovelContainer /></Route>
 						<Route path="/outline/:id" exact><MainContainer /></Route>
 						<Route path="/trash" exact><TrashContainer /></Route>
 						<Route path="/favorite" exact><FavoriteContainer /></Route>

@@ -7,12 +7,16 @@ const { SubMenu } = Menu;
 import { withRouter } from 'react-router-dom';
 
 // type decalaration
-import { SidebarProps, SidebarState, OutlineDataValue, Outline } from './sidebarDec';
+import {
+	SidebarProps, SidebarState, OutlineDataValue, Outline,
+	NovelDataValue, Novel
+} from './sidebarDec';
 import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
 
 // database operation
 import { getAllOutlines } from '../../../db/operations/outline-ops';
+import { getAllNovels } from '../../../db/operations/novel-ops';
 
 // utils
 import { getSelectedKey } from '../../utils/utils';
@@ -26,7 +30,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		this.state = {
 			outlines: [],
 			all: [],
-			selected: []
+			selected: [],
+			novels: []
 		};
 	}
 
@@ -54,22 +59,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	// once a menu is selected, forward to corresponding outline page
 	select = (e: ClickParam) => {
-		this.props.history.push(`/outline/${e.key}`);
-	}
-
-	// go to tutorial page (home page)
-	toTutorial = (e: ClickParam) => {
-		this.props.history.push('/');
-	}
-
-	// go to trash page
-	toTrash = () => {
-		this.props.history.push('/trash');
-	}
-
-	// go to favorite page
-	toFavorite = () => {
-		this.props.history.push('/favorite');
+		this.props.history.push(`/novel/${e.key}`);
 	}
 
 	// get selected key
@@ -83,6 +73,21 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	// get all outlines
 	getOutlines = () => {
+		// get all novels
+		getAllNovels()
+			.then((result: any) => {
+				const novels: Novel[] = result.map(({ dataValues }: { dataValues: NovelDataValue }) => {
+					const { id, name, description } = dataValues;
+					return { id, name, description };
+				});
+
+				this.setState({ novels });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+
+		// get all outlines
 		getAllOutlines()
 			.then((result: any) => {
 				// all outlines including deleted ones
@@ -134,43 +139,46 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					>
 						<Icon type={arrow} />
 					</aside>
-					<button className="add-outline-button" onClick={createOutline}>
+					{/* <button className="add-outline-button" onClick={createOutline}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;创建大纲
+					</button> */}
+					<button className="add-outline-button" onClick={createOutline}>
+						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;新建小说
 					</button>
 					<Menu
 						defaultSelectedKeys={[selected]}
 						selectedKeys={this.state.selected}
-						defaultOpenKeys={['all']}
+						defaultOpenKeys={['novel']}
 						mode="inline"
 						onSelect={this.onSelect}
 					>
-						<Menu.Item key="tutorial" onClick={this.toTutorial}>
+						<Menu.Item key="tutorial" onClick={() => { this.props.history.push('/'); }}>
 							<Icon type="question-circle" />教程
 						</Menu.Item>
 						<SubMenu
-							key="all"
+							key="novel"
 							title={
 								(
 									<span>
-										<Icon type="file-text" />
-										<span>全部大纲</span>
+										<Icon type="book" />
+										<span>全部小说</span>
 									</span>
 								)
 							}
 						>
 							{
-								this.state.all.map((outline: Outline) => (
-									<Menu.Item key={outline.id} onClick={this.select}>{outline.title}</Menu.Item>
+								this.state.novels.map((novel: Novel) => (
+									<Menu.Item key={novel.id} onClick={this.select}>{novel.name}</Menu.Item>
 								))
 							}
 						</SubMenu>
-						<Menu.Item key="fav" onClick={this.toFavorite}>
+						<Menu.Item key="fav" onClick={() => { this.props.history.push('/favorite'); }}>
 							<Icon type="heart" />收藏夹
 						</Menu.Item>
-						<Menu.Item key="draft" onClick={this.toFavorite}>
+						<Menu.Item key="draft">
 							<Icon type="file" />草稿箱
 						</Menu.Item>
-						<Menu.Item key="trash" onClick={this.toTrash}>
+						<Menu.Item key="trash" onClick={() => { this.props.history.push('/trash'); }}>
 							<Icon type="delete" />垃圾箱
 						</Menu.Item>
 					</Menu>

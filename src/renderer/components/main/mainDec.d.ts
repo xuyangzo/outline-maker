@@ -1,4 +1,4 @@
-import { RouteComponentProps, Route } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { number } from 'prop-types';
 
 interface MatchParams {
@@ -16,6 +16,7 @@ export interface Character {
 export interface CharacterDataValue {
 	id: number;
 	outline_id: number;
+	novel_id: number;
 	name: string;
 	color: string;
 	createdAt: string;

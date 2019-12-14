@@ -11,11 +11,24 @@ export interface OutlineDataValue {
 	id: number;
 	title: string;
 	description: string;
-	category_id: number;
-	category_title: string;
+	novel_id: number;
 	scaling: string;
 	fav: number;
 	deleted: number;
+}
+
+export interface NovelDataValue {
+	id: number;
+	name: string;
+	description: string;
+	categories: string;
+}
+
+export interface Novel {
+	id: number;
+	name: string;
+	description: string;
+	categories: string;
 }
 
 interface MatchParams {
@@ -35,5 +48,6 @@ export interface SidebarProps extends RouteComponentProps<MatchParams> {
 export interface SidebarState {
 	outlines: Array<Outline>;
 	all: Array<Outline>;
+	novels: Array<Novel>;
 	selected: string[];
 }

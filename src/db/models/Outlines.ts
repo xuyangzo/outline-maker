@@ -38,13 +38,9 @@ const Outlines = sequelize.define(
 				}
 			}
 		},
-		category_id: {
-			field: 'category_id',
+		novel_id: {
+			field: 'novel_id',
 			type: Sequelize.INTEGER
-		},
-		category_title: {
-			field: 'category_title',
-			type: Sequelize.STRING
 		},
 		scaling: {
 			field: 'scaling',

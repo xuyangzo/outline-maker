@@ -2,39 +2,42 @@ const Sequelize = require('sequelize');
 import sequelize from './sequelize';
 
 // model for Character
-const Character = sequelize.define(
-	'characters',
+const Novel = sequelize.define(
+	'novels',
 	{
 		id: {
-			field: 'character_id',
+			field: 'id',
 			type: Sequelize.INTEGER,
 			primaryKey: true
-		},
-		outline_id: {
-			field: 'outline_id',
-			type: Sequelize.INTEGER
-		},
-		novel_id: {
-			field: 'outline_id',
-			type: Sequelize.INTEGER
 		},
 		name: {
 			field: 'name',
 			type: Sequelize.STRING,
 			validate: {
 				notEmpty: {
-					msg: '角色姓名不能为空！'
+					msg: '小说名字不能为空！'
 				},
 				len: {
-					args: [0, 20],
-					msg: '角色姓名应该在 20 个字之内！'
+					args: [0, 12],
+					msg: '小说名字应该在 12 个字之内！'
 				}
 			}
 		},
-		color: {
-			field: 'color',
+		description: {
+			field: 'description',
 			type: Sequelize.STRING,
-			defaultValue: 'white'
+			defaultValue: '描述被作者吃了...',
+			validate: {
+				len: {
+					args: [0, 150],
+					msg: '描述应该在 150 个字之内！'
+				}
+			}
+		},
+		categories: {
+			field: 'categories',
+			type: Sequelize.STRING,
+			defaultValue: ''
 		},
 		createdAt: {
 			field: 'created_at',
@@ -53,4 +56,4 @@ const Character = sequelize.define(
 	}
 );
 
-export default Character;
+export default Novel;

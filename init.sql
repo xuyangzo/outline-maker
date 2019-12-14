@@ -10,7 +10,10 @@ CREATE TABLE novels
 (
   id INTEGER PRIMARY KEY,
   name TEXT,
-  description TEXT
+  description TEXT,
+  categories TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE outlines
@@ -30,12 +33,14 @@ CREATE TABLE outlines
 CREATE TABLE characters
 (
   character_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
   outline_id INTEGER,
   name TEXT,
   color TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id)
+  FOREIGN KEY (outline_id) REFERENCES outlines (id),
+  FOREIGN KEY (novel_id) REFERENCES novels (id)
 );
 
 CREATE TABLE timelines
@@ -80,20 +85,25 @@ CREATE TABLE trashes
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
 );
 
+INSERT INTO novels
+  (name, description, categories)
+VALUES
+  ('成人版三体', '你懂的...', '');
+
 INSERT INTO outlines
-  (title, description, category_id, category_title, scaling, fav, deleted)
+  (title, description, novel_id, scaling, fav, deleted)
 VALUES
-  ('默认模板', '默认介绍...', 0, 0, '1', 0, 0);
+  ('默认模板', '默认介绍...', 1, '1', 0, 0);
 
 INSERT INTO characters
-  (outline_id, name, color)
+  (novel_id, outline_id, name, color)
 VALUES
-  (1, '大佬', '#ffa39e');
+  (1, 1, '大佬', '#ffa39e');
 
 INSERT INTO characters
-  (outline_id, name, color)
+  (novel_id, outline_id, name, color)
 VALUES
-  (1, '不是我', '#ffbb96');
+  (1, 1, '不是我', '#ffbb96');
 
 INSERT INTO timelines
   (outline_id, time)

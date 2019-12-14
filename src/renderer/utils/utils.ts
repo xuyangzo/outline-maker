@@ -46,7 +46,9 @@ export const filterSaveResult = (result: any[]): any[] => {
 export const getSelectedKey = (pathname: string): string => {
 	// set selected keys
 	let selected = 'tutorial';
-	if (pathname.indexOf('trash') !== -1) {
+	if (pathname.indexOf('novel') !== -1) {
+		selected = pathname.slice(7);
+	} else if (pathname.indexOf('trash') !== -1) {
 		selected = 'trash';
 	} else if (pathname.indexOf('favorite') !== -1) {
 		selected = 'fav';
