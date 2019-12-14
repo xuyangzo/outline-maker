@@ -7,12 +7,11 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { DatabaseError } from 'sequelize';
-import { FavoriteProps, FavoriteState, FavoriteDataValue } from './favoriteDec';
+import { FavoriteProps, FavoriteState } from './favoriteDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
-import { findAllFav, deleteFavorite } from '../../../db/operations/fav-ops';
-import { getAllNonDeletedOutlinesRange, updateOutlineFav } from '../../../db/operations/outline-ops';
+import { findAllFavDetail, cancelFavorite } from '../../../db/operations/fav-ops';
 
 // sass
 import './favorite.scss';
@@ -32,16 +31,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 	}
 
 	componentDidMount = () => {
-		findAllFav()
-			.then((result: any) => {
-				// all outlines in favorite
-				const outlines: string[] = result.map(({ dataValues }: { dataValues: FavoriteDataValue }) => {
-					return dataValues.outline_id;
-				});
-
-				// grab title and description for those outlines
-				return getAllNonDeletedOutlinesRange(outlines);
-			})
+		findAllFavDetail()
 			.then((result: any) => {
 				// all detailed outlines in favorite
 				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
@@ -53,7 +43,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 				});
 			})
 			.catch((err: DatabaseError) => {
-				console.error(err);
+				Message.error(err);
 			});
 	}
 
@@ -71,8 +61,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 
 	// cancel favorite
 	onCancelFavorite = () => {
-		Promise
-			.all([deleteFavorite(this.state.selected), updateOutlineFav(this.state.selected, 0)])
+		cancelFavorite(this.state.selected)
 			.then(() => {
 				// alert success
 				Message.success('已取消收藏！');
@@ -89,11 +78,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 				// alert error
 				Message.error(err.message);
 				// close modal
-				this.setState((prevState: FavoriteState) => ({
-					...prevState,
-					confirmVisible: false,
-					selected: 0
-				}));
+				this.setState({ confirmVisible: false, selected: 0 });
 			});
 	}
 

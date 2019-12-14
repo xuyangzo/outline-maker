@@ -14,6 +14,9 @@ import { ClickParam } from 'antd/lib/menu';
 // database operation
 import { getAllOutlines } from '../../../db/operations/outline-ops';
 
+// utils
+import { getSelectedKey } from '../../utils/utils';
+
 // sidebar
 import './sidebar.scss';
 
@@ -72,17 +75,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	// get selected key
 	setSelectedKey = (props: SidebarProps) => {
 		// set selected keys
-		let selected = 'tutorial';
-		if (props.location.pathname.indexOf('trash') !== -1) {
-			selected = 'trash';
-		} else if (props.location.pathname.indexOf('favorite') !== -1) {
-			selected = 'fav';
-		} else if (props.location.pathname.indexOf('outline') !== -1) {
-			selected = props.location.pathname.slice(9);
-		}
 		this.setState((prevState: SidebarState) => ({
 			...prevState,
-			selected: [selected]
+			selected: [getSelectedKey(props.location.pathname)]
 		}));
 	}
 

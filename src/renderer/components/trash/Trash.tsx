@@ -7,13 +7,11 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { DatabaseError } from 'sequelize';
-import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
+import { TrashProps, TrashState } from './TrashDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
-import { getAllTrashes, deleteTrash } from '../../../db/operations/trash-ops';
-import { getOutlinesRange, deleteOutline, updateDeleted } from '../../../db/operations/outline-ops';
-import { deleteFavorite } from '../../../db/operations/fav-ops';
+import { deleteTrash, putbackOutline, getAllTrashesDetail } from '../../../db/operations/trash-ops';
 
 // sass
 import './trash.scss';
@@ -34,15 +32,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	}
 
 	componentDidMount = () => {
-		getAllTrashes()
-			.then((result: any) => {
-				// all outlines in trash
-				const outlines: number[] = result.map(({ dataValues }: { dataValues: TrashDataValue }) => {
-					return dataValues.outline_id;
-				});
-				// grab title and description for those outlines
-				return getOutlinesRange(outlines);
-			})
+		getAllTrashesDetail()
 			.then((result: any) => {
 				// all detailed outlines in trash
 				this.setState({
@@ -79,12 +69,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	// permanent deletion
 	onDelete = () => {
-		Promise
-			.all([
-				deleteTrash(this.state.selected),
-				deleteFavorite(this.state.selected),
-				deleteOutline(this.state.selected)
-			])
+		deleteTrash(this.state.selected)
 			.then(() => {
 				// alert success
 				Message.success('大纲已永久删除！');
@@ -110,8 +95,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	// put back outline
 	onBack = () => {
-		Promise
-			.all([deleteTrash(this.state.selected), updateDeleted(this.state.selected, 0)])
+		putbackOutline(this.state.selected)
 			.then(() => {
 				// alert success
 				Message.success('大纲已放回原处！');

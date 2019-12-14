@@ -17,9 +17,8 @@ import { MainHeaderProps, MainHeaderState } from './mainHeaderDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { findFavorite, addFavorite, deleteFavorite } from '../../../db/operations/fav-ops';
-import { updateOutlineFav, updateDeleted } from '../../../db/operations/outline-ops';
-import { addTrash } from '../../../db/operations/trash-ops';
+import { findFavorite, addFavorite, cancelFavorite } from '../../../db/operations/fav-ops';
+import { deleteOutlineTemp } from '../../../db/operations/outline-ops';
 
 // sass
 import './main-header.scss';
@@ -89,68 +88,43 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	// delete outline
 	onDelete = () => {
 		const id: string = this.props.location.pathname.slice(9);
-		Promise
-			.all([updateDeleted(id, 1), addTrash(id)])
-			.then(() => {
-				// alert success message
-				Message.success('大纲已被删除！');
-				// refresh sidebar
-				this.props.refresh();
-				// close moal
-				this.setState({ confirmVisible: false }, () => {
-					// redirect to tutorial page
-					this.props.history.push('/trash');
-				});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
+		deleteOutlineTemp(id).then(() => {
+			// refresh sidebar
+			this.props.refresh();
+			// close moal
+			this.setState({ confirmVisible: false }, () => {
+				// redirect to tutorial page
+				this.props.history.push('/trash');
 			});
+		});
 	}
 
 	// add outline to favorite
 	onAddFav = () => {
 		const id: string = this.props.location.pathname.slice(9);
-		Promise
-			.all([updateOutlineFav(id, 1), addFavorite(id)])
-			.then(() => {
-				// alert success message
-				Message.success('已添加到收藏夹！');
-				// set heart icon to be filled
-				this.setState({ isFav: true });
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
+		addFavorite(id).then(() => {
+			// set heart icon to be filled
+			this.setState({ isFav: true });
+		});
 	}
 
 	// remove outline from favorite
 	onCancelFav = () => {
 		const id: string = this.props.location.pathname.slice(9);
-		Promise
-			.all([deleteFavorite(id), updateOutlineFav(id, 0)])
-			.then(() => {
-				// alert success
-				Message.success('已取消收藏！');
-				// set heart icon to be outlined
-				this.setState({ isFav: false });
-			})
-			.catch((err: DatabaseError) => {
-				// alert error
-				Message.error(err.message);
-			});
+		cancelFavorite(id).then(() => {
+			// set heart icon to be outlined
+			this.setState({ isFav: false });
+		});
 	}
 
 	// set heart icon
 	setHeartIcon = (id: string) => {
 		findFavorite(id)
 			.then((result: any) => {
-				if (result) {
-					// set heart icon to be filled
-					this.setState({ isFav: true });
-				} else {
-					// set heart icon to be outlined
-					this.setState({ isFav: false });
-				}
+				// set heart icon to be filled
+				if (result) this.setState({ isFav: true });
+				// set heart icon to be outlined
+				else this.setState({ isFav: false });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -159,13 +133,8 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	render() {
 		const {
-			title,
-			description,
-			createCharacterLocally,
-			createTimelineLocally,
-			refresh,
-			refreshMain,
-			onSave
+			title, description, createCharacterLocally,
+			createTimelineLocally, refresh, refreshMain, onSave
 		} = this.props;
 		// use different icons for whether current outline is favorite
 		const MyIcon = () => (

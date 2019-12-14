@@ -1,23 +1,30 @@
 DROP TABLE IF EXISTS trashes;
-DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS outline_details;
 DROP TABLE IF EXISTS characters;
 DROP TABLE IF EXISTS timelines;
 DROP TABLE IF EXISTS outlines;
+DROP TABLE IF EXISTS novels;
+
+CREATE TABLE novels
+(
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  description TEXT
+);
 
 CREATE TABLE outlines
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
   title TEXT,
   description TEXT,
-  category_id INTEGER,
-  category_title TEXT,
   scaling TEXT,
   fav INTEGER,
   deleted INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (novel_id) REFERENCES novels (id)
 );
 
 CREATE TABLE characters
@@ -70,15 +77,6 @@ CREATE TABLE trashes
   outline_id INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id)
-);
-
-CREATE TABLE categories
-(
-  id INTEGER PRIMARY KEY,
-  category TEXT,
-  outline_id INTEGER,
-  outline_title TEXT,
   FOREIGN KEY (outline_id) REFERENCES outlines (id)
 );
 

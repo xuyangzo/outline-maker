@@ -1,5 +1,12 @@
 import Outlines from '../models/Outlines';
+import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
+
+// antd
+import { message as Message } from 'antd';
+
+// type declaration
+import { DatabaseError } from 'sequelize';
 
 // get outline given id
 export const getOutline = (id: string): Promise<any> => {
@@ -76,5 +83,19 @@ export const deleteOutline = (id: string | number): Promise<any> => {
 			where: {
 				id
 			}
+		});
+};
+
+// delete outline
+export const deleteOutlineTemp = (id: string | number): Promise<any> => {
+	return Promise
+		.all([updateDeleted(id, 1), addTrash(id)])
+		.then(() => {
+			// alert success message
+			Message.success('大纲已被删除！');
+			return Promise.resolve();
+		})
+		.catch((err: DatabaseError) => {
+			Message.error(err.message);
 		});
 };

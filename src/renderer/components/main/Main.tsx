@@ -64,15 +64,17 @@ class Main extends React.Component<MainProps, MainState> {
 
 	componentWillReceiveProps = async (props: MainProps) => {
 		// save changed before
-		// await this.onSave(true);
-
+		// (this.onSave(true) || Promise.resolve()).then(() => {
+		// 	const { id } = props.match.params;
+		// 	this.onInit(id);
+		// });
 		const { id } = props.match.params;
 		this.onInit(id);
 	}
 
 	componentDidMount = () => {
 		// add event listener for control + s event
-		document.addEventListener('keydown', (e) => { ctrlsPress(e, this.onSave); });
+		document.addEventListener('keydown', this.onSavePress);
 
 		const { id } = this.props.match.params;
 		this.onInit(id);
@@ -85,6 +87,9 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// save unsaved contents after leaving the page
 	componentWillUnmount = () => {
+		// remove event listener for control + s event
+		document.removeEventListener('keydown', this.onSavePress);
+
 		if (this.state.changed) this.onSave(true);
 	}
 
@@ -129,16 +134,16 @@ class Main extends React.Component<MainProps, MainState> {
 		const card: ContentCard = ((contents.get(character_id) || new Map()).get(timeline_id) || {});
 		const newCard: ContentCard = { ...card, content: value, updated: true };
 		(contents.get(character_id) || new Map()).set(timeline_id, newCard);
-		this.setState((prevState: MainState) => ({
-			...prevState,
-			contents,
-			changed: true,
-			shouldScroll: false
-		}));
+		this.setState({ contents, changed: true, shouldScroll: false });
+	}
+
+	// on save press
+	onSavePress = (e: KeyboardEvent) => {
+		ctrlsPress(e, this.onSave);
 	}
 
 	// save all changes
-	onSave = (notUpdateState: boolean) => {
+	onSave = (notUpdateState: boolean): Promise<any> | void => {
 		// if there is no change, directly return
 		if (!this.state.changed) return;
 
@@ -177,7 +182,7 @@ class Main extends React.Component<MainProps, MainState> {
 		 * their corresponding ids are incorrect right now
 		 * so need to get correct id before dealing with content card
 		 */
-		Promise
+		return Promise
 			.all(promises)
 			.then((result: any) => {
 				/**
@@ -246,6 +251,7 @@ class Main extends React.Component<MainProps, MainState> {
 				// set changed to false and refresh main page
 				if (!notUpdateState) this.setState({ changed: false }, () => { this.props.refreshMain(); });
 				else this.props.refreshMain();
+				return Promise.resolve();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

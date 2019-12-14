@@ -41,3 +41,18 @@ export const filterSaveResult = (result: any[]): any[] => {
 			!Array.isArray(r);
 	});
 };
+
+// get selected key
+export const getSelectedKey = (pathname: string): string => {
+	// set selected keys
+	let selected = 'tutorial';
+	if (pathname.indexOf('trash') !== -1) {
+		selected = 'trash';
+	} else if (pathname.indexOf('favorite') !== -1) {
+		selected = 'fav';
+	} else if (pathname.indexOf('outline') !== -1) {
+		selected = pathname.slice(9);
+	}
+
+	return selected;
+};
