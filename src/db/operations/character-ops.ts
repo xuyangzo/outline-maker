@@ -1,6 +1,17 @@
 import CharacterModal from '../models/Character';
 import { deleteOutlineDetailsGivenChar } from './detail-ops';
 
+// get all characters given novel id
+export const getAllCharactersByNovel = (id: string | number): Promise<any> => {
+	return CharacterModal
+		.findAll({
+			where: {
+				novel_id: id
+			},
+			order: [['id', 'ASC']]
+		});
+};
+
 // get all characters given outline id
 export const getAllCharacters = (id: string): Promise<any> => {
 	return CharacterModal
@@ -12,12 +23,18 @@ export const getAllCharacters = (id: string): Promise<any> => {
 };
 
 // create new character
-export const createCharacter = (id: string, name: string, color: string): Promise<any> => {
+export const createCharacter = (
+	novel_id: string,
+	outline_id: string | null,
+	name: string,
+	color: string | null
+): Promise<any> => {
 	return CharacterModal
 		.create({
 			name,
-			color,
-			outline_id: id,
+			novel_id,
+			outline_id,
+			color: color ? color : '#ffa39e'
 		});
 };
 

@@ -15,7 +15,7 @@ const Character = sequelize.define(
 			type: Sequelize.INTEGER
 		},
 		novel_id: {
-			field: 'outline_id',
+			field: 'novel_id',
 			type: Sequelize.INTEGER
 		},
 		name: {

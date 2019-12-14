@@ -5,6 +5,7 @@ import {
 } from 'antd';
 
 // custom components
+import CharacterModal from './character-modal/CharacterModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -22,34 +23,37 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 	constructor(props: NovelHeaderProps) {
 		super(props);
 		this.state = {
-			confirmVisible: false,
 			characterVisible: false,
-			timelineVisible: false,
-			introVisible: false,
-			isFav: false
+			id: props.location.pathname.slice(7)
+			// introVisible: false,
 		};
 	}
 
-	componentWillReceiveProps = (newProps: NovelHeaderProps) => {
-		const id: string = newProps.location.pathname.slice(7);
+	// on open create character modal
+	onOpenCharacterModal = () => {
+		this.setState({ characterVisible: true });
 	}
 
-	componentDidMount = () => {
-		const id: string = this.props.location.pathname.slice(7);
+	// on close create character modal
+	onCloseCharacterModal = () => {
+		this.setState({ characterVisible: false });
+	}
+
+	componentWillReceiveProps = (props: NovelHeaderProps) => {
+		this.setState({ id: props.location.pathname.slice(7) });
 	}
 
 	render() {
+		const { refreshCharacter } = this.props;
+		const { characterVisible, id } = this.state;
 
 		// menu for add drop down
 		const addmenu = (
 			<Menu>
-				<Menu.Item>
+				<Menu.Item onClick={this.onOpenCharacterModal}>
 					<Icon type="user-add" />添加角色
 				</Menu.Item>
-				<Menu.Item>
-					<Icon type="clock-circle" />添加时间
-				</Menu.Item>
-			</Menu>
+			</Menu >
 		);
 
 		// menu for edit drop down
@@ -69,11 +73,10 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 				<PageHeader
 					title={''}
 					backIcon={false}
-					// tags={<MyIcon />}
 					extra={[
 						<Dropdown key="add" overlay={addmenu} placement="bottomCenter">
 							<Button type="primary" key="add-person" ghost>
-								<Icon type="folder-add" />新建
+								<Icon type="folder-add" />新建...
 							</Button>
 						</Dropdown>,
 						<Dropdown key="edit" overlay={editmenu} placement="bottomCenter">
@@ -91,6 +94,12 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 						</Button>
 					]}
 					className="main-header"
+				/>
+				<CharacterModal
+					showModal={characterVisible}
+					closeModal={this.onCloseCharacterModal}
+					refreshCharacter={refreshCharacter}
+					id={id}
 				/>
 			</React.Fragment>
 		);

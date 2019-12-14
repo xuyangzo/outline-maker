@@ -1,9 +1,10 @@
 import { RouteComponentProps } from 'react-router-dom';
 
 export interface NovelHeaderProps extends RouteComponentProps {
-  // id: number;
+  refreshCharacter: (id: string) => void;
 }
 
 export interface NovelHeaderState {
-
+  characterVisible: boolean;
+  id: string;
 }

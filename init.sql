@@ -93,7 +93,7 @@ VALUES
 INSERT INTO outlines
   (title, description, novel_id, scaling, fav, deleted)
 VALUES
-  ('默认模板', '默认介绍...', 1, '1', 0, 0);
+  ('默认模板', '默认介绍...', 1, '0.75', 0, 0);
 
 INSERT INTO characters
   (novel_id, outline_id, name, color)

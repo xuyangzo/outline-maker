@@ -26,6 +26,17 @@ export const getAllOutlines = (): Promise<any> => {
 		});
 };
 
+// get all outlines given novel
+export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
+	return Outlines
+		.findAll({
+			where: {
+				novel_id: id
+			},
+			order: [['id', 'DESC']]
+		});
+};
+
 // get all non-deleted outlines
 export const getAllNonDeletedOutlinesRange = (outlines: string[] | number[]): Promise<any> => {
 	return Outlines.

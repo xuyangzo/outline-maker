@@ -2,11 +2,58 @@
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
   padding-left: 40px;
+  height: 100vh;
+  overflow-y: scroll;
 
+  // novel's description
   .novel-description {
     white-space: pre-line;
     word-break: break-all;
-    width: 600px;
+    width: 650px;
     line-height: 30px;
+  }
+
+  // custom card
+  .custom-card {
+    width: 80%;
+    margin-bottom: 20px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    // overwrite ant design style
+    .ant-card-head {
+      border-bottom: none !important;
+    }
+    .ant-card-body {
+      padding: 0 !important;
+      position: relative;
+      height: 220px;
+    }
+
+    img {
+      height: 220px;
+      transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+      position: absolute;
+      top: -9999px;
+      bottom: -9999px;
+      left: -9999px;
+      right: -9999px;
+      margin: auto;
+      display: block;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  // card for outline
+  .outline-card {
+    .ant-card-body {
+      min-height: 120px;
+      height: auto;
+    }
   }
 }

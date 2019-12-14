@@ -37,6 +37,21 @@
 	color: mediumpurple;
 }
 
+.ant-collapse-item,
+.ant-collapse-content.ant-collapse-content-active,
+.ant-collapse.ant-collapse-icon-position-left {
+	border: none !important;
+}
+
+.ant-collapse.ant-collapse-icon-position-left {
+	background-color: white;
+	transform: translateX(-15px);
+}
+
+.ant-collapse-header {
+	font-size: 14px;
+}
+
 // create green button
 .green-button {
 	border-color: mediumaquamarine !important;
