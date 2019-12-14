@@ -54,6 +54,9 @@ export const getSelectedKey = (pathname: string): string => {
 		selected = 'fav';
 	} else if (pathname.indexOf('outline') !== -1) {
 		selected = pathname.slice(9);
+	} else if (pathname.indexOf('character') !== -1) {
+		const next = pathname.slice(11);
+		selected = next.slice(0, next.indexOf('/'));
 	}
 
 	return selected;

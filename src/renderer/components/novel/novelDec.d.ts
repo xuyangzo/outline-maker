@@ -21,4 +21,5 @@ export interface NovelState {
   characters: Character[];
   outlines: Outline[];
   createCharacter: boolean;
+  shouldRenderCharacter: boolean;
 }

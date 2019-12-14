@@ -35,7 +35,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			categories: [],
 			characters: [],
 			outlines: [],
-			createCharacter: false
+			createCharacter: false,
+			shouldRenderCharacter: false
 		};
 	}
 
@@ -82,7 +83,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					return { id: dataValues.id, name: dataValues.name, color: dataValues.color };
 				});
 				// set characters
-				this.setState({ characters });
+				this.setState({ characters, shouldRenderCharacter: true });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -104,7 +105,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	render() {
 		const { expand } = this.props;
-		const { name, description, characters, outlines, createCharacter } = this.state;
+		const { name, description, characters, outlines, createCharacter, shouldRenderCharacter } = this.state;
 
 		return (
 			<Col
@@ -135,6 +136,9 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												bordered={false}
 												hoverable
 												className="custom-card"
+												onClick={() => {
+													this.props.history.push(`/character/${this.props.match.params.id}/${character.id}`);
+												}}
 											>
 												<img src={shadow} alt="no person" />
 											</Card>
@@ -142,7 +146,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 									))
 								}
 								{
-									!characters.length && (
+									shouldRenderCharacter && !characters.length && (
 										<Col span={6}>
 											<Card
 												title="还没有角色哦..."
@@ -168,7 +172,9 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												bordered={false}
 												hoverable
 												className="custom-card outline-card"
-												onClick={() => { this.props.history.push(`/outline/${outline.id}`); }}
+												onClick={() => {
+													this.props.history.push(`/outline/${outline.id}`);
+												}}
 											>
 												<p>{outline.description}</p>
 											</Card>
