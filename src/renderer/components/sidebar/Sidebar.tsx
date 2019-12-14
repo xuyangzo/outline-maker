@@ -1,22 +1,19 @@
 import * as React from 'react';
-import { Col, Menu, Icon, message as Message } from 'antd';
+import { Col, Menu, Icon, message as Message, Modal, Form, Input, Button } from 'antd';
 import classnames from 'classnames';
 const { SubMenu } = Menu;
+const { TextArea } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
 
 // type decalaration
-import {
-	SidebarProps, SidebarState, OutlineDataValue, Outline,
-	NovelDataValue, Novel
-} from './sidebarDec';
+import { SidebarProps, SidebarState, NovelDataValue, Novel, CreateNovelModalTemplate } from './sidebarDec';
 import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
 
 // database operation
-import { getAllOutlines } from '../../../db/operations/outline-ops';
-import { getAllNovels } from '../../../db/operations/novel-ops';
+import { getAllNovels, createNovel } from '../../../db/operations/novel-ops';
 
 // utils
 import { getSelectedKey } from '../../utils/utils';
@@ -28,10 +25,11 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
 		super(props);
 		this.state = {
-			outlines: [],
-			all: [],
 			selected: [],
-			novels: []
+			novels: [],
+			showModal: false,
+			createdName: '',
+			createdDescription: ''
 		};
 	}
 
@@ -39,14 +37,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		// set selected keys
 		this.setSelectedKey(newProps);
 		// if need to refresh, refresh
-		if (newProps.refresh) this.getOutlines();
+		if (newProps.refresh) this.getNovels();
 	}
 
 	componentDidMount = () => {
 		// set selected keys
 		this.setSelectedKey(this.props);
 		// get all outlines
-		this.getOutlines();
+		this.getNovels();
 	}
 
 	// once a menu is selected
@@ -55,6 +53,28 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 			...prevState,
 			selected: [key]
 		}));
+	}
+
+	// open create novel modal
+	onOpenModal = () => {
+		this.setState({ showModal: true });
+	}
+
+	// close create novel modal
+	onCloseModal = () => {
+		this.setState({ showModal: false });
+	}
+
+	// name input field chanage
+	onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const createdName = event.target.value;
+		this.setState({ createdName });
+	}
+
+	// the event of textarea change is different, so use a separate method
+	onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const createdDescription = event.target.value;
+		this.setState({ createdDescription });
 	}
 
 	// once a menu is selected, forward to corresponding outline page
@@ -71,8 +91,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		}));
 	}
 
-	// get all outlines
-	getOutlines = () => {
+	// get all novels
+	getNovels = () => {
 		// get all novels
 		getAllNovels()
 			.then((result: any) => {
@@ -80,30 +100,38 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					const { id, name, description } = dataValues;
 					return { id, name, description };
 				});
-
 				this.setState({ novels });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
 
-		// get all outlines
-		getAllOutlines()
-			.then((result: any) => {
-				// all outlines including deleted ones
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, deleted } = dataValues;
-					return { id, title, deleted };
-				});
+	// create new novel
+	handleSubmit = () => {
+		const { createdName, createdDescription } = this.state;
+		/**
+		 * if the user does not enter anything for description
+		 * do not include it in the object
+		 * so that the defaultValue of sequelize modal will be used
+		 */
+		const model: CreateNovelModalTemplate = {
+			name: createdName
+		};
+		if (this.state.createdDescription.length) {
+			model.description = createdDescription;
+		}
 
-				// filter trash to get all non-deleted ones
-				const all: Outline[] = outlines.filter((outline: Outline) => !outline.deleted);
-
-				this.setState((prevState: SidebarState) => ({
-					...prevState,
-					outlines,
-					all
-				}));
+		// create outline
+		createNovel(model)
+			.then(({ 'null': id }: { 'null': number }) => {
+				Message.success('创建小说成功！');
+				// close modal
+				this.onCloseModal();
+				// refresh sidebar
+				this.getNovels();
+				// redirect to created novel page
+				this.props.history.push(`/novel/${id}`);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -111,7 +139,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	}
 
 	render() {
-		const { expand, growSidebar, shrinkSidebar, createOutline } = this.props;
+		const { expand, growSidebar, shrinkSidebar } = this.props;
+		const { showModal, createdName, createdDescription } = this.state;
 
 		// sets the toggle action of sidebar
 		const arrow: string = expand ? 'double-left' : 'double-right';
@@ -131,6 +160,38 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						'sidebar-shrink': !expand
 					})}
 				>
+					<Modal
+						title="创建新的小说"
+						visible={showModal}
+						onOk={this.handleSubmit}
+						onCancel={this.onCloseModal}
+						footer={[
+							<Button type="danger" key="back" onClick={this.onCloseModal} ghost>取消</Button>,
+							<Button type="primary" key="submit" onClick={this.handleSubmit} ghost>确认</Button>
+						]}
+					>
+						<Form onSubmit={this.handleSubmit} className="login-form">
+							<Form.Item>
+								<Input
+									value={createdName}
+									onChange={this.onChange}
+									prefix={<Icon type="edit" style={{ color: 'rgba(0,0,0,.25)' }} />}
+									placeholder="小说名字（12个字以内）"
+									autoFocus
+								/>
+							</Form.Item>
+							<Form.Item>
+								<TextArea
+									value={createdDescription}
+									onChange={this.onTextAreaChange}
+									autoSize={
+										{ minRows: 6, maxRows: 6 }
+									}
+									placeholder="小说简介，不超过300字"
+								/>
+							</Form.Item>
+						</Form>
+					</Modal>
 					<aside
 						className={classnames('toggle-sidebar', {
 							'toggle-sidebar-moveleft': !expand
@@ -142,7 +203,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					{/* <button className="add-outline-button" onClick={createOutline}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;创建大纲
 					</button> */}
-					<button className="add-outline-button" onClick={createOutline}>
+					<button className="add-outline-button" onClick={this.onOpenModal}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;新建小说
 					</button>
 					<Menu

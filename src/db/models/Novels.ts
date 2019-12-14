@@ -26,11 +26,11 @@ const Novel = sequelize.define(
 		description: {
 			field: 'description',
 			type: Sequelize.STRING,
-			defaultValue: '描述被作者吃了...',
+			defaultValue: '简介被作者吃了...',
 			validate: {
 				len: {
-					args: [0, 150],
-					msg: '描述应该在 150 个字之内！'
+					args: [0, 300],
+					msg: '简介应该在 300 个字之内！'
 				}
 			}
 		},

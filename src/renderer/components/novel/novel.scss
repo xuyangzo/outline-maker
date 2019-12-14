@@ -2,4 +2,11 @@
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
   padding-left: 40px;
+
+  .novel-description {
+    white-space: pre-line;
+    word-break: break-all;
+    width: 600px;
+    line-height: 30px;
+  }
 }

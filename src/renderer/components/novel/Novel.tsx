@@ -34,6 +34,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.getNovelContent(id);
 	}
 
+	componentWillReceiveProps = (props: NovelProps) => {
+		const { id } = props.match.params;
+		this.getNovelContent(id);
+	}
+
 	// get novel content
 	getNovelContent = (id: string) => {
 		getNovelById(id)
@@ -65,7 +70,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 				<NovelHeader />
 				<div className="novel-content">
 					<h2>{name}</h2>
-					<p>{description}</p>
+					<p className="novel-description">{description}</p>
 				</div>
 			</Col>
 		);

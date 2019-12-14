@@ -31,6 +31,11 @@ export interface Novel {
 	categories: string;
 }
 
+export interface CreateNovelModalTemplate {
+	name: string;
+	description?: string;
+}
+
 interface MatchParams {
 	id: string;
 }
@@ -46,8 +51,9 @@ export interface SidebarProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface SidebarState {
-	outlines: Array<Outline>;
-	all: Array<Outline>;
 	novels: Array<Novel>;
 	selected: string[];
+	showModal: boolean;
+	createdName: string;
+	createdDescription: string;
 }
