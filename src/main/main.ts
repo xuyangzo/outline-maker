@@ -57,7 +57,7 @@ const createWindow = async () => {
 		webPreferences: {
 			nodeIntegration: true
 		},
-		icon: mypath.join(__dirname, '../src/public/icons/mac/icon-512@2x.icns')
+		icon: 'src/public/icons/mac/icon-512@2x.icns'
 	});
 
 	if (process.env.NODE_ENV !== 'production') {

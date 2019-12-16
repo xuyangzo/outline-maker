@@ -31,7 +31,8 @@
 		"jsx-boolean-value": false,
 		"import-name": false,
 		"jsx-no-lambda": false,
-		"function-name": false
+		"function-name": false,
+		"no-increment-decrement": false
 	},
 	"rulesDirectory": []
 }

@@ -36,7 +36,16 @@ CREATE TABLE characters
   novel_id INTEGER,
   outline_id INTEGER,
   name TEXT,
+  image TEXT,
   color TEXT,
+  age TEXT,
+  nickname TEXT,
+  gender INTEGER,
+  height TEXT,
+  identity TEXT,
+  appearance TEXT,
+  characteristics TEXT,
+  experience TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (outline_id) REFERENCES outlines (id),
@@ -96,9 +105,9 @@ VALUES
   ('默认模板', '默认介绍...', 1, '0.75', 0, 0);
 
 INSERT INTO characters
-  (novel_id, outline_id, name, color)
+  (novel_id, outline_id, name, color, age, nickname, gender, height, identity, appearance, characteristics, experience)
 VALUES
-  (1, 1, '大佬', '#ffa39e');
+  (1, 1, '大佬', '#ffa39e', '18', '老狗', 0, '178', '世界树的传人', '丑,不知道咋说,jj还小', '高傲', '啥也没有');
 
 INSERT INTO characters
   (novel_id, outline_id, name, color)

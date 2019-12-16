@@ -9,34 +9,87 @@ import { withRouter } from 'react-router-dom';
 // custom components
 
 // type declaration
-import { CharacterProps, CharacterState } from './characterDec';
+import { CharacterProps, CharacterState, Character as CharacterDec } from './characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
+import { getCharacter } from '../../../db/operations/character-ops';
+
+// utils
+import { getNumberedText } from '../../utils/utils';
+import { imageMapping } from '../../utils/constants';
 
 // sass
 import './character.scss';
-
-// image
-import shadow from '../../../public/shadow-person.jpg';
 
 class Character extends React.Component<CharacterProps, CharacterState> {
 	constructor(props: CharacterProps) {
 		super(props);
 		this.state = {
+			id: this.props.match.params.id,
+			outline_id: -1,
+			novel_id: this.props.match.params.novel_id,
+			name: '',
+			image: '',
+			age: '',
+			nickname: '',
+			gender: 0,
+			height: '',
+			identity: '',
+			appearance: '',
+			characteristics: '',
+			experience: ''
 		};
 	}
 
 	componentDidMount = () => {
-		const { id } = this.props.match.params;
+		this.setCharacter();
 	}
 
-	componentWillReceiveProps = (props: CharacterProps) => {
-		const { id } = props.match.params;
+	setCharacter = () => {
+		getCharacter(this.state.id)
+			.then(({ dataValues }: { dataValues: CharacterDec }) => {
+				const {
+					outline_id, name, image, age, nickname, gender,
+					height, identity, appearance, characteristics, experience
+				} = dataValues;
+				this.setState({
+					outline_id, name, image, age, nickname, gender,
+					height, identity, appearance, characteristics, experience
+				});
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err);
+			});
 	}
 
 	render() {
 		const { expand } = this.props;
+		const {
+			name, image, age, nickname, gender,
+			height, identity, appearance, characteristics, experience
+		} = this.state;
+
+		// mapping of image
+		const imageURL = image ? image : imageMapping[gender ? gender : 0];
+
+		let genderText;
+		switch (gender) {
+			case 0:
+				genderText = '男';
+				break;
+			case 1:
+				genderText = '女';
+				break;
+			case 2:
+				genderText = '不明';
+				break;
+			case 3:
+				genderText = '大雕萌妹';
+				break;
+			default:
+				break;
+		}
 
 		return (
 			<Col
@@ -58,7 +111,64 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 					]}
 				/>
 				<div className="character-content">
-					sb
+					<Row className="character-section">
+						<Col span={8}>
+							<img src={imageURL} alt="profile image" className="profile-image" />
+						</Col>
+						<Col span={16} style={{ paddingLeft: '40px' }}>
+							<Row className="character-section">
+								<h2 className="character-name">{name}</h2>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>昵称：</Col>
+								<Col span={8}>
+									{nickname ? nickname : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>性别：</Col>
+								<Col span={8}>
+									{genderText ? genderText : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>年龄：</Col>
+								<Col span={8}>
+									{age ? age : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>身高：</Col>
+								<Col span={8}>
+									{height ? height : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>身份：</Col>
+								<Col span={16}>
+									{identity ? getNumberedText(identity) : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>外貌：</Col>
+								<Col span={16} className="numbered-text">
+									{appearance ? getNumberedText(appearance) : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>性格：</Col>
+								<Col span={16} className="numbered-text">
+									{characteristics ? getNumberedText(characteristics) : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '50px' }}>经历：</Col>
+								<Col span={16} className="numbered-text">
+									{experience ? getNumberedText(experience) : '暂无'}
+								</Col>
+							</Row>
+						</Col>
+					</Row>
 				</div>
 			</Col>
 		);

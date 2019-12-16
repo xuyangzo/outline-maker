@@ -61,3 +61,16 @@ export const getSelectedKey = (pathname: string): string => {
 
 	return selected;
 };
+
+// generate numbered string
+export const getNumberedText = (text: string): string => {
+	// check edge case
+	if (!text) return '暂无';
+
+	let result: string = '';
+	const lists: string[] = text.split(',');
+	for (let i = 0; i < lists.length; ++i) {
+		result = result.concat(`${i + 1}. `, lists[i], '\n');
+	}
+	return result;
+};

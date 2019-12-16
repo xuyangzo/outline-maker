@@ -31,6 +31,42 @@ const Character = sequelize.define(
 				}
 			}
 		},
+		image: {
+			field: 'image',
+			type: Sequelize.STRING,
+		},
+		age: {
+			field: 'age',
+			type: Sequelize.STRING
+		},
+		nickname: {
+			field: 'nickname',
+			type: Sequelize.STRING
+		},
+		gender: {
+			field: 'gender',
+			type: Sequelize.INTEGER
+		},
+		height: {
+			field: 'height',
+			type: Sequelize.STRING
+		},
+		identity: {
+			field: 'identity',
+			type: Sequelize.STRING
+		},
+		appearance: {
+			field: 'appearance',
+			type: Sequelize.STRING
+		},
+		characteristics: {
+			field: 'characteristics',
+			type: Sequelize.STRING
+		},
+		experience: {
+			field: 'experience',
+			type: Sequelize.STRING
+		},
 		color: {
 			field: 'color',
 			type: Sequelize.STRING,

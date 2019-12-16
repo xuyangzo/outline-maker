@@ -1,6 +1,16 @@
 import CharacterModal from '../models/Character';
 import { deleteOutlineDetailsGivenChar } from './detail-ops';
 
+// get character given character id
+export const getCharacter = (id: string | number): Promise<any> => {
+	return CharacterModal
+		.findOne({
+			where: {
+				id
+			}
+		});
+};
+
 // get all characters given novel id
 export const getAllCharactersByNovel = (id: string | number): Promise<any> => {
 	return CharacterModal
