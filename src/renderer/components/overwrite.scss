@@ -52,6 +52,15 @@
 	font-size: 14px;
 }
 
+.ant-upload.ant-upload-select.ant-upload-select-text {
+	width: 100%;
+	button {
+		border-color: rgb(255, 191, 72) !important;
+		color: rgb(255, 191, 72) !important;
+		width: 100%;
+	}
+}
+
 // create green button
 .green-button {
 	border-color: mediumaquamarine !important;

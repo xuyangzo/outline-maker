@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button, Select } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Select, Upload } from 'antd';
 import classnames from 'classnames';
 const { Option } = Select;
+
+// file stream
+const fs = require('fs');
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -96,6 +99,20 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			...prevState,
 			[type]: (prevState[type]).filter((item: any, i: number) => i !== index)
 		}));
+	}
+
+	// upload image
+	onImageUpload = (file: any) => {
+		const { name, path, type } = file;
+		fs.readFile(path, (err: any, data: any) => {
+			if (err) console.log('cannot read!');
+			fs.writeFile(`src/public/user/${name}`, data, (err: any) => {
+				console.log(err);
+				this.setState({ image: `src/public/user/${name}` });
+			});
+		});
+
+		return false;
 	}
 
 	// when save the event
@@ -199,7 +216,18 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 				/>
 				<div className="character-content">
 					<Row className="character-section">
-						<Col span={8}>
+						<Col span={8} style={{ paddingTop: 25 }}>
+							<Upload
+								name="profile-image"
+								customRequest={this.onImageUpload}
+								showUploadList={false}
+								beforeUpload={this.onImageUpload}
+								style={{ width: '100%' }}
+							>
+								<Button>
+									<Icon type="upload" /> 选择图片
+								</Button>
+							</Upload>
 							<img src={imageURL} alt="profile image" className="profile-image" />
 						</Col>
 						<Col span={16} style={{ paddingLeft: '40px' }}>
