@@ -1,5 +1,26 @@
 .sidebar {
-	// margin-top: 20px; // for custom titlebar
+	// flex container 
+	.flex-container {
+		height: 120px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	// app logo in sidebar
+	.sidebar-logo {
+		width: 70%;
+		display: block;
+		margin-left: 20px;
+		cursor: pointer;
+	}
+
+	// app intro
+	.app-intro {
+		p {
+			margin-bottom: 0;
+		}
+	}
 
 	// overwrite css for sidebar
 	.ant-menu {

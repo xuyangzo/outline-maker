@@ -1,6 +1,21 @@
 import CharacterModal from '../models/Character';
 import { deleteOutlineDetailsGivenChar } from './detail-ops';
 
+type CharacterProps = {
+	outline_id?: number | string;
+	novel_id?: number | string;
+	name?: string;
+	image?: string;
+	age?: string;
+	nickname?: string;
+	gender?: number;
+	height?: string;
+	identity?: string;
+	appearance?: string;
+	characteristics?: string;
+	experience?: string;
+};
+
 // get character given character id
 export const getCharacter = (id: string | number): Promise<any> => {
 	return CharacterModal
@@ -56,6 +71,15 @@ export const updateCharacter = (id: string | number, name: string, color: string
 	return CharacterModal
 		.update(
 			modalToUpdate,
+			{ where: { id } }
+		);
+};
+
+// update character with more details
+export const updateCharacterDetail = (id: string | number, props: CharacterProps) => {
+	return CharacterModal
+		.update(
+			{ ...props },
 			{ where: { id } }
 		);
 };

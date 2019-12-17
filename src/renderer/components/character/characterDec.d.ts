@@ -39,4 +39,22 @@ export interface CharacterState {
   appearance: string;
   characteristics: string;
   experience: string;
+  [key: string]: string | number;
+}
+
+export interface CharacterEditState {
+  id: number | string;
+  outline_id: number | string;
+  novel_id: number | string;
+  name: string;
+  image: string;
+  age: string;
+  nickname: string;
+  gender: number;
+  height: string;
+  identity: string[];
+  appearance: string[];
+  characteristics: string[];
+  experience: string[];
+  [key: string]: any;
 }

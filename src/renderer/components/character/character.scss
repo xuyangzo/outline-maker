@@ -9,11 +9,55 @@
 
     // each info section
     .character-section {
-      margin: 10px 0;
+      margin: 20px 0;
+
+      // character input
+      .character-input {
+        width: 100px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid black;
+        overflow: visible;
+        transform: translateY(-2px);
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+
+      // delete icon
+      .delete-icon-container {
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        &:hover {
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .delete-icon {
+          cursor: pointer;
+          color: crimson;
+          font-size: 16px;
+        }
+      }
+
+      .character-name-input {
+        font-size: 24px;
+      }
+
+      .short-input {
+        width: 60px;
+      }
+
+      .medium-input {
+        width: 200px;
+      }
+
+      .long-input {
+        width: 400px;
+      }
 
       // profile image
       .profile-image {
-        max-width: 100%;
+        width: 100%;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       }
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, Menu, Icon, message as Message, Modal, Form, Input, Button } from 'antd';
+import { Col, Menu, Icon, message as Message, Modal, Form, Input, Button, Row } from 'antd';
 import classnames from 'classnames';
 const { SubMenu } = Menu;
 const { TextArea } = Input;
@@ -20,6 +20,9 @@ import { getSelectedKey } from '../../utils/utils';
 
 // sidebar
 import './sidebar.scss';
+
+// image
+import logo from '../../../public/icons/png/icon-512@2x.png';
 
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	constructor(props: SidebarProps) {
@@ -203,6 +206,17 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					{/* <button className="add-outline-button" onClick={createOutline}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;创建大纲
 					</button> */}
+					<Row align="middle" style={{ height: '120px' }}>
+						<Col span={11} className="flex-container">
+							<img src={logo} alt="logo" className="sidebar-logo" />
+						</Col>
+						<Col span={13} className="flex-container">
+							<div className="app-intro">
+								<h4>朝思</h4>
+								<p>作者：Lynch</p>
+							</div>
+						</Col>
+					</Row>
 					<button className="add-outline-button" onClick={this.onOpenModal}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;新建小说
 					</button>

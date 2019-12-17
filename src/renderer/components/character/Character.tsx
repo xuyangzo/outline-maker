@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Collapse, Icon, PageHeader, Button } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button } from 'antd';
 import classnames from 'classnames';
-const { Panel } = Collapse;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -105,8 +104,14 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 					onBack={() => { this.props.history.go(-1); }}
 					className="main-header"
 					extra={[
-						<Button key="edit" type="danger" className="orange-button" ghost>
-							<Icon type="edit" />编辑小说
+						<Button
+							key="edit"
+							type="danger"
+							className="orange-button"
+							onClick={() => { this.props.history.push(this.props.location.pathname.concat('/edit')); }}
+							ghost
+						>
+							<Icon type="edit" />编辑
 						</Button>
 					]}
 				/>
@@ -145,7 +150,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 							</Row>
 							<Row className="character-section">
 								<Col span={4} style={{ width: '50px' }}>身份：</Col>
-								<Col span={16}>
+								<Col span={16} className="numbered-text">
 									{identity ? getNumberedText(identity) : '暂无'}
 								</Col>
 							</Row>
