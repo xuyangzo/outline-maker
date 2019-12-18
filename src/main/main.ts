@@ -1,6 +1,5 @@
 import { app, BrowserWindow, nativeImage, shell, Menu } from 'electron';
 const contextMenu = require('electron-context-menu');
-const mypath = require('path');
 
 import * as path from 'path';
 import * as url from 'url';
@@ -30,7 +29,9 @@ contextMenu({
 		copyLink: 'Custom Copy Link Text',
 		copyImageAddress: 'Custom Copy Image Address Text',
 		inspect: 'inspect！！！'
-	}
+	},
+	// TODO should disable this in production mode
+	showInspectElement: true
 });
 
 const installExtensions = async () => {

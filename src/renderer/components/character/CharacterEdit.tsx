@@ -5,6 +5,7 @@ const { Option } = Select;
 
 // file stream
 const fs = require('fs');
+const mypath = require('path');
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -101,15 +102,35 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		}));
 	}
 
-	// upload image
+	/**
+	 * upload image
+	 * key idea is to store the absolute path of image in db
+	 * but img tag cannot display src with absolute path
+	 * because the path is beyond the control of the browser
+	 * so use node to read the image and convert it to base64 string
+	 * the drawback is if the user remove the image, it will be gone
+	 */
 	onImageUpload = (file: any) => {
-		const { name, path, type } = file;
+		const { path, type } = file;
+
+		// check if file type is image
+		if (type.indexOf('image') === -1) {
+			Message.error('只能选择图片！');
+			return false;
+		}
+
+		// read file based on system path
 		fs.readFile(path, (err: any, data: any) => {
-			if (err) console.log('cannot read!');
-			fs.writeFile(`src/public/user/${name}`, data, (err: any) => {
-				console.log(err);
-				this.setState({ image: `src/public/user/${name}` });
-			});
+			// if cannot read the image
+			if (err) {
+				Message.error('无法读取图片！');
+				return false;
+			}
+
+			// convert buffer to base64 string format
+			const imageStr: string = `data:${type};base64,${Buffer.from(data).toString('base64')}`;
+			this.setState({ image: imageStr });
+			return false;
 		});
 
 		return false;
@@ -228,7 +249,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 									<Icon type="upload" /> 选择图片
 								</Button>
 							</Upload>
-							<img src={imageURL} alt="profile image" className="profile-image" />
+							<img src={imageURL} alt="无法读取图片，请选择新的图片" className="profile-image" />
 						</Col>
 						<Col span={16} style={{ paddingLeft: '40px' }}>
 							<Row className="character-section">
@@ -257,7 +278,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 							<Row className="character-section">
 								<Col span={4} style={{ width: '50px' }}>性别：</Col>
 								<Col span={8}>
-									<Select defaultValue={gender.toString()} style={{ width: 120 }} onChange={this.onSelectGender}>
+									<Select value={gender.toString()} style={{ width: 120 }} onChange={this.onSelectGender}>
 										<Option value="0">男</Option>
 										<Option value="1">女</Option>
 										<Option value="2">未知</Option>

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const path = require('path');
 
 // distinguish dev mode from prod mode
-const isDev = process.mainModule.filename.indexOf('app.asar') === -1;
+const isDev = (process.mainModule || { filename: '' }).filename.indexOf('app.asar') === -1;
 const dbPath = isDev ?
 	'outline.sqlite' :
 	path.join(__dirname, '../../../outline.sqlite');
