@@ -9,6 +9,8 @@ export interface Character {
 	id: number;
 	name: string;
 	color: string;
+	image?: string;
+	gender?: string;
 	created?: boolean;
 	updated?: boolean;
 }
@@ -19,6 +21,8 @@ export interface CharacterDataValue {
 	novel_id: number;
 	name: string;
 	color: string;
+	image: string;
+	gender: string;
 	createdAt: string;
 	updatedAt: string;
 }

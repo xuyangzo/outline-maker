@@ -5,7 +5,6 @@ const { Option } = Select;
 
 // file stream
 const fs = require('fs');
-const mypath = require('path');
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -108,7 +107,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	 * but img tag cannot display src with absolute path
 	 * because the path is beyond the control of the browser
 	 * so use node to read the image and convert it to base64 string
-	 * the drawback is if the user remove the image, it will be gone
+	 * store the base64 string in the database
 	 */
 	onImageUpload = (file: any) => {
 		const { path, type } = file;
@@ -179,12 +178,23 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 					outline_id, name, image, age, nickname, gender,
 					height, identity, appearance, characteristics, experience
 				} = dataValues;
+				/**
+				 * need to filter all the empty field (set to '')
+				 * in order not to convert controlled components to uncontrolled components
+				 * uncontrolled input components = value is undefined/null
+				 */
 				this.setState({
-					outline_id, name, image, age, nickname, gender, height,
-					identity: identity.split(','),
-					appearance: appearance.split(','),
-					characteristics: characteristics.split(','),
-					experience: experience.split(',')
+					outline_id,
+					name,
+					image: image ? image : '',
+					age: age ? age : '',
+					nickname: nickname ? nickname : '',
+					height: height ? height : '',
+					gender: gender ? gender : 0,
+					identity: identity ? identity.split(',') : [''],
+					appearance: appearance ? appearance.split(',') : [''],
+					characteristics: characteristics ? characteristics.split(',') : [''],
+					experience: experience ? experience.split(',') : ['']
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -200,7 +210,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		} = this.state;
 
 		// mapping of image
-		const imageURL = image ? image : imageMapping[gender ? gender : 0];
+		const imageURL = image ? image : imageMapping[gender];
 
 		return (
 			<Col

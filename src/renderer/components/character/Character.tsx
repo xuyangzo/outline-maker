@@ -65,7 +65,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 	render() {
 		const { expand } = this.props;
 		const {
-			name, image, age, nickname, gender,
+			name, image, age, nickname, gender, novel_id,
 			height, identity, appearance, characteristics, experience
 		} = this.state;
 
@@ -101,7 +101,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.push(`/novel/${novel_id}`); }}
 					className="main-header"
 					extra={[
 						<Button

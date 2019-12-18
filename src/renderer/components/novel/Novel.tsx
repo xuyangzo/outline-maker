@@ -20,6 +20,9 @@ import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 
+// utils
+import { imageMapping } from '../../utils/constants';
+
 // sass
 import './novel.scss';
 
@@ -80,8 +83,10 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					return { id: dataValues.id, name: dataValues.name, color: dataValues.color };
+					const { id, name, color, image, gender } = dataValues;
+					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
 				});
+
 				// set characters
 				this.setState({ characters, shouldRenderCharacter: true });
 			})
@@ -140,7 +145,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 													this.props.history.push(`/character/${this.props.match.params.id}/${character.id}`);
 												}}
 											>
-												<img src={shadow} alt="no person" />
+												<img src={character.image} alt="no person" />
 											</Card>
 										</Col>
 									))

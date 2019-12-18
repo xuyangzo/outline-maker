@@ -50,10 +50,12 @@
       padding: 0 !important;
       position: relative;
       height: 220px;
+      overflow: hidden;
     }
 
     img {
-      height: 220px;
+      height: 300px;
+      min-width: 100%;
       transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
       position: absolute;
       top: -9999px;
