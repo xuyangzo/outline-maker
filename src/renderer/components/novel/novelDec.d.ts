@@ -6,8 +6,27 @@ interface MatchParams {
   id: string;
 }
 
-export interface NovelDataValues {
+export interface Location {
+  id: number;
+  name: string;
+  image: string;
+  intro: string;
+  texture: string;
+  location: string;
+  controller: string;
+}
 
+export interface LocationDataValue {
+  id: number;
+  novel_id: number;
+  name: string;
+  image: string;
+  intro: string;
+  texture: string;
+  location: string;
+  controller: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface NovelProps extends RouteComponentProps<MatchParams> {
@@ -21,8 +40,10 @@ export interface NovelState {
   categories: string[];
   characters: Character[];
   outlines: Outline[];
+  locations: Location[];
   createCharacter: boolean;
   createOutline: boolean;
   shouldRenderCharacter: boolean;
   shouldRenderOutline: boolean;
+  shouldRenderLocation: boolean;
 }

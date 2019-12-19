@@ -14,7 +14,7 @@ export interface OutlineModalState {
 }
 
 export interface OutlineModalTemplate {
-  novel_id: string;
+  novel_id?: string;
   title: string;
   description?: string;
 }

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 import NovelHeader from '../novel-header/NovelHeader';
 
 // type declaration
-import { NovelProps, NovelState } from './novelDec';
+import { NovelProps, NovelState, Location, LocationDataValue } from './novelDec';
 import { Character, CharacterDataValue } from '../main/mainDec';
 import { NovelDataValue, OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
@@ -19,12 +19,16 @@ import { DatabaseError } from 'sequelize';
 import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
+import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
 
 // utils
-import { imageMapping } from '../../utils/constants';
+import { tagColors, imageMapping } from '../../utils/constants';
 
 // sass
 import './novel.scss';
+
+// image
+import unknownArea from '../../../public/unknown_gray.jpg';
 
 class Novel extends React.Component<NovelProps, NovelState> {
 	constructor(props: NovelProps) {
@@ -36,10 +40,12 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			categories: [],
 			characters: [],
 			outlines: [],
+			locations: [],
 			createCharacter: false,
 			createOutline: false,
 			shouldRenderCharacter: false,
-			shouldRenderOutline: false
+			shouldRenderOutline: false,
+			shouldRenderLocation: false
 		};
 	}
 
@@ -48,6 +54,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
+		this.getLocations(id);
 	}
 
 	componentWillReceiveProps = (props: NovelProps) => {
@@ -55,6 +62,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
+		this.getLocations(id);
 	}
 
 	// cancel create character
@@ -74,7 +82,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 				this.setState({
 					name: dataValues.name,
 					description: dataValues.description,
-					categories: dataValues.categories.split(',')
+					categories: dataValues.categories ? dataValues.categories.split(',') : []
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -117,11 +125,29 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			});
 	}
 
+	// get all locations
+	getLocations = (id: string) => {
+		getAllLocationsByNovel(id)
+			.then((result: any) => {
+				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
+					const { id, intro, texture, location, controller, name } = dataValues;
+					return { id, intro, texture, location, controller, name };
+				});
+
+				// set locations
+				this.setState({ locations, shouldRenderLocation: true });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	render() {
 		const { expand } = this.props;
 		const {
-			id, name, description, characters, outlines,
-			createCharacter, createOutline, shouldRenderCharacter, shouldRenderOutline
+			id, name, description, characters, outlines, categories, locations,
+			createCharacter, createOutline, shouldRenderCharacter, shouldRenderOutline,
+			shouldRenderLocation
 		} = this.state;
 
 		return (
@@ -143,10 +169,31 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					id={id}
 				/>
 				<div className="novel-content">
-					<h2>{name}</h2>
+					<h2 style={{ display: 'inline-block', marginRight: '10px' }}>{name}</h2>
+					{
+						categories.map((category: string, index: number) => (
+							<div
+								className="novel-tag"
+								key={category}
+								style={{
+									color: tagColors[index],
+									borderColor: tagColors[index]
+								}}
+							>{category}
+							</div>
+						))
+					}
+					{
+						!categories.length && (
+							<div className="novel-tag">暂无标签</div>
+						)
+					}
 					<p className="novel-description">{description}</p>
 					<br />
-					<Collapse defaultActiveKey={['characters', 'outlines']}>
+					<Collapse defaultActiveKey={['characters', 'outlines', 'locations']}>
+						<Panel header="背景设定" key="background">
+							nb!
+						</Panel>
 						<Panel header="人物列表" key="characters">
 							<Row>
 								{
@@ -177,6 +224,42 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												onClick={() => { this.setState({ createCharacter: true }); }}
 											>
 												<Icon type="user-add" /> 新建角色
+											</Card>
+										</Col>
+									)
+								}
+							</Row>
+						</Panel>
+						<Panel header="势力列表" key="locations">
+							<Row>
+								{
+									locations.map((location: Location) => (
+										<Col span={8} key={location.id}>
+											<Card
+												title={location.name}
+												bordered={false}
+												hoverable
+												className="custom-card location-card"
+											// onClick={() => {
+											// 	this.props.history.push(`/character/${this.props.match.params.id}/${character.id}`);
+											// }}
+											>
+												<img src={location.image ? location.image : unknownArea} alt="没图" />
+											</Card>
+										</Col>
+									))
+								}
+								{
+									shouldRenderLocation && !locations.length && (
+										<Col span={6}>
+											<Card
+												title="还没有势力哦..."
+												bordered={false}
+												hoverable
+												className="custom-card add-character-card"
+												onClick={() => { this.setState({ createCharacter: true }); }}
+											>
+												<Icon type="usergroup-add" /> 新建势力
 											</Card>
 										</Col>
 									)

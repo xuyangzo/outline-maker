@@ -21,6 +21,18 @@
     line-height: 30px;
   }
 
+  // novel's tag
+  .novel-tag {
+    display: inline-block;
+    margin: 0 5px;
+    transform: translateY(-5px);
+    padding: 2.5px 8px;
+    border: 1px solid palevioletred;
+    color: palevioletred;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+
   // card to add new character
   .add-character-card {
     .ant-card-body {
@@ -68,6 +80,13 @@
       &:hover {
         transform: scale(1.1);
       }
+    }
+  }
+
+  // card for location
+  .location-card {
+    .ant-card-body {
+      height: 140px;
     }
   }
 

@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS outline_details;
 DROP TABLE IF EXISTS characters;
 DROP TABLE IF EXISTS timelines;
+DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS outlines;
 DROP TABLE IF EXISTS novels;
 
@@ -52,6 +53,21 @@ CREATE TABLE characters
   FOREIGN KEY (novel_id) REFERENCES novels (id)
 );
 
+create table locations
+(
+  loc_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
+  name TEXT,
+  image TEXT,
+  intro TEXT,
+  texture TEXT,
+  location TEXT,
+  controller TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (novel_id) REFERENCES novels (id)
+);
+
 CREATE TABLE timelines
 (
   timeline_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,12 +113,17 @@ CREATE TABLE trashes
 INSERT INTO novels
   (name, description, categories)
 VALUES
-  ('成人版三体', '你懂的...', '');
+  ('成人版三体', '你懂的...', '豪门,孤儿,盗贼,特种兵');
 
 INSERT INTO outlines
   (title, description, novel_id, scaling, fav, deleted)
 VALUES
   ('默认模板', '默认介绍...', 1, '0.75', 0, 0);
+
+INSERT INTO locations
+  (novel_id, name, intro, texture, location, controller)
+VALUES
+  (1, '天之塔', '三大世界的最高统治者，并且是所有种族的最高统治者', '一座纯白的塔', '第一世界中央', '天尊');
 
 INSERT INTO characters
   (novel_id, outline_id, name, color, age, nickname, gender, height, identity, appearance, characteristics, experience)
