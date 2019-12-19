@@ -3,7 +3,7 @@ import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 const { TextArea } = Input;
 
 // type declaration
-import { CreateModalTemplate } from '../../create-modal/createModalDec';
+import { OutlineModalTemplate } from '../../novel-header/outline-modal/outlineModalDec';
 import { IntroModalProps, IntroModalState } from './introModalDec';
 import { ValidationErrorItem, DatabaseError } from 'sequelize';
 
@@ -32,7 +32,7 @@ class IntroModal extends React.Component<IntroModalProps, IntroModalState> {
 		 * do not include it in the object
 		 * so that the defaultValue of sequelize modal will be used
 		 */
-		const model: CreateModalTemplate = {
+		const model: OutlineModalTemplate = {
 			title: this.state.title
 		};
 		if (this.state.description.length) {

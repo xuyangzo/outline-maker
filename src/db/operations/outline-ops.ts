@@ -6,6 +6,7 @@ const Op = require('sequelize').Op;
 import { message as Message } from 'antd';
 
 // type declaration
+import { OutlineModalTemplate } from '../../renderer/components/novel-header/outline-modal/outlineModalDec';
 import { DatabaseError } from 'sequelize';
 
 // get outline given id
@@ -33,7 +34,7 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 			where: {
 				novel_id: id
 			},
-			order: [['id', 'DESC']]
+			order: [['id', 'ASC']]
 		});
 };
 
@@ -58,6 +59,12 @@ export const getOutlinesRange = (outlines: number[]): Promise<any> => {
 			where: { id: outlines },
 			order: [['updatedAt', 'DESC']]
 		});
+};
+
+// create new outline
+export const createOutline = (props: OutlineModalTemplate) => {
+	return Outlines
+		.create(props);
 };
 
 // update outline scaling

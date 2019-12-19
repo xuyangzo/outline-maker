@@ -6,14 +6,14 @@ const { TextArea } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { CreateModalProps, CreateModalState, CreateModalTemplate } from './CreateModalDec';
-import { ValidationErrorItem } from 'sequelize';
+import { OutlineModalProps, OutlineModalState, OutlineModalTemplate } from './outlineModalDec';
+import { DatabaseError } from 'sequelize';
 
-// sequelize modals
-import Outlines from '../../../db/models/Outlines';
+// database operations
+import { createOutline } from '../../../../db/operations/outline-ops';
 
-class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
-	constructor(props: CreateModalProps) {
+class OutlineModal extends React.Component<OutlineModalProps, OutlineModalState> {
+	constructor(props: OutlineModalProps) {
 		super(props);
 		this.state = {
 			title: '',
@@ -27,54 +27,44 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 		 * do not include it in the object
 		 * so that the defaultValue of sequelize modal will be used
 		 */
-		const model: CreateModalTemplate = {
-			title: this.state.title
+		const model: OutlineModalTemplate = {
+			title: this.state.title,
+			novel_id: this.props.id
 		};
 		if (this.state.description.length) {
 			model.description = this.state.description;
 		}
 
 		// create outline
-		Outlines
-			.create(model)
-			.then(({ 'null': id }: { 'null': number }) => {
+		createOutline(model)
+			.then(() => {
+				// alert success
 				Message.success('创建大纲成功！');
+				// refresh outlines
+				this.props.refreshOutline(this.props.id);
 				// close modal
 				this.props.closeModal();
-				// refresh sidebar
-				this.props.refreshSidebar();
 				// clear modal data
 				this.setState({
 					title: '',
 					description: ''
 				});
-				// redirect to created outline page
-				this.props.history.push(`/outline/${id}`);
 			})
-			.catch(({ errors }: { errors: ValidationErrorItem[] }) => {
-				// iterate through all error messages
-				errors.forEach((error: ValidationErrorItem) => {
-					const { message } = error;
-					Message.error(message);
-				});
+			.catch((err: DatabaseError) => {
+				Message.error(err);
 			});
 	}
 
+	// when input field changes
 	onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const title = event.target.value;
-		this.setState((prevState: CreateModalState) => ({
-			...prevState,
-			title
-		}));
+		this.setState({ title });
 	}
 
 	// the event of textarea change is different, so use a separate method
 	onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const description = event.target.value;
-		this.setState((prevState: CreateModalState) => ({
-			...prevState,
-			description
-		}));
+		this.setState({ description });
 	}
 
 	closeModal = () => {
@@ -88,7 +78,6 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 
 	render() {
 		const { showModal } = this.props;
-
 		const { title, description } = this.state;
 
 		return (
@@ -128,4 +117,4 @@ class CreateModal extends React.Component<CreateModalProps, CreateModalState> {
 	}
 }
 
-export default withRouter(CreateModal);
+export default withRouter(OutlineModal);

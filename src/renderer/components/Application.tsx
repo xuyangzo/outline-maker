@@ -11,7 +11,6 @@ import 'antd/dist/antd.min.css';
 // components
 import SidebarContainer from '../containers/SidebarContainer';
 import MainContainer from '../containers/MainContainer';
-import ModalContainer from '../containers/ModalContainer';
 import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
 import FavoriteContainer from '../containers/FavoriteContainer';
@@ -33,14 +32,13 @@ const Application = () => {
 			</div>
 			<Row>
 				<Router>
-					<ModalContainer />
 					<SidebarContainer />
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
 						<Route path="/novel/:id" exact><NovelContainer /></Route>
 						<Route path="/character/:novel_id/:id" exact><CharacterContainer /></Route>
 						<Route path="/character/:novel_id/:id/edit" exact><CharacterEditContainer /></Route>
-						<Route path="/outline/:id" exact><MainContainer /></Route>
+						<Route path="/outline/:novel_id/:id" exact><MainContainer /></Route>
 						<Route path="/trash" exact><TrashContainer /></Route>
 						<Route path="/favorite" exact><FavoriteContainer /></Route>
 					</Switch>

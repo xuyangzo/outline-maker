@@ -47,7 +47,7 @@ class Main extends React.Component<MainProps, MainState> {
 		super(props);
 		this.state = {
 			colors,
-			id: -1,
+			id: props.match.params.id,
 			title: '标题',
 			description: '描述...',
 			characters: [],
@@ -68,16 +68,15 @@ class Main extends React.Component<MainProps, MainState> {
 		// 	const { id } = props.match.params;
 		// 	this.onInit(id);
 		// });
-		const { id } = props.match.params;
-		this.onInit(id);
+		this.setState({ id: props.match.params.id });
+		this.onInit(props.match.params.id);
 	}
 
 	componentDidMount = () => {
 		// add event listener for control + s event
 		document.addEventListener('keydown', this.onSavePress);
 
-		const { id } = this.props.match.params;
-		this.onInit(id);
+		this.onInit(this.props.match.params.id);
 	}
 
 	// scroll to top left when first enters the page
@@ -403,12 +402,7 @@ class Main extends React.Component<MainProps, MainState> {
 		getOutlineOp(id)
 			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
 				const { id, title, description, scaling } = dataValues;
-				this.setState({
-					id,
-					title,
-					description,
-					scaling
-				});
+				this.setState({ title, description, scaling, id: id.toString() });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

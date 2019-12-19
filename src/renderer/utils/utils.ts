@@ -53,7 +53,8 @@ export const getSelectedKey = (pathname: string): string => {
 	} else if (pathname.indexOf('favorite') !== -1) {
 		selected = 'fav';
 	} else if (pathname.indexOf('outline') !== -1) {
-		selected = pathname.slice(9);
+		const next = pathname.slice(9);
+		selected = next.slice(0, next.indexOf('/'));
 	} else if (pathname.indexOf('character') !== -1) {
 		const next = pathname.slice(11);
 		selected = next.slice(0, next.indexOf('/'));

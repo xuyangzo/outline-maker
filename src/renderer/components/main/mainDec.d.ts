@@ -2,6 +2,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { number } from 'prop-types';
 
 interface MatchParams {
+	novel_id: string;
 	id: string;
 }
 
@@ -71,7 +72,7 @@ export interface MainProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface MainState {
-	id: number;
+	id: string;
 	title: string;
 	description: string;
 	characters: Character[];

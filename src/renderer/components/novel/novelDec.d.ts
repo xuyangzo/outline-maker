@@ -15,11 +15,14 @@ export interface NovelProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface NovelState {
+  id: string;
   name: string;
   description: string;
   categories: string[];
   characters: Character[];
   outlines: Outline[];
   createCharacter: boolean;
+  createOutline: boolean;
   shouldRenderCharacter: boolean;
+  shouldRenderOutline: boolean;
 }

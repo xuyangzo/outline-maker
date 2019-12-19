@@ -26,20 +26,20 @@ import { imageMapping } from '../../utils/constants';
 // sass
 import './novel.scss';
 
-// image
-import shadow from '../../../public/shadow-person.jpg';
-
 class Novel extends React.Component<NovelProps, NovelState> {
 	constructor(props: NovelProps) {
 		super(props);
 		this.state = {
+			id: props.match.params.id,
 			name: '',
 			description: '',
 			categories: [],
 			characters: [],
 			outlines: [],
 			createCharacter: false,
-			shouldRenderCharacter: false
+			createOutline: false,
+			shouldRenderCharacter: false,
+			shouldRenderOutline: false
 		};
 	}
 
@@ -60,6 +60,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	// cancel create character
 	onCancelCreateCharacter = () => {
 		this.setState({ createCharacter: false });
+	}
+
+	// cancel create outline
+	onCancelCreateOutline = () => {
+		this.setState({ createOutline: false });
 	}
 
 	// get novel content
@@ -103,14 +108,21 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					const { id, title, description } = dataValues;
 					return { id, title, description };
 				});
+
 				// set outlines
-				this.setState({ outlines });
+				this.setState({ outlines, shouldRenderOutline: true });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
 	render() {
 		const { expand } = this.props;
-		const { name, description, characters, outlines, createCharacter, shouldRenderCharacter } = this.state;
+		const {
+			id, name, description, characters, outlines,
+			createCharacter, createOutline, shouldRenderCharacter, shouldRenderOutline
+		} = this.state;
 
 		return (
 			<Col
@@ -123,8 +135,12 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			>
 				<NovelHeader
 					refreshCharacter={this.getCharacters}
+					refreshOutline={this.getOutlines}
 					createCharacter={createCharacter}
 					cancelCreateCharacter={this.onCancelCreateCharacter}
+					createOutline={createOutline}
+					cancelCreateOutline={this.onCancelCreateOutline}
+					id={id}
 				/>
 				<div className="novel-content">
 					<h2>{name}</h2>
@@ -178,13 +194,28 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												hoverable
 												className="custom-card outline-card"
 												onClick={() => {
-													this.props.history.push(`/outline/${outline.id}`);
+													this.props.history.push(`/outline/${id}/${outline.id}`);
 												}}
 											>
 												<p>{outline.description}</p>
 											</Card>
 										</Col>
 									))
+								}
+								{
+									shouldRenderOutline && !outlines.length && (
+										<Col span={6}>
+											<Card
+												title="还没有大纲哦..."
+												bordered={false}
+												hoverable
+												className="custom-card add-character-card"
+												onClick={() => { this.setState({ createOutline: true }); }}
+											>
+												<Icon type="file-add" /> 新建大纲
+											</Card>
+										</Col>
+									)
 								}
 							</Row>
 						</Panel>
