@@ -58,6 +58,9 @@ export const getSelectedKey = (pathname: string): string => {
 	} else if (pathname.indexOf('character') !== -1) {
 		const next = pathname.slice(11);
 		selected = next.slice(0, next.indexOf('/'));
+	} else if (pathname.lastIndexOf('location') !== -1) {
+		const next = pathname.slice(10);
+		selected = next.slice(0, next.indexOf('/'));
 	}
 
 	return selected;

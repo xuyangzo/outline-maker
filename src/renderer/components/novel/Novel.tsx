@@ -240,9 +240,9 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												bordered={false}
 												hoverable
 												className="custom-card location-card"
-											// onClick={() => {
-											// 	this.props.history.push(`/character/${this.props.match.params.id}/${character.id}`);
-											// }}
+												onClick={() => {
+													this.props.history.push(`/location/${this.props.match.params.id}/${location.id}`);
+												}}
 											>
 												<img src={location.image ? location.image : unknownArea} alt="没图" />
 											</Card>
