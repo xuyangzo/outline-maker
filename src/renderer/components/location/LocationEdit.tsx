@@ -122,8 +122,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 	onSaveAndQuit = () => {
 		this.onSave()
 			.then(() => {
-				const { id, novel_id } = this.state;
-				this.props.history.push(`/location/${novel_id}/${id}`);
+				this.props.history.go(-1);
 			});
 	}
 

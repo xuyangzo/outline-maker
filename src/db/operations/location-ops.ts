@@ -37,3 +37,16 @@ export const updateLocationDetail = (id: string | number, props: LocationProps):
 			{ where: { id } }
 		);
 };
+
+type LocationTemplate = {
+	name: string
+};
+
+// create location
+export const createLocation = (novel_id: string | number, props: LocationTemplate): Promise<any> => {
+	return LocationModal
+		.create({
+			novel_id,
+			...props
+		});
+};

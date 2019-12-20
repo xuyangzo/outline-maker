@@ -43,6 +43,7 @@ export interface NovelState {
   locations: Location[];
   createCharacter: boolean;
   createOutline: boolean;
+  createLocation: boolean;
   shouldRenderCharacter: boolean;
   shouldRenderOutline: boolean;
   shouldRenderLocation: boolean;

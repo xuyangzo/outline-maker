@@ -51,7 +51,7 @@ class OutlineModal extends React.Component<OutlineModalProps, OutlineModalState>
 				});
 			})
 			.catch((err: DatabaseError) => {
-				Message.error(err);
+				Message.error(err.message);
 			});
 	}
 

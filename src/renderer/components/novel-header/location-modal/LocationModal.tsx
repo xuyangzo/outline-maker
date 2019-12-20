@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 
 // database operations
-import { createCharacter } from '../../../../db/operations/character-ops';
+import { createLocation } from '../../../../db/operations/location-ops';
 
 // type declaration
-import { CharacterModalProps, CharacterModalState } from './characterModalDec';
+import { LocationModalProps, LocationModalState } from './locationModalDec';
 import { DatabaseError } from 'sequelize';
 
-class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
-	constructor(props: CharacterModalProps) {
+class LocationModal extends React.Component<LocationModalProps, LocationModalState> {
+	constructor(props: LocationModalProps) {
 		super(props);
 		this.state = {
 			name: ''
@@ -18,12 +18,12 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 
 	handleSubmit = () => {
 		// novel_id, outline_id, name, color
-		createCharacter(this.props.id, null, this.state.name, null)
+		createLocation(this.props.id, this.state)
 			.then(() => {
 				// alert success
-				Message.success('人物创建成功！');
+				Message.success('势力创建成功！');
 				// refresh character
-				this.props.refreshCharacter(this.props.id);
+				this.props.refreshLocation(this.props.id);
 				// close modal
 				this.props.closeModal();
 				// clear modal data
@@ -55,7 +55,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 
 		return (
 			<Modal
-				title="新建角色"
+				title="新建势力"
 				visible={showModal}
 				onOk={this.handleSubmit}
 				onCancel={this.closeModal}
@@ -76,10 +76,10 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 							value={name}
 							onChange={this.onChange}
 							prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							placeholder="主角姓名（最多 20 个字）"
+							placeholder="势力名字（最多 20 个字）"
 							ref={(input: Input) => input && input.focus()}
 						/>
-						更多的人设可以在添加角色后进行设置。
+						更多的势力设定可以在添加势力后进行设置。
 					</Form.Item>
 				</Form>
 			</Modal>
@@ -87,4 +87,4 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 	}
 }
 
-export default CharacterModal;
+export default LocationModal;

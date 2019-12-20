@@ -19,7 +19,7 @@ import { DatabaseError } from 'sequelize';
 import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
-import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
+import { getAllLocationsByNovel, createLocation } from '../../../db/operations/location-ops';
 
 // utils
 import { tagColors, imageMapping } from '../../utils/constants';
@@ -43,6 +43,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			locations: [],
 			createCharacter: false,
 			createOutline: false,
+			createLocation: false,
 			shouldRenderCharacter: false,
 			shouldRenderOutline: false,
 			shouldRenderLocation: false
@@ -59,6 +60,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	componentWillReceiveProps = (props: NovelProps) => {
 		const { id } = props.match.params;
+		this.setState({ id });
+
 		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
@@ -73,6 +76,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	// cancel create outline
 	onCancelCreateOutline = () => {
 		this.setState({ createOutline: false });
+	}
+
+	// cancel create location
+	onCancelCreateLocation = () => {
+		this.setState({ createLocation: false });
 	}
 
 	// get novel content
@@ -146,8 +154,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		const { expand } = this.props;
 		const {
 			id, name, description, characters, outlines, categories, locations,
-			createCharacter, createOutline, shouldRenderCharacter, shouldRenderOutline,
-			shouldRenderLocation
+			createCharacter, createOutline, createLocation,
+			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation
 		} = this.state;
 
 		return (
@@ -162,10 +170,13 @@ class Novel extends React.Component<NovelProps, NovelState> {
 				<NovelHeader
 					refreshCharacter={this.getCharacters}
 					refreshOutline={this.getOutlines}
+					refreshLocation={this.getLocations}
 					createCharacter={createCharacter}
-					cancelCreateCharacter={this.onCancelCreateCharacter}
 					createOutline={createOutline}
+					createLocation={createLocation}
+					cancelCreateCharacter={this.onCancelCreateCharacter}
 					cancelCreateOutline={this.onCancelCreateOutline}
+					cancelCreateLocation={this.onCancelCreateLocation}
 					id={id}
 				/>
 				<div className="novel-content">
@@ -257,7 +268,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 												bordered={false}
 												hoverable
 												className="custom-card add-character-card"
-												onClick={() => { this.setState({ createCharacter: true }); }}
+												onClick={() => { this.setState({ createLocation: true }); }}
 											>
 												<Icon type="usergroup-add" /> 新建势力
 											</Card>

@@ -4,6 +4,7 @@ import { Icon, Button, PageHeader, Dropdown, Menu } from 'antd';
 // custom components
 import CharacterModal from './character-modal/CharacterModal';
 import OutlineModal from './outline-modal/OutlineModal';
+import LocationModal from './location-modal/LocationModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -20,9 +21,10 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 	constructor(props: NovelHeaderProps) {
 		super(props);
 		this.state = {
+			id: props.id,
 			characterVisible: false,
 			outlineVisible: false,
-			id: props.id
+			locationVisible: false
 		};
 	}
 
@@ -48,23 +50,38 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 		this.props.cancelCreateOutline();
 	}
 
+	// on open create location modal
+	onOpenLocationModal = () => {
+		this.setState({ locationVisible: true });
+	}
+
+	// on close create location modal
+	onCloseLocationModal = () => {
+		this.setState({ locationVisible: false });
+		this.props.cancelCreateLocation();
+	}
+
 	componentWillReceiveProps = (props: NovelHeaderProps) => {
 		this.setState({
 			id: props.id,
 			characterVisible: props.createCharacter,
-			outlineVisible: props.createOutline
+			outlineVisible: props.createOutline,
+			locationVisible: props.createLocation
 		});
 	}
 
 	render() {
-		const { refreshCharacter, refreshOutline } = this.props;
-		const { characterVisible, outlineVisible, id } = this.state;
+		const { refreshCharacter, refreshOutline, refreshLocation } = this.props;
+		const { characterVisible, outlineVisible, locationVisible, id } = this.state;
 
 		// menu for add drop down
 		const addmenu = (
 			<Menu>
 				<Menu.Item onClick={this.onOpenCharacterModal}>
 					<Icon type="user-add" />添加角色
+				</Menu.Item>
+				<Menu.Item onClick={this.onOpenLocationModal}>
+					<Icon type="usergroup-add" />添加势力
 				</Menu.Item>
 				<Menu.Item onClick={this.onOpenOutlineModal}>
 					<Icon type="file-add" />添加大纲
@@ -121,6 +138,12 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 					showModal={outlineVisible}
 					closeModal={this.onCloseOutlineModal}
 					refreshOutline={refreshOutline}
+					id={id}
+				/>
+				<LocationModal
+					showModal={locationVisible}
+					closeModal={this.onCloseLocationModal}
+					refreshLocation={refreshLocation}
 					id={id}
 				/>
 			</React.Fragment>

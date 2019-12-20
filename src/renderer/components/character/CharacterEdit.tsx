@@ -163,8 +163,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	onSaveAndQuit = () => {
 		this.onSave()
 			.then(() => {
-				const { id, novel_id } = this.state;
-				this.props.history.push(`/character/${novel_id}/${id}`);
+				this.props.history.go(-1);
 			});
 	}
 

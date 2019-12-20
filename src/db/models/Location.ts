@@ -33,8 +33,7 @@ const Location = sequelize.define(
 		},
 		intro: {
 			field: 'intro',
-			type: Sequelize.STRING,
-			defaultValue: '介绍找不到了...'
+			type: Sequelize.STRING
 		},
 		texture: {
 			field: 'texture',
