@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Tooltip } from 'antd';
 import classnames from 'classnames';
 
 // enable history
 import { withRouter } from 'react-router-dom';
-
-// custom components
 
 // type declaration
 import { CharacterProps, CharacterState, Character as CharacterDec } from './characterDec';
@@ -16,7 +14,7 @@ import { getCharacter } from '../../../db/operations/character-ops';
 
 // utils
 import { getNumberedText } from '../../utils/utils';
-import { imageMapping } from '../../utils/constants';
+import { imageMapping, characterIllustrations } from '../../utils/constants';
 
 // sass
 import './character.scss';
@@ -125,49 +123,89 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 								<h2 className="character-name">{name}</h2>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>昵称：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									昵称
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.nickname}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={8}>
 									{nickname ? nickname : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>性别：</Col>
+								<Col span={4} style={{ width: '60px' }}>性别：</Col>
 								<Col span={8}>
 									{genderText ? genderText : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>年龄：</Col>
+								<Col span={4} style={{ width: '60px' }}>年龄：</Col>
 								<Col span={8}>
 									{age ? age : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>身高：</Col>
+								<Col span={4} style={{ width: '60px' }}>身高：</Col>
 								<Col span={8}>
 									{height ? height : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>身份：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									身份
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.identity}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={16} className="numbered-text">
 									{identity ? getNumberedText(identity) : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>外貌：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									外貌
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.appearance}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={16} className="numbered-text">
 									{appearance ? getNumberedText(appearance) : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>性格：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									性格
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.characteristics}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={16} className="numbered-text">
 									{characteristics ? getNumberedText(characteristics) : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>经历：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									经历
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.experience}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={16} className="numbered-text">
 									{experience ? getNumberedText(experience) : '暂无'}
 								</Col>

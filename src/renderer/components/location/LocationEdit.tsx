@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button, Upload, Input } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Upload, Input, Tooltip } from 'antd';
 import classnames from 'classnames';
 const { TextArea } = Input;
 
@@ -18,6 +18,7 @@ import { getLocation, updateLocationDetail } from '../../../db/operations/locati
 
 // utils
 import { ctrlsPress } from '../../utils/utils';
+import { locationIllustrations } from '../../utils/constants';
 
 // sass
 import './location.scss';
@@ -211,7 +212,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 							)
 						}
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>首领：</Col>
+							<Col span={3} style={{ width: '60px' }}>首领：</Col>
 							<Col span={12}>
 								<input
 									type="text"
@@ -224,7 +225,15 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>介绍：</Col>
+							<Col span={3} style={{ width: '60px' }}>
+								介绍
+								<Tooltip
+									placement="rightTop"
+									title={locationIllustrations.intro}
+								>
+									<Icon type="question-circle" className="question-mark" />
+								</Tooltip>
+							</Col>
 							<Col span={12}>
 								<TextArea
 									rows={6}
@@ -236,7 +245,15 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>外观：</Col>
+							<Col span={3} style={{ width: '60px' }}>
+								外观
+								<Tooltip
+									placement="rightTop"
+									title={locationIllustrations.texture}
+								>
+									<Icon type="question-circle" className="question-mark" />
+								</Tooltip>
+							</Col>
 							<Col span={12}>
 								<TextArea
 									rows={6}
@@ -248,7 +265,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>位置：</Col>
+							<Col span={3} style={{ width: '60px' }}>位置：</Col>
 							<Col span={12}>
 								<TextArea
 									rows={6}

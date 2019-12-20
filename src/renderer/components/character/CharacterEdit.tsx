@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button, Select, Upload } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Select, Upload, Tooltip } from 'antd';
 import classnames from 'classnames';
 const { Option } = Select;
 
@@ -8,8 +8,6 @@ const fs = require('fs');
 
 // enable history
 import { withRouter } from 'react-router-dom';
-
-// custom components
 
 // type declaration
 import { CharacterProps, CharacterEditState, Character as CharacterDec } from './characterDec';
@@ -20,7 +18,7 @@ import { getCharacter, updateCharacterDetail } from '../../../db/operations/char
 
 // utils
 import { ctrlsPress } from '../../utils/utils';
-import { imageMapping } from '../../utils/constants';
+import { imageMapping, characterIllustrations } from '../../utils/constants';
 
 // sass
 import './character.scss';
@@ -273,7 +271,15 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								/>
 							</Row>
 							<Row className="character-section" align="middle">
-								<Col span={4} style={{ width: '50px' }}>昵称：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									昵称
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.nickname}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={8}>
 									<input
 										type="text"
@@ -286,7 +292,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>性别：</Col>
+								<Col span={4} style={{ width: '60px' }}>性别：</Col>
 								<Col span={8}>
 									<Select value={gender.toString()} style={{ width: 120 }} onChange={this.onSelectGender}>
 										<Option value="0">男</Option>
@@ -297,7 +303,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>年龄：</Col>
+								<Col span={4} style={{ width: '60px' }}>年龄：</Col>
 								<Col span={8}>
 									<input
 										type="text"
@@ -310,7 +316,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>身高：</Col>
+								<Col span={4} style={{ width: '60px' }}>身高：</Col>
 								<Col span={8}>
 									<input
 										type="text"
@@ -323,7 +329,15 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>身份：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									身份
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.identity}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={20}>
 									{
 										identity.map((identityItem: string, index: number) => (
@@ -366,7 +380,15 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>外貌：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									外貌
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.appearance}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={20} className="numbered-text">
 									{
 										appearance.map((appearanceItem: string, index: number) => (
@@ -409,7 +431,15 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>性格：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									性格
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.characteristics}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={20} className="numbered-text">
 									{
 										characteristics.map((characteristicsItem: string, index: number) => (
@@ -452,7 +482,15 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 								</Col>
 							</Row>
 							<Row className="character-section">
-								<Col span={4} style={{ width: '50px' }}>经历：</Col>
+								<Col span={4} style={{ width: '60px' }}>
+									经历
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.experience}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
 								<Col span={20} className="numbered-text">
 									{
 										experience.map((experienceItem: string, index: number) => (

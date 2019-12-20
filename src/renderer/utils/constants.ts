@@ -52,7 +52,27 @@ type LocationIllustrations = {
 const introHelper: string = '1. 该势力的地位\n2. 该势力的成员\n3. 该势力的特点\n';
 const introHelper2: string = '4. 该势力的人文环境';
 
+// illustration texts for location properties
 export const locationIllustrations: LocationIllustrations = {
-	intro: '包括了对于该势力的介绍，包含但不局限以下内容：\n'.concat(introHelper, introHelper2),
-	texture: '包含了对于该势力外观的描述\n比如说建筑的模样，自然景观等等'
+	intro: '包括了对于该势力的介绍，包含但不局限以下内容：\n\n'.concat(introHelper, introHelper2),
+	texture: '包含了对于该势力外观的描述：\n\n比如说建筑的模样，自然景观等等'
+};
+
+type CharacterIllustrations = {
+	nickname: string,
+	identity: string,
+	appearance: string,
+	characteristics: string,
+	experience: string
+};
+
+const characteristicsHelper: string = '例如：”性格胆小，害怕与别人交流，害怕任何眼神接触。“';
+
+// illustration texts for character properties
+export const characterIllustrations: CharacterIllustrations = {
+	nickname: '平时别人是怎么称呼ta的。\n\n比如说：老大、龙哥，等等\n\n不一定只有一个。',
+	identity: '明面 + 隐藏的身份。\n\n明面身份比如：大家族的弟子\n隐藏身份比如：远古血脉传承者\n\n可以有多个。',
+	appearance: '包含但不限于以下要素：\n\n1. 发型\n2. 外貌\n3. 气质\n4. 衣着\n5. 身材',
+	characteristics: '建议用较长的句子描述，\n而不是仅仅使用词语来形容。\n\n'.concat(characteristicsHelper),
+	experience: '该角色在出场之前的经历是什么。\n\n不一定需要写得很长，但这玩意儿对于角色性格和剧情推动的作用很重要。'
 };

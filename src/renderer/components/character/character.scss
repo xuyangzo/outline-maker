@@ -11,6 +11,14 @@
     .character-section {
       margin: 20px 0;
 
+      // question mark icon
+      .question-mark {
+        cursor: help;
+        margin-left: 5px;
+        font-size: 12px;
+        color: mediumaquamarine;
+      }
+
       // character input
       .character-input {
         width: 100px;
