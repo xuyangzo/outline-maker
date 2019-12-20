@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Tooltip } from 'antd';
 import classnames from 'classnames';
 
 // enable history
@@ -13,6 +13,9 @@ import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getLocation } from '../../../db/operations/location-ops';
+
+// utils
+import { locationIllustrations } from '../../utils/constants';
 
 // sass
 import './location.scss';
@@ -85,26 +88,42 @@ class Location extends React.Component<LocationProps, LocationState> {
 							)
 						}
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>首领：</Col>
+							<Col span={3} style={{ width: '60px' }}>首领：</Col>
 							<Col span={12}>
 								{controller ? controller : '暂无'}
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>介绍：</Col>
-							<Col span={12}>
+							<Col span={3} style={{ width: '60px' }}>
+								介绍
+								<Tooltip
+									placement="rightTop"
+									title={locationIllustrations.intro}
+								>
+									<Icon type="question-circle" className="question-mark" />
+								</Tooltip>
+							</Col>
+							<Col span={12} className="multiline-text">
 								{intro ? intro : '暂无'}
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>外观：</Col>
-							<Col span={12}>
+							<Col span={3} style={{ width: '60px' }}>
+								外观
+								<Tooltip
+									placement="rightTop"
+									title={locationIllustrations.texture}
+								>
+									<Icon type="question-circle" className="question-mark" />
+								</Tooltip>
+							</Col>
+							<Col span={12} className="multiline-text">
 								{texture ? texture : '暂无'}
 							</Col>
 						</Row>
 						<Row className="location-section">
-							<Col span={3} style={{ width: '50px' }}>位置：</Col>
-							<Col span={12}>
+							<Col span={3} style={{ width: '60px' }}>位置：</Col>
+							<Col span={12} className="multiline-text">
 								{location ? location : '暂无'}
 							</Col>
 						</Row>

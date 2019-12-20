@@ -130,8 +130,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		getAllLocationsByNovel(id)
 			.then((result: any) => {
 				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
-					const { id, intro, texture, location, controller, name } = dataValues;
-					return { id, intro, texture, location, controller, name };
+					const { id, image, intro, texture, location, controller, name } = dataValues;
+					return { id, image, intro, texture, location, controller, name };
 				});
 
 				// set locations

@@ -43,3 +43,16 @@ export const tags = [
 	'强者回归', '赚钱', '争霸流', '种田文', '宅男', '无限流', '技术流',
 	'凡人流', '热血', '重生', '穿越'
 ];
+
+type LocationIllustrations = {
+	intro: string,
+	texture: string
+};
+
+const introHelper: string = '1. 该势力的地位\n2. 该势力的成员\n3. 该势力的特点\n';
+const introHelper2: string = '4. 该势力的人文环境';
+
+export const locationIllustrations: LocationIllustrations = {
+	intro: '包括了对于该势力的介绍，包含但不局限以下内容：\n'.concat(introHelper, introHelper2),
+	texture: '包含了对于该势力外观的描述\n比如说建筑的模样，自然景观等等'
+};

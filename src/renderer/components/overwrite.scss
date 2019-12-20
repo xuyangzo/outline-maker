@@ -61,6 +61,19 @@
 	}
 }
 
+.ant-tooltip-inner {
+	white-space: pre-line;
+	word-break: break-all;
+	background-color: ghostwhite;
+	color: rgba(0, 0,0, 0.7);
+}
+
+.ant-tooltip-arrow::before{
+	background-color: ghostwhite !important;
+	border-color: ghostwhite !important;
+	box-shadow: -3px 3px 7px ghostwhite;
+}
+
 // create green button
 .green-button {
 	border-color: mediumaquamarine !important;
