@@ -1,6 +1,7 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { Outline } from '../sidebar/sidebarDec';
 
+// favorite templates for database popping
 export interface FavoriteDataValue {
   id: number;
   outline_id: number;

@@ -1,43 +1,11 @@
 import { RouteComponentProps } from 'react-router-dom';
-import { Character } from '../main/mainDec';
+import { Character } from '../character/characterDec';
 import { Outline } from '../sidebar/sidebarDec';
+import { Location } from '../location/locationDec';
 
 interface MatchParams {
   id: string;
 }
-
-export interface Location {
-  id: number;
-  name: string;
-  image: string;
-  intro: string;
-  texture: string;
-  location: string;
-  controller: string;
-}
-
-export interface LocationDataValue {
-  id: number;
-  novel_id: number;
-  name: string;
-  image: string;
-  intro: string;
-  texture: string;
-  location: string;
-  controller: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// background 
-export type BackgroundDataValue = {
-  id: number,
-  novel_id: number,
-  title: string,
-  content: string,
-  createdAt: string,
-  updatedAt: string
-};
 
 export interface NovelProps extends RouteComponentProps<MatchParams> {
   expand: boolean;

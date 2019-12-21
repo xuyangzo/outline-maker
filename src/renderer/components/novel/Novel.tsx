@@ -10,8 +10,10 @@ import { withRouter } from 'react-router-dom';
 import NovelHeader from '../novel-header/NovelHeader';
 
 // type declaration
-import { NovelProps, NovelState, Location, LocationDataValue, BackgroundDataValue } from './novelDec';
-import { Character, CharacterDataValue } from '../main/mainDec';
+import { NovelProps, NovelState } from './novelDec';
+import { BackgroundDataValue } from '../background/backgroundDec';
+import { Location, LocationDataValue } from '../location/locationDec';
+import { Character, CharacterDataValue } from '../character/characterDec';
 import { NovelDataValue, OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
 
@@ -216,7 +218,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					}
 					<p className="novel-description">{description}</p>
 					<br />
-					<Collapse defaultActiveKey={['characters', 'outlines', 'locations']}>
+					<Collapse defaultActiveKey={['background', 'characters', 'outlines', 'locations']}>
 						<Panel header="背景设定" key="background">
 							<div className="background-property">
 								{wordview}

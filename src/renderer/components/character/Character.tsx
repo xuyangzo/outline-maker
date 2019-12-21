@@ -63,8 +63,8 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 	render() {
 		const { expand } = this.props;
 		const {
-			name, image, age, nickname, gender, novel_id,
-			height, identity, appearance, characteristics, experience
+			name, image, age, nickname, gender, height,
+			identity, appearance, characteristics, experience
 		} = this.state;
 
 		// mapping of image
