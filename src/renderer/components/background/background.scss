@@ -1,0 +1,18 @@
+.background-page {
+  transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
+  float: right;
+  height: 100vh;
+  overflow-y: scroll;
+
+  .background-content {
+    .background-section {
+      // question mark icon
+      .question-mark {
+        cursor: help;
+        margin-left: 5px;
+        font-size: 12px;
+        color: mediumaquamarine;
+      }
+    }
+  }
+}

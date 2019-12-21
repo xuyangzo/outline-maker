@@ -212,7 +212,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 						}
 						<Row className="location-section">
 							<Col span={3} style={{ width: '60px' }}>首领：</Col>
-							<Col span={12}>
+							<Col span={18}>
 								<input
 									type="text"
 									value={controller}
@@ -233,7 +233,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 									<Icon type="question-circle" className="question-mark" />
 								</Tooltip>
 							</Col>
-							<Col span={12}>
+							<Col span={18}>
 								<TextArea
 									rows={6}
 									placeholder="势力的介绍"
@@ -253,7 +253,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 									<Icon type="question-circle" className="question-mark" />
 								</Tooltip>
 							</Col>
-							<Col span={12}>
+							<Col span={18}>
 								<TextArea
 									rows={6}
 									placeholder="外形（建筑风格、景物等等）"
@@ -265,7 +265,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 						</Row>
 						<Row className="location-section">
 							<Col span={3} style={{ width: '60px' }}>位置：</Col>
-							<Col span={12}>
+							<Col span={18}>
 								<TextArea
 									rows={6}
 									placeholder="地理位置"

@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 export interface NovelHeaderProps extends RouteComponentProps {
   createCharacter: boolean;
   createOutline: boolean;
+  createLocation: boolean;
   id: string;
 
   refreshCharacter: (id: string) => void;

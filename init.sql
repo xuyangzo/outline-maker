@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS characters;
 DROP TABLE IF EXISTS timelines;
 DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS outlines;
+DROP TABLE IF EXISTS backgrounds;
 DROP TABLE IF EXISTS novels;
 
 CREATE TABLE novels
@@ -26,6 +27,17 @@ CREATE TABLE outlines
   scaling TEXT,
   fav INTEGER,
   deleted INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (novel_id) REFERENCES novels (id)
+);
+
+CREATE TABLE backgrounds
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
+  title TEXT,
+  content TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (novel_id) REFERENCES novels (id)
@@ -113,12 +125,21 @@ CREATE TABLE trashes
 INSERT INTO novels
   (name, description, categories)
 VALUES
-  ('成人版三体', '你懂的...', '豪门,孤儿,盗贼,特种兵');
+  ('豪门特种兵之孤胆贼王', '什么几把书名', '豪门,孤儿,盗贼,特种兵');
 
 INSERT INTO outlines
   (title, description, novel_id, scaling, fav, deleted)
 VALUES
   ('默认模板', '默认介绍...', 1, '0.75', 0, 0);
+
+INSERT INTO backgrounds
+  (novel_id, title, content)
+VALUES
+  (1, '世界观', '整个世界一共分为三大世界，每个世界都是独立的一层，并且相互分隔，很难进行交流
+每个世界都有自己的规则，并且受到太阳光照的幅度不一样，政权结构也不同，详见势力
+这个世界上既有人类，也有魂兽。人类可以和魂兽签订魂约，之后便可以指挥魂兽
+和魂兽签订魂约后，可以去巴比伦塔的地下一层进行考核，通过后会进行御兽使等级划分
+基础生产力大部分是由魂兽提供的，而魂兽的地位就相当于是口袋妖怪里面的精灵');
 
 INSERT INTO locations
   (novel_id, name, intro, texture, location, controller)

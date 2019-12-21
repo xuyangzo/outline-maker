@@ -74,6 +74,12 @@
 	box-shadow: -3px 3px 7px ghostwhite;
 }
 
+// create button without border
+.borderless-button {
+	border: none !important;
+	box-shadow: none !important;
+}
+
 // create green button
 .green-button {
 	border-color: mediumaquamarine !important;

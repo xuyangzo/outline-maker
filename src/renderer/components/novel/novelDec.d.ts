@@ -29,6 +29,16 @@ export interface LocationDataValue {
   updatedAt: string;
 }
 
+// background 
+export type BackgroundDataValue = {
+  id: number,
+  novel_id: number,
+  title: string,
+  content: string,
+  createdAt: string,
+  updatedAt: string
+};
+
 export interface NovelProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
@@ -37,6 +47,7 @@ export interface NovelState {
   id: string;
   name: string;
   description: string;
+  wordview: string;
   categories: string[];
   characters: Character[];
   outlines: Outline[];

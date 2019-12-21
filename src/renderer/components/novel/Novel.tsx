@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Collapse, Icon } from 'antd';
+import { Col, message as Message, Card, Row, Collapse, Icon, Button } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
 
@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 import NovelHeader from '../novel-header/NovelHeader';
 
 // type declaration
-import { NovelProps, NovelState, Location, LocationDataValue } from './novelDec';
+import { NovelProps, NovelState, Location, LocationDataValue, BackgroundDataValue } from './novelDec';
 import { Character, CharacterDataValue } from '../main/mainDec';
 import { NovelDataValue, OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
@@ -19,7 +19,8 @@ import { DatabaseError } from 'sequelize';
 import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
-import { getAllLocationsByNovel, createLocation } from '../../../db/operations/location-ops';
+import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
+import { getWordviewGivenNovel } from '../../../db/operations/background-ops';
 
 // utils
 import { tagColors, imageMapping } from '../../utils/constants';
@@ -37,6 +38,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			id: props.match.params.id,
 			name: '',
 			description: '',
+			wordview: '',
 			categories: [],
 			characters: [],
 			outlines: [],
@@ -53,6 +55,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	componentDidMount = () => {
 		const { id } = this.props.match.params;
 		this.getNovelContent(id);
+		this.getWorldview(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -63,6 +66,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.setState({ id });
 
 		this.getNovelContent(id);
+		this.getWorldview(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -92,6 +96,17 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					description: dataValues.description,
 					categories: dataValues.categories ? dataValues.categories.split(',') : []
 				});
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get worldview
+	getWorldview = (id: string) => {
+		getWordviewGivenNovel(id)
+			.then(({ dataValues }: { dataValues: BackgroundDataValue }) => {
+				this.setState({ wordview: dataValues.content });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -153,7 +168,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	render() {
 		const { expand } = this.props;
 		const {
-			id, name, description, characters, outlines, categories, locations,
+			id, name, description, wordview, characters, outlines, categories, locations,
 			createCharacter, createOutline, createLocation,
 			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation
 		} = this.state;
@@ -203,7 +218,18 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					<br />
 					<Collapse defaultActiveKey={['characters', 'outlines', 'locations']}>
 						<Panel header="背景设定" key="background">
-							nb!
+							<div className="background-property">
+								{wordview}
+							</div>
+							<Button
+								type="primary"
+								className="green-button borderless-button"
+								style={{ marginLeft: 15, marginTop: 20 }}
+								onClick={() => { this.props.history.push(`/background/${this.props.match.params.id}`); }}
+								ghost
+							>
+								查看更多设定 <Icon type="arrow-right" />
+							</Button>
 						</Panel>
 						<Panel header="人物列表" key="characters">
 							<Row>

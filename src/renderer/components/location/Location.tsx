@@ -89,7 +89,7 @@ class Location extends React.Component<LocationProps, LocationState> {
 						}
 						<Row className="location-section">
 							<Col span={3} style={{ width: '60px' }}>首领：</Col>
-							<Col span={12}>
+							<Col span={18}>
 								{controller ? controller : '暂无'}
 							</Col>
 						</Row>
@@ -103,7 +103,7 @@ class Location extends React.Component<LocationProps, LocationState> {
 									<Icon type="question-circle" className="question-mark" />
 								</Tooltip>
 							</Col>
-							<Col span={12} className="multiline-text">
+							<Col span={18} className="multiline-text">
 								{intro ? intro : '暂无'}
 							</Col>
 						</Row>
@@ -117,13 +117,13 @@ class Location extends React.Component<LocationProps, LocationState> {
 									<Icon type="question-circle" className="question-mark" />
 								</Tooltip>
 							</Col>
-							<Col span={12} className="multiline-text">
+							<Col span={18} className="multiline-text">
 								{texture ? texture : '暂无'}
 							</Col>
 						</Row>
 						<Row className="location-section">
 							<Col span={3} style={{ width: '60px' }}>位置：</Col>
-							<Col span={12} className="multiline-text">
+							<Col span={18} className="multiline-text">
 								{location ? location : '暂无'}
 							</Col>
 						</Row>

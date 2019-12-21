@@ -244,7 +244,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 				/>
 				<div className="character-content">
 					<Row className="character-section">
-						<Col span={8} style={{ paddingTop: 25 }}>
+						<Col span={10} style={{ paddingTop: 25 }}>
 							<Upload
 								name="profile-image"
 								customRequest={this.onImageUpload}
@@ -258,7 +258,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 							</Upload>
 							<img src={imageURL} alt="无法读取图片，请选择新的图片" className="profile-image" />
 						</Col>
-						<Col span={16} style={{ paddingLeft: '40px' }}>
+						<Col span={14} style={{ paddingLeft: '40px' }}>
 							<Row className="character-section">
 								<input
 									type="text"

@@ -17,6 +17,7 @@ import FavoriteContainer from '../containers/FavoriteContainer';
 import NovelContainer from '../containers/NovelContainer';
 import { CharacterContainer, CharacterEditContainer } from '../containers/CharacterContainer';
 import { LocationContainer, LocationEditContainer } from '../containers/LocationContainer';
+import { BackgroundContainer } from '../containers/BackgroundContainer';
 
 // sass
 import './overwrite.scss';
@@ -37,6 +38,7 @@ const Application = () => {
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
 						<Route path="/novel/:id" exact><NovelContainer /></Route>
+						<Route path="/background/:id" exact><BackgroundContainer /></Route>
 						<Route path="/character/:novel_id/:id" exact><CharacterContainer /></Route>
 						<Route path="/character/:novel_id/:id/edit" exact><CharacterEditContainer /></Route>
 						<Route path="/location/:novel_id/:id" exact><LocationContainer /></Route>
