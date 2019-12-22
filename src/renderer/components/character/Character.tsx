@@ -99,7 +99,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					className="main-header"
 					extra={[
 						<Button

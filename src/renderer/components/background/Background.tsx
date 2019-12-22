@@ -80,7 +80,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					className="main-header"
 					extra={[
 						<Button

@@ -176,7 +176,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			// otherwise, only create new content
 			this.setState((prevState: BackgroundState) => ({
 				...prevState,
-				backgrounds: prevState.backgrounds.concat({ content, title: '', id: -1, created: true })
+				backgrounds: prevState.backgrounds.concat({ content, title: title ? title : '', id: -1, created: true })
 			}));
 		}
 
@@ -200,7 +200,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 	onSaveAndQuit = () => {
 		this.onSave(false)
 			.then(() => {
-				this.props.history.go(-1);
+				this.props.history;
 			});
 	}
 
@@ -253,14 +253,14 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					className="main-header"
 					extra={[
 						<Button
 							key="quit"
 							type="danger"
 							ghost
-							onClick={() => { this.props.history.go(-1); }}
+							onClick={() => { this.props.history.goBack(); }}
 						>
 							<Icon type="rollback" />取消编辑
 						</Button>,

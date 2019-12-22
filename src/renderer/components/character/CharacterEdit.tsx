@@ -163,7 +163,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	onSaveAndQuit = () => {
 		this.onSave()
 			.then(() => {
-				this.props.history.go(-1);
+				this.props.history.goBack();
 			});
 	}
 
@@ -220,14 +220,14 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					className="main-header"
 					extra={[
 						<Button
 							key="quit"
 							type="danger"
 							ghost
-							onClick={() => { this.props.history.go(-1); }}
+							onClick={() => { this.props.history.goBack(); }}
 						>
 							<Icon type="rollback" />取消编辑
 						</Button>,

@@ -105,7 +105,7 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 			<React.Fragment>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					extra={[
 						<Dropdown key="add" overlay={addmenu} placement="bottomCenter">
 							<Button type="primary" key="add-person" ghost>

@@ -191,7 +191,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 			<React.Fragment>
 				<PageHeader
 					title={title}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					tags={<MyIcon />}
 					extra={[
 						<Dropdown key="add" overlay={addmenu} placement="bottomCenter">

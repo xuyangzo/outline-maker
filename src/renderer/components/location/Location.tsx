@@ -65,7 +65,7 @@ class Location extends React.Component<LocationProps, LocationState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.go(-1); }}
+					onBack={() => { this.props.history.goBack(); }}
 					className="main-header"
 					extra={[
 						<Button
