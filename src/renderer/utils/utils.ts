@@ -58,9 +58,11 @@ export const getSelectedKey = (pathname: string): string => {
 	} else if (pathname.indexOf('character') !== -1) {
 		const next = pathname.slice(11);
 		selected = next.slice(0, next.indexOf('/'));
-	} else if (pathname.lastIndexOf('location') !== -1) {
+	} else if (pathname.indexOf('location') !== -1) {
 		const next = pathname.slice(10);
 		selected = next.slice(0, next.indexOf('/'));
+	} else if (pathname.indexOf('background') !== -1) {
+		selected = pathname.slice(12);
 	}
 
 	return selected;

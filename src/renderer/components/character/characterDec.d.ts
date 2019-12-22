@@ -44,7 +44,7 @@ export interface CharacterState extends Character {
 
 export type CharacterEditState = {
   id: number | string,
-  outline_id: number | string,
+  outline_id: number | string | undefined,
   novel_id: number | string,
   name: string,
   image: string,

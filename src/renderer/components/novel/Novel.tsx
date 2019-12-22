@@ -22,7 +22,7 @@ import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
-import { getWordviewGivenNovel } from '../../../db/operations/background-ops';
+import { getWorldviewGivenNovel } from '../../../db/operations/background-ops';
 
 // utils
 import { tagColors, imageMapping } from '../../utils/constants';
@@ -106,9 +106,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	// get worldview
 	getWorldview = (id: string) => {
-		getWordviewGivenNovel(id)
-			.then(({ dataValues }: { dataValues: BackgroundDataValue }) => {
-				this.setState({ wordview: dataValues.content });
+		getWorldviewGivenNovel(id)
+			.then((result: any) => {
+				// datavalues might be null here
+				if (result) this.setState({ wordview: result.dataValues.content });
+				else this.setState({ wordview: '暂时还没有世界观设定...' });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

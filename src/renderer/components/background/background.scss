@@ -5,7 +5,15 @@
   overflow-y: scroll;
 
   .background-content {
+    width: 80%;
+    margin: 0 auto;
+
     .background-section {
+      margin: 20px 0;
+      white-space: pre-line;
+      word-break: break-all;
+      line-height: 26px;
+
       // question mark icon
       .question-mark {
         cursor: help;

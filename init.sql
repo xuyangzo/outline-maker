@@ -141,6 +141,19 @@ VALUES
 和魂兽签订魂约后，可以去巴比伦塔的地下一层进行考核，通过后会进行御兽使等级划分
 基础生产力大部分是由魂兽提供的，而魂兽的地位就相当于是口袋妖怪里面的精灵');
 
+INSERT INTO backgrounds
+  (novel_id, title, content)
+VALUES
+  (1, '等级体系', '人人都恐怖如斯');
+
+INSERT INTO backgrounds
+  (novel_id, title, content)
+VALUES
+  (1, '圣者', '每一代圣者都是1男（领导者）+ 4女（后宫），仅仅这一个万年时代有，目的是为了拯救世界
+每隔 1000 年，四大圣树便会重获新生，并且会有一代圣者诞生，故事开始时便是第九代圣者
+每一代圣者大概都只存在了十年，然后四位女性便再次化作了圣树的种子，男性则是死于天魔下
+圣者诞生的目的就是为了对抗破灭天魔，虽然也顺便处理过一些别的魂兽（比如说玛丽雷基）');
+
 INSERT INTO locations
   (novel_id, name, intro, texture, location, controller)
 VALUES

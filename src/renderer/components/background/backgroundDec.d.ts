@@ -2,15 +2,16 @@ import { RouteComponentProps } from 'react-router-dom';
 
 // params of url
 interface MatchParams {
-  novel_id: string;
+  id: string;
 }
 
 // complete background declaration
 export interface Background {
   id: number;
-  novel_id: number;
   title: string;
   content: string;
+  created?: boolean;
+  updated?: boolean;
 }
 
 /**
@@ -28,8 +29,9 @@ export interface BackgroundProps extends RouteComponentProps<MatchParams> {
 
 export interface BackgroundState {
   novel_id: string;
+  backgrounds: Background[];
 }
 
-export interface BackgroundEditState {
+export interface BackgroundEditState extends BackgroundState {
 
 }

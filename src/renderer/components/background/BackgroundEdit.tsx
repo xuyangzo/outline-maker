@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button, Tooltip } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Tooltip, Input } from 'antd';
 import classnames from 'classnames';
+const { TextArea } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -10,15 +11,16 @@ import { BackgroundProps, BackgroundState, Background as BackgroundDec, Backgrou
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getBackgroundsGivenNovel } from '../../../db/operations/background-ops';
+import { getBackgroundsGivenNovel, createAndUpdateBackgrounds } from '../../../db/operations/background-ops';
 
 // utils
+import { ctrlsPress } from '../../utils/utils';
 import { backgroundIllustrations } from '../../utils/constants';
 
 // sass
 import './background.scss';
 
-class Background extends React.Component<BackgroundProps, BackgroundState> {
+class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 	constructor(props: BackgroundProps) {
 		super(props);
 		this.state = {
@@ -28,7 +30,75 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 	}
 
 	componentDidMount = () => {
+		// add event listener for save shortcut
+		document.addEventListener('keydown', this.onSavePress);
+
 		this.setBackground();
+	}
+
+	componentWillUnmount = () => {
+		// remove event listener
+		document.removeEventListener('keydown', this.onSavePress);
+	}
+
+	// when save shortcut is presses
+	onSavePress = (e: KeyboardEvent) => {
+		ctrlsPress(e, this.onSave);
+	}
+
+	// when input field changes
+	onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const title: string = e.target.value;
+	}
+
+	// when textarea changes
+	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const title: string = e.target.name;
+		const content: string = e.target.value;
+
+		/**
+		 * if title is null/undefined, then current content should not appear in the list
+		 * therefore, only need to concat with no title specified
+		 */
+		if (!title) {
+			this.setState((prevState: BackgroundState) => ({
+				...prevState,
+				backgrounds: prevState.backgrounds.concat({ content, title: '', id: -1 }),
+				created: true
+			}));
+			return;
+		}
+
+		// set a flag to mark whether current array contains this property
+		let contain = false;
+		const backgrounds: BackgroundDec[] = this.state.backgrounds.map((background: BackgroundDec) => {
+			if (background.title === title) {
+				background.content = content;
+				contain = true;
+				background.updated = true;
+			}
+			return background;
+		});
+
+		// if contains, directly update, otherwise push then update
+		if (contain) {
+			this.setState({ backgrounds });
+		} else {
+			this.setState((prevState: BackgroundState) => ({
+				...prevState,
+				backgrounds: prevState.backgrounds.concat({ title, content, id: -1, created: true })
+			}));
+		}
+	}
+
+	onSave = () => {
+		createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
+			.then(() => {
+				Message.success('更新成功！');
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
 	setBackground = () => {
@@ -49,9 +119,9 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 		const { expand } = this.props;
 		const { backgrounds } = this.state;
 
-		let wordview = '还没有世界观...';
-		let levelSystem = '还没有等级体系...';
-		let currencySystem = '还没有货币体系...';
+		let wordview = '';
+		let levelSystem = '';
+		let currencySystem = '';
 		// filter worldview, level system, currency system out of arrays
 		const leftBackgrounds: BackgroundDec[] = backgrounds.filter((background: BackgroundDec) => {
 			if (background.title === '世界观') {
@@ -84,13 +154,21 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 					className="main-header"
 					extra={[
 						<Button
+							key="quit"
+							type="danger"
+							ghost
+							onClick={() => { this.props.history.go(-1); }}
+						>
+							<Icon type="rollback" />取消编辑
+						</Button>,
+						<Button
 							key="edit"
 							type="danger"
-							className="orange-button"
-							onClick={() => { this.props.history.push(this.props.location.pathname.concat('/edit')); }}
+							className="green-button"
+							// onClick={this.onSaveAndQuit}
 							ghost
 						>
-							<Icon type="edit" />编辑
+							<Icon type="edit" />保存并退出编辑
 						</Button>
 					]}
 				/>
@@ -109,7 +187,13 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 							</Tooltip>
 						</Col>
 						<Col span={19}>
-							{wordview}
+							<TextArea
+								rows={6}
+								placeholder="请注意，世界观是必填的！！！"
+								value={wordview}
+								onChange={this.onTextAreaChange}
+								name="世界观"
+							/>
 						</Col>
 					</Row>
 					<Row className="background-section">
@@ -123,7 +207,13 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 							</Tooltip>
 						</Col>
 						<Col span={19}>
-							{levelSystem}
+							<TextArea
+								rows={6}
+								placeholder="请注意，等级体系是必填的！！！"
+								value={levelSystem}
+								onChange={this.onTextAreaChange}
+								name="等级体系"
+							/>
 						</Col>
 					</Row>
 					<Row className="background-section">
@@ -137,7 +227,13 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 							</Tooltip>
 						</Col>
 						<Col span={19}>
-							{currencySystem}
+							<TextArea
+								rows={6}
+								placeholder="请注意，货币体系是必填的！！！"
+								value={currencySystem}
+								onChange={this.onTextAreaChange}
+								name="货币体系"
+							/>
 						</Col>
 					</Row>
 					{
@@ -156,4 +252,4 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 	}
 }
 
-export default withRouter(Background);
+export default withRouter(BackgroundEdit);

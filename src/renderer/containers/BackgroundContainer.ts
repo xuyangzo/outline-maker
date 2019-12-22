@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import Background from '../components/background/Background';
-// import LocationEdit from '../components/location/LocationEdit';
+import BackgroundEdit from '../components/background/BackgroundEdit';
 import { RootState } from '../reducers';
 
 const mapStateToProps = (state: RootState) => ({
@@ -9,4 +9,4 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 export const BackgroundContainer = connect(mapStateToProps)(Background);
-// export const BackgroundEditContainer = connect(mapStateToProps)(BackgroundEdit);
+export const BackgroundEditContainer = connect(mapStateToProps)(BackgroundEdit);

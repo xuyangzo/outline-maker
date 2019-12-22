@@ -44,10 +44,23 @@ export const tags = [
 	'凡人流', '热血', '重生', '穿越'
 ];
 
-type LocationIllustrations = {
-	intro: string,
-	texture: string
+interface BackgroundIllustrations {
+	worldview: string;
+	levelSystem: string;
+	currencySystem: string;
+}
+
+// illustration texts for background properties
+export const backgroundIllustrations: BackgroundIllustrations = {
+	worldview: '世界整体的设定，包含但不限于：\n\n1. 存在的种族\n2. 不同的地图\n3. 基础规则\n4. 生产力规则',
+	levelSystem: '战斗的等级体系。\n\n比如大斗师、斗皇、斗圣等等。',
+	currencySystem: '世界的货币体系。主要有：\n\n1. 不同货币的兑换比例\n2. 不同货币的购买力\n\n提前设置好可以避免写脱。'
 };
+
+interface LocationIllustrations {
+	intro: string;
+	texture: string;
+}
 
 const introHelper: string = '1. 该势力的地位\n2. 该势力的成员\n3. 该势力的特点\n';
 const introHelper2: string = '4. 该势力的人文环境';
@@ -58,13 +71,13 @@ export const locationIllustrations: LocationIllustrations = {
 	texture: '包含了对于该势力外观的描述：\n\n比如说建筑的模样，自然景观等等'
 };
 
-type CharacterIllustrations = {
-	nickname: string,
-	identity: string,
-	appearance: string,
-	characteristics: string,
-	experience: string
-};
+interface CharacterIllustrations {
+	nickname: string;
+	identity: string;
+	appearance: string;
+	characteristics: string;
+	experience: string;
+}
 
 const characteristicsHelper: string = '例如：”性格胆小，害怕与别人交流，害怕任何眼神接触。“';
 
