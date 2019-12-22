@@ -43,61 +43,164 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 
 	// when save shortcut is presses
 	onSavePress = (e: KeyboardEvent) => {
-		ctrlsPress(e, this.onSave);
+		ctrlsPress(e, () => this.onSave(true));
+	}
+
+	// when add new property
+	onAddProperty = () => {
+		this.setState((prevState: BackgroundState) => ({
+			...prevState,
+			backgrounds: prevState.backgrounds.concat({ id: -1, title: '', content: '', created: true })
+		}));
+	}
+
+	// when delete property
+	onDeleteProperty = (index: number) => {
+		/**
+		 * filter based on index (after exclude all pre-defined properties)
+		 * 1) if current element is created element (which means it does not exist in database)
+		 * 		just delete it from the state
+		 * 2) if current element is not created element, need to mark it as deleted
+		 */
+		let curr = 0;
+		const backgrounds: BackgroundDec[] = this.state.backgrounds.filter((background: BackgroundDec) => {
+			if (background.title !== '世界观' &&
+				background.title !== '等级体系' &&
+				background.title !== '货币体系'
+			) {
+				/**
+				 * check if curr === index
+				 * if so, we find the index to update
+				 */
+				if (curr === index) {
+					curr++;
+					if (background.created) return false;
+					background.deleted = true;
+				}
+				curr++;
+			}
+			return true;
+		});
+
+		this.setState({ backgrounds });
 	}
 
 	// when input field changes
-	onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	onInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
 		const title: string = e.target.value;
-	}
-
-	// when textarea changes
-	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const title: string = e.target.name;
-		const content: string = e.target.value;
 
 		/**
-		 * if title is null/undefined, then current content should not appear in the list
-		 * therefore, only need to concat with no title specified
+		 * iterate through all inputs and filter all pre-determined properties
+		 * then check if current property is in the array by index
 		 */
-		if (!title) {
-			this.setState((prevState: BackgroundState) => ({
-				...prevState,
-				backgrounds: prevState.backgrounds.concat({ content, title: '', id: -1 }),
-				created: true
-			}));
-			return;
-		}
-
-		// set a flag to mark whether current array contains this property
+		let curr = 0;
 		let contain = false;
 		const backgrounds: BackgroundDec[] = this.state.backgrounds.map((background: BackgroundDec) => {
-			if (background.title === title) {
-				background.content = content;
-				contain = true;
-				background.updated = true;
+			if (background.title !== '世界观' &&
+				background.title !== '等级体系' &&
+				background.title !== '货币体系'
+			) {
+				/**
+				 * check if curr === index
+				 * if so, we find the index to update
+				 */
+				if (curr === index) {
+					background.title = title;
+					background.updated = true;
+					contain = true;
+				}
+				curr++;
 			}
 			return background;
 		});
 
-		// if contains, directly update, otherwise push then update
+		// if background contains current title, just update
 		if (contain) {
 			this.setState({ backgrounds });
 		} else {
+			// otherwise, only create new title
 			this.setState((prevState: BackgroundState) => ({
 				...prevState,
-				backgrounds: prevState.backgrounds.concat({ title, content, id: -1, created: true })
+				backgrounds: prevState.backgrounds.concat({ title, content: '', id: -1, created: true })
 			}));
 		}
 	}
 
-	onSave = () => {
-		createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
+	// when textarea changes
+	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number | null) => {
+		const title: string = e.target.name;
+		const content: string = e.target.value;
+
+		/**
+		 * iterate through all backgrounds
+		 * 1) if current title exists, just update it
+		 * 2) if current title exists but it empty, just update it
+		 * 3) if current title does not exist, need to create it
+		 */
+		let curr = 0;
+		let contain = false;
+		const backgrounds: BackgroundDec[] = this.state.backgrounds.map((background: BackgroundDec) => {
+			/**
+			 * this should only happen to per-defined properties
+			 * because only pre-defined properties have name
+			 */
+			if (background.title === title) {
+				background.content = content;
+				background.updated = true;
+				contain = true;
+				return background;
+			}
+
+			if (background.title !== '世界观' &&
+				background.title !== '等级体系' &&
+				background.title !== '货币体系'
+			) {
+				/**
+				 * check if curr === index
+				 * if so, we find the index to update
+				 */
+				if (curr === index) {
+					background.content = content;
+					background.updated = true;
+					contain = true;
+				}
+				curr++;
+			}
+			return background;
+		});
+
+		// if background contains current content, just update
+		if (contain) {
+			this.setState({ backgrounds });
+		} else {
+			// otherwise, only create new content
+			this.setState((prevState: BackgroundState) => ({
+				...prevState,
+				backgrounds: prevState.backgrounds.concat({ content, title: '', id: -1, created: true })
+			}));
+		}
+
+		return;
+	}
+
+	// save
+	onSave = (shouldRerender: boolean) => {
+		return createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
 			.then(() => {
 				Message.success('更新成功！');
+				if (shouldRerender) this.setBackground();
+				Promise.resolve();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
+			});
+	}
+
+	// save and quit
+	onSaveAndQuit = () => {
+		this.onSave(false)
+			.then(() => {
+				this.props.history.go(-1);
 			});
 	}
 
@@ -165,7 +268,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 							key="edit"
 							type="danger"
 							className="green-button"
-							// onClick={this.onSaveAndQuit}
+							onClick={this.onSaveAndQuit}
 							ghost
 						>
 							<Icon type="edit" />保存并退出编辑
@@ -191,7 +294,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 								rows={6}
 								placeholder="请注意，世界观是必填的！！！"
 								value={wordview}
-								onChange={this.onTextAreaChange}
+								onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onTextAreaChange(e, null)}
 								name="世界观"
 							/>
 						</Col>
@@ -211,7 +314,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 								rows={6}
 								placeholder="请注意，等级体系是必填的！！！"
 								value={levelSystem}
-								onChange={this.onTextAreaChange}
+								onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onTextAreaChange(e, null)}
 								name="等级体系"
 							/>
 						</Col>
@@ -231,21 +334,52 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 								rows={6}
 								placeholder="请注意，货币体系是必填的！！！"
 								value={currencySystem}
-								onChange={this.onTextAreaChange}
+								onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onTextAreaChange(e, null)}
 								name="货币体系"
 							/>
 						</Col>
 					</Row>
 					{
-						leftBackgrounds.map((background: BackgroundDec) => (
-							<Row className="background-section" key={background.title}>
-								<Col span={3} offset={2}>{background.title}：</Col>
-								<Col span={19}>
-									{background.content}
-								</Col>
-							</Row>
-						))
+						leftBackgrounds.map((background: BackgroundDec, index: number) => {
+							if (!background.deleted) {
+								return (
+									<Row className="background-section" key={index}>
+										<Col span={3} offset={2}>
+											<div className="delete-icon-container">
+												<Icon
+													type="delete"
+													className="delete-icon"
+													onClick={() => this.onDeleteProperty(index)}
+												/>
+											</div>
+											<input
+												value={background.title}
+												onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onInputChange(e, index)}
+												className="background-input"
+											/>
+										</Col>
+										<Col span={19}>
+											<TextArea
+												rows={6}
+												placeholder="自定义内容"
+												value={background.content}
+												onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => this.onTextAreaChange(e, index)}
+											/>
+										</Col>
+									</Row>
+								);
+							}
+							return '';
+						})
 					}
+					<Button
+						type="primary"
+						ghost
+						className="green-button background-add-button"
+						onClick={this.onAddProperty}
+					>
+						<Icon type="plus" />
+					</Button>
 				</div>
 			</Col>
 		);

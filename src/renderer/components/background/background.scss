@@ -8,11 +8,50 @@
     width: 80%;
     margin: 0 auto;
 
+    // add button
+    .background-add-button {
+      width: 91.66%;
+      margin-left: 8.33%;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+
     .background-section {
       margin: 20px 0;
       white-space: pre-line;
       word-break: break-all;
       line-height: 26px;
+      position: relative;
+
+      // delete icon
+      .delete-icon-container {
+        position: absolute;
+        left: -25px;
+        top: 3px;
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        &:hover {
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .delete-icon {
+          cursor: pointer;
+          color: crimson;
+          font-size: 16px;
+        }
+      }
+
+      // background input
+      .background-input {
+        width: 60px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid black;
+        overflow: visible;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
 
       // question mark icon
       .question-mark {

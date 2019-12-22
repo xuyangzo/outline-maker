@@ -12,6 +12,7 @@ export interface Background {
   content: string;
   created?: boolean;
   updated?: boolean;
+  deleted?: boolean;
 }
 
 /**

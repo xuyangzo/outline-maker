@@ -47,12 +47,30 @@ const createBackground = (id: string | number, props: BackgroundCreateTemplate):
 		});
 };
 
+// delete background
+const deleteBackground = (id: string | number): Promise<any> => {
+	return BackgroundModal
+		.destroy({
+			where: { id }
+		});
+};
+
 // do update and create at the same time
 export const createAndUpdateBackgrounds = (id: string | number, lists: BackgroundTemplate[]): Promise<any> => {
 	const promises: Promise<any>[] = [];
 	lists.forEach((background: BackgroundTemplate) => {
-		if (background.created) promises.push(createBackground(id, { title: background.title, content: background.content }));
-		else if (background.updated) {
+		// delete
+		if (background.deleted) promises.push(deleteBackground(background.id));
+		// create
+		else if (background.created) {
+			promises.push(
+				createBackground(
+					id,
+					{ title: background.title, content: background.content }
+				)
+			);
+		} else if (background.updated) {
+			// update
 			promises.push(
 				updateBackground(
 					background.id,

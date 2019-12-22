@@ -93,7 +93,7 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 		const editmenu = (
 			<Menu>
 				<Menu.Item>
-					<Icon type="profile" />编辑简介
+					<Icon type="profile" />编辑模式
 				</Menu.Item>
 				<Menu.Item className="delete-outline-menuitem">
 					<Icon type="close-circle" />删除大纲
