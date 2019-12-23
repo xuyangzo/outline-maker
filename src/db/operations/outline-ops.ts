@@ -15,12 +15,19 @@ interface OutlineTemplate {
 }
 
 // get outline given id
-export const getOutline = (id: string): Promise<any> => {
+export const getOutline = (id: string | number): Promise<any> => {
 	return Outlines
 		.findOne({
-			where: {
-				id
-			}
+			where: { id }
+		});
+};
+
+// get outline's id, title and description
+export const getOutlineShort = (id: string | number): Promise<any> => {
+	return Outlines
+		.findOne({
+			attributes: ['id', 'title', 'description'],
+			where: { id }
 		});
 };
 

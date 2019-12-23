@@ -19,10 +19,7 @@ export interface TrashProps extends RouteComponentProps {
 }
 
 export interface TrashState {
-	outlines: Outline[];
+	outlines: number[];
 	characters: number[];
-	confirmVisible: boolean;
-	backVisible: boolean;
-	selected: number;
 	shouldRender: boolean;
 }

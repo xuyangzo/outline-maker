@@ -53,6 +53,12 @@ export interface OutlineDetailDataValue {
 	updatedAt: string;
 }
 
+export interface OutlineShortDataValue {
+	id: number;
+	title: string;
+	description: string;
+}
+
 export type ContentCard = {
 	id?: number,
 	content: string,
