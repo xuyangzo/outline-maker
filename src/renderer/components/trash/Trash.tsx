@@ -11,7 +11,7 @@ import { TrashProps, TrashState } from './TrashDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
-import { deleteTrash, putbackOutline, getAllTrashesDetail } from '../../../db/operations/trash-ops';
+import { deleteOutlinePermanently, putbackOutline, getAllTrashesDetail } from '../../../db/operations/trash-ops';
 
 // sass
 import './trash.scss';
@@ -69,7 +69,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	// permanent deletion
 	onDelete = () => {
-		deleteTrash(this.state.selected)
+		deleteOutlinePermanently(this.state.selected)
 			.then(() => {
 				// alert success
 				Message.success('大纲已永久删除！');

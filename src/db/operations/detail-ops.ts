@@ -30,6 +30,16 @@ export const updateOutlineDetail = (id: string | number | undefined, contentText
 		);
 };
 
+// delete all outline details related to a outline
+export const deleteOutlineDetailGivenOutline = (outline_id: number | string): Promise<any> => {
+	return OutlineDetails
+		.destroy({
+			where: {
+				outline_id
+			}
+		});
+};
+
 // delete all outline details related to a character
 export const deleteOutlineDetailsGivenChar = (character_id: number | string): Promise<any> => {
 	return OutlineDetails

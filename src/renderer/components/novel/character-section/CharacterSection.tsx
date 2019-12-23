@@ -10,7 +10,7 @@ import { Character } from '../../character/characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { deleteCharacter } from '../../../../db/operations/character-ops';
+import { deleteCharacterTemp } from '../../../../db/operations/character-ops';
 
 const CharacterSection = (props: CharacterSectionProps) => {
 	const { characters, novel_id, onCreateCharacter, refreshCharacter } = props;
@@ -38,7 +38,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	// delete character
 	function onDeleteCharacter() {
 		// delete character from db
-		deleteCharacter(selected)
+		deleteCharacterTemp(selected)
 			.then(() => {
 				// alert success
 				Message.success('删除人物成功！');
@@ -108,7 +108,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 					</Button>
 				]}
 			>
-				角色删除后无法恢复！是否继续？
+				角色删除后可以在垃圾箱里恢复！
 			</Modal>
 		</Row>
 	);

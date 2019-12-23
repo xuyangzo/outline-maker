@@ -72,6 +72,11 @@ const Character = sequelize.define(
 			type: Sequelize.STRING,
 			defaultValue: 'white'
 		},
+		deleted: {
+			field: 'deleted',
+			type: Sequelize.INTEGER,
+			defaultValue: 0
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

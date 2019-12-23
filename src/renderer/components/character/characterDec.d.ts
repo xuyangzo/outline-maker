@@ -22,6 +22,7 @@ export interface Character {
   appearance?: string | undefined;
   characteristics?: string | undefined;
   experience?: string | undefined;
+  deleted?: number;
 }
 
 /**

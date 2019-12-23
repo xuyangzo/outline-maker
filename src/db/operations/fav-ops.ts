@@ -1,5 +1,5 @@
 import Favorite from '../models/Favorite';
-import { getAllNonDeletedOutlinesRange, updateOutlineFav } from '../operations/outline-ops';
+import { getAllNonDeletedOutlinesRange, updateOutlineFav, updateOutline } from '../operations/outline-ops';
 
 // antd
 import { message as Message } from 'antd';
@@ -76,13 +76,8 @@ export const cancelFavorite = (id: string | number): Promise<any> => {
 // add to favorite and update outline
 export const addFavorite = (id: string | number): Promise<any> => {
 	return Promise
-		.all([updateOutlineFav(id, 1), addFavoriteHelper(id)])
-		.then(() => {
-			// alert success message
-			Message.success('已添加到收藏夹！');
-			return Promise.resolve();
-		})
-		.catch((err: DatabaseError) => {
-			Message.error(err.message);
-		});
+		.all([
+			updateOutline(id, { fav: 1 }),
+			addFavoriteHelper(id)
+		]);
 };

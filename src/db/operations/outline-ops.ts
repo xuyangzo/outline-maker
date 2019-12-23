@@ -2,12 +2,17 @@ import Outlines from '../models/Outlines';
 import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
-// antd
-import { message as Message } from 'antd';
-
 // type declaration
 import { OutlineModalTemplate } from '../../renderer/components/novel-header/outline-modal/outlineModalDec';
-import { DatabaseError } from 'sequelize';
+
+interface OutlineTemplate {
+	title?: string;
+	description?: string;
+	novel_id?: string | number;
+	scaling?: string;
+	fav?: number;
+	deleted?: number;
+}
 
 // get outline given id
 export const getOutline = (id: string): Promise<any> => {
@@ -79,6 +84,15 @@ export const updateScaling = (id: string | number, scaling: string): Promise<any
 		);
 };
 
+// update outline
+export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<any> => {
+	return Outlines
+		.update(
+			props,
+			{ where: { id } }
+		);
+};
+
 // update outline's fav property
 export const updateOutlineFav = (id: string | number, fav: number): Promise<any> => {
 	return Outlines
@@ -101,14 +115,18 @@ export const updateDeleted = (id: string | number, deleted: number): Promise<any
 export const deleteOutline = (id: string | number): Promise<any> => {
 	return Outlines
 		.destroy({
-			where: {
-				id
-			}
+			where: { id }
 		});
 };
 
-// delete outline
+/**
+ * delete outline temporarily
+ * 1) update outline's deleted property to be 1
+ * 2) add deleted outline to trash
+ */
 export const deleteOutlineTemp = (id: string | number): Promise<any> => {
-	return Promise
-		.all([updateDeleted(id, 1), addTrash(id)]);
+	return Promise.all([
+		updateOutline(id, { deleted: 1 }),
+		addTrash({ outline_id: id })
+	]);
 };

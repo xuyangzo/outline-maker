@@ -1,5 +1,7 @@
 import CharacterModal from '../models/Character';
+import { addTrash } from '../operations/trash-ops';
 import { deleteOutlineDetailsGivenChar } from './detail-ops';
+const Op = require('sequelize').Op;
 
 type CharacterProps = {
 	outline_id?: number | string;
@@ -14,6 +16,7 @@ type CharacterProps = {
 	appearance?: string;
 	characteristics?: string;
 	experience?: string;
+	deleted?: number;
 };
 
 // get character given character id
@@ -31,7 +34,10 @@ export const getAllCharactersByNovel = (id: string | number): Promise<any> => {
 	return CharacterModal
 		.findAll({
 			where: {
-				novel_id: id
+				novel_id: id,
+				deleted: {
+					[Op.ne]: 1
+				}
 			},
 			order: [['id', 'ASC']]
 		});
@@ -82,6 +88,23 @@ export const updateCharacterDetail = (id: string | number, props: CharacterProps
 			{ ...props },
 			{ where: { id } }
 		);
+};
+
+// update charater given outline_id
+export const updateCharacterGivenOutline = (outline_id: string | number, props: CharacterProps) => {
+	return CharacterModal
+		.update(
+			props,
+			{ where: { outline_id } }
+		);
+};
+
+// delete character temporarily
+export const deleteCharacterTemp = (id: string | number): Promise<any> => {
+	return Promise.all([
+		addTrash({ character_id: id }),
+		updateCharacterDetail(id, { deleted: 1 })
+	]);
 };
 
 // delete character

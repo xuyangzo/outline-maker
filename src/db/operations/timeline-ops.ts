@@ -37,3 +37,11 @@ export const deleteTimeline = async (id: string | number): Promise<any> => {
 			where: { id }
 		});
 };
+
+// delete timeline given outline id
+export const deleteTimelineGivenOutline = (outline_id: string | number): Promise<any> => {
+	return TimelineModal
+		.destroy({
+			where: { outline_id }
+		});
+};

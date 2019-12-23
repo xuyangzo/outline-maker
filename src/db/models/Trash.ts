@@ -10,8 +10,20 @@ const Trash = sequelize.define(
 			type: Sequelize.INTEGER,
 			primaryKey: true
 		},
+		novel_id: {
+			field: 'novel_id',
+			type: Sequelize.INTEGER
+		},
 		outline_id: {
 			field: 'outline_id',
+			type: Sequelize.INTEGER
+		},
+		character_id: {
+			field: 'character_id',
+			type: Sequelize.INTEGER
+		},
+		loc_id: {
+			field: 'loc_id',
 			type: Sequelize.INTEGER
 		},
 		createdAt: {

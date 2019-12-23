@@ -1,6 +1,11 @@
 import { RouteComponentProps } from 'react-router-dom';
 
-export interface MainHeaderProps extends RouteComponentProps {
+interface MatchParams {
+  novel_id: string;
+  id: string;
+}
+
+export interface MainHeaderProps extends RouteComponentProps<MatchParams> {
   title: string;
   description: string;
 

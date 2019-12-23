@@ -59,9 +59,9 @@ CREATE TABLE characters
   appearance TEXT,
   characteristics TEXT,
   experience TEXT,
+  deleted INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id),
   FOREIGN KEY (novel_id) REFERENCES novels (id)
 );
 
@@ -116,10 +116,16 @@ CREATE TABLE favorites
 CREATE TABLE trashes
 (
   trash_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
   outline_id INTEGER,
+  character_id INTEGER,
+  loc_id INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id)
+  FOREIGN KEY (novel_id) REFERENCES novels (id),
+  FOREIGN KEY (outline_id) REFERENCES outlines (id),
+  FOREIGN KEY (character_id) REFERENCES characters (character_id),
+  FOREIGN KEY (loc_id) REFERENCES locations (loc_id)
 );
 
 INSERT INTO novels
@@ -159,14 +165,14 @@ VALUES
   (1, '天之塔', '三大世界的最高统治者，并且是所有种族的最高统治者', '一座纯白的塔', '第一世界中央', '天尊');
 
 INSERT INTO characters
-  (novel_id, outline_id, name, color, age, nickname, gender, height, identity, appearance, characteristics, experience)
+  (novel_id, outline_id, name, color, age, nickname, gender, height, identity, appearance, characteristics, experience, deleted)
 VALUES
-  (1, 1, '大佬', '#ffa39e', '18', '老狗', 0, '178', '世界树的传人', '丑,不知道咋说,jj还小', '高傲', '啥也没有');
+  (1, 1, '大佬', '#ffa39e', '18', '老狗', 0, '178', '世界树的传人', '丑,不知道咋说,jj还小', '高傲', '啥也没有', 0);
 
 INSERT INTO characters
-  (novel_id, outline_id, name, color)
+  (novel_id, outline_id, name, color, deleted)
 VALUES
-  (1, 1, '不是我', '#ffbb96');
+  (1, 1, '不是我', '#ffbb96', 0);
 
 INSERT INTO timelines
   (outline_id, time)

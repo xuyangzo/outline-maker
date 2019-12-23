@@ -101,20 +101,25 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	// add outline to favorite
 	onAddFav = () => {
-		const id: string = this.props.location.pathname.slice(9);
-		addFavorite(id).then(() => {
-			// set heart icon to be filled
-			this.setState({ isFav: true });
-		});
+		addFavorite(this.props.match.params.id)
+			.then(() => {
+				// alert success
+				Message.success('已添加到收藏夹！');
+				// set heart icon to be filled
+				this.setState({ isFav: true });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
 	}
 
 	// remove outline from favorite
 	onCancelFav = () => {
-		const id: string = this.props.location.pathname.slice(9);
-		cancelFavorite(id).then(() => {
-			// set heart icon to be outlined
-			this.setState({ isFav: false });
-		});
+		cancelFavorite(this.props.match.params.id)
+			.then(() => {
+				// set heart icon to be outlined
+				this.setState({ isFav: false });
+			});
 	}
 
 	// set heart icon
