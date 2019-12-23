@@ -1,6 +1,6 @@
 import Trash from '../models/Trash';
 import { deleteFavoriteHelper } from './fav-ops';
-import { updateCharacterGivenOutline, deleteCharacter } from './character-ops';
+import { updateCharacterGivenOutline, deleteCharacter, updateCharacter } from './character-ops';
 import { deleteTimelineGivenOutline } from './timeline-ops';
 import { deleteOutlineDetailsGivenOutline, deleteOutlineDetailsGivenChar } from './detail-ops';
 import { deleteOutline, updateOutline } from './outline-ops';
@@ -88,6 +88,16 @@ export const deleteCharacterPermanently = async (id: string | number): Promise<a
 		deleteCharacterHelper(id)
 	]);
 	return deleteCharacter(id);
+};
+
+/**
+ * put back character
+ */
+export const putbackCharacter = (id: string | number): Promise<any> => {
+	return Promise.all([
+		deleteCharacterHelper(id),
+		updateCharacter(id, { deleted: 0 })
+	]);
 };
 
 // get title and description for all trashes

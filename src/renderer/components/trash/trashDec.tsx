@@ -1,5 +1,5 @@
 import { RouteComponentProps } from 'react-router-dom';
-import { Character } from '../character/characterDec';
+import { CharacterShortDataValue } from '../character/characterDec';
 import { Outline } from '../sidebar/sidebarDec';
 
 export interface TrashDataValue {
@@ -20,7 +20,7 @@ export interface TrashProps extends RouteComponentProps {
 
 export interface TrashState {
 	outlines: Outline[];
-	characters: Character[];
+	characters: number[];
 	confirmVisible: boolean;
 	backVisible: boolean;
 	selected: number;

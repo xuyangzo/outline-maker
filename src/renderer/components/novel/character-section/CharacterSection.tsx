@@ -37,11 +37,11 @@ const CharacterSection = (props: CharacterSectionProps) => {
 
 	// delete character
 	function onDeleteCharacter() {
-		// delete character from db
+		// delete character temporarily
 		deleteCharacterTemp(selected)
 			.then(() => {
 				// alert success
-				Message.success('删除人物成功！');
+				Message.success('删除角色成功！');
 				// close modal
 				onCloseModal();
 				// refresh characters

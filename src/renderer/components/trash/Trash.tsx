@@ -6,15 +6,18 @@ const { Panel } = Collapse;
 // enable history
 import { withRouter } from 'react-router-dom';
 
+// custom components
+import CharacterTrash from './character-trash/CharacterTrash';
+
 // type declaration
 import { DatabaseError } from 'sequelize';
 import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
-import { Character, CharacterDataValue } from '../character/characterDec';
+import { CharacterShortDataValue } from '../character/characterDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
 import { deleteOutlinePermanently, putbackOutline, getAllTrashes } from '../../../db/operations/trash-ops';
-import { getCharacter } from '../../../db/operations/character-ops';
+import { getCharacterShort } from '../../../db/operations/character-ops';
 
 // sass
 import './trash.scss';
@@ -54,7 +57,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					if (loc_id) locations.push(loc_id);
 				});
 
-				this.getCharacters(characters);
+				this.setState({ characters });
 
 				// all detailed outlines in trash
 				this.setState({
@@ -150,20 +153,30 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			});
 	}
 
-	// get characters
-	getCharacters = (characters: number[]) => {
-		const promises: Promise<any>[] = characters.map((character_id: number) => {
-			return getCharacter(character_id);
-		});
-		Promise
-			.all(promises)
+	// get all trashes
+	getTrashes = () => {
+		getAllTrashes()
 			.then((result: any) => {
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name } = dataValues;
-					return { id, name };
+				// filter novels, outlines, characters, locations
+				const novels: number[] = [];
+				const outlines: number[] = [];
+				const characters: number[] = [];
+				const locations: number[] = [];
+				result.forEach(({ dataValues }: { dataValues: TrashDataValue }) => {
+					const { novel_id, outline_id, character_id, loc_id } = dataValues;
+					/**
+					 * each array does not conflict with each other
+					 */
+					if (novel_id) novels.push(novel_id);
+					if (outline_id) outlines.push(outline_id);
+					if (character_id) characters.push(character_id);
+					if (loc_id) locations.push(loc_id);
 				});
 
 				this.setState({ characters });
+			})
+			.catch((err: DatabaseError) => {
+				console.error(err);
 			});
 	}
 
@@ -181,7 +194,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				}
 			>
 				{
-					(outlines.length === 0 && shouldRender) && (
+					(!outlines.length && !characters.length && shouldRender) && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
@@ -190,34 +203,13 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					)
 				}
 				{
-					outlines.length && characters.length && shouldRender && (
+					(outlines.length || characters.length) && shouldRender && (
 						<Collapse defaultActiveKey={['characters', 'outlines']}>
-							<Panel header="人物列表" key="characters">
-								<Row>
-									{
-										characters.map((character: Character) => (
-											<Col span={8} key={character.id}>
-												<Card
-													title={character.name}
-													bordered={false}
-													hoverable
-													className="custom-card"
-												>
-													<Button
-														type="danger"
-														ghost
-														block
-														className="green-button put-back-button"
-													// onClick={() => this.onBackOpen(character.id)}
-													>
-														放回原处
-													</Button>
-													<Button type="danger" ghost block>永久删除</Button>
-												</Card>
-											</Col>
-										))
-									}
-								</Row>
+							<Panel header="角色列表" key="characters">
+								<CharacterTrash
+									characters={characters}
+									refresh={this.getTrashes}
+								/>
 							</Panel>
 							<Panel header="大纲列表" key="outlines">
 								<Row>

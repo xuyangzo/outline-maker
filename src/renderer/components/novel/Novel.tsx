@@ -252,7 +252,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 								查看更多设定 <Icon type="arrow-right" />
 							</Button>
 						</Panel>
-						<Panel header="人物列表" key="characters">
+						<Panel header="角色列表" key="characters">
 							{
 								shouldRenderCharacter && (
 									<CharacterSection

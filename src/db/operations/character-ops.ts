@@ -1,9 +1,8 @@
 import CharacterModal from '../models/Character';
 import { addTrash } from '../operations/trash-ops';
-import { deleteOutlineDetailsGivenChar } from './detail-ops';
 const Op = require('sequelize').Op;
 
-type CharacterProps = {
+type CharacterTemplate = {
 	outline_id?: number | string;
 	novel_id?: number | string;
 	name?: string;
@@ -26,6 +25,15 @@ export const getCharacter = (id: string | number): Promise<any> => {
 			where: {
 				id
 			}
+		});
+};
+
+// get id and name of character given character id
+export const getCharacterShort = (id: string | number): Promise<any> => {
+	return CharacterModal
+		.findOne({
+			attributes: ['id', 'name'],
+			where: { id }
 		});
 };
 
@@ -70,28 +78,28 @@ export const createCharacter = (
 };
 
 // update current character
-export const updateCharacter = (id: string | number, name: string, color: string): Promise<any> => {
-	const modalToUpdate: { name?: string, color?: string } = {};
-	if (name) modalToUpdate.name = name;
-	if (color) modalToUpdate.color = color;
-	return CharacterModal
-		.update(
-			modalToUpdate,
-			{ where: { id } }
-		);
-};
+// export const updateCharacter = (id: string | number, name: string, color: string): Promise<any> => {
+// 	const modalToUpdate: { name?: string, color?: string } = {};
+// 	if (name) modalToUpdate.name = name;
+// 	if (color) modalToUpdate.color = color;
+// 	return CharacterModal
+// 		.update(
+// 			modalToUpdate,
+// 			{ where: { id } }
+// 		);
+// };
 
-// update character with more details
-export const updateCharacterDetail = (id: string | number, props: CharacterProps) => {
+// update character with given props
+export const updateCharacter = (id: string | number, props: CharacterTemplate) => {
 	return CharacterModal
 		.update(
-			{ ...props },
+			props,
 			{ where: { id } }
 		);
 };
 
 // update charater given outline_id
-export const updateCharacterGivenOutline = (outline_id: string | number, props: CharacterProps) => {
+export const updateCharacterGivenOutline = (outline_id: string | number, props: CharacterTemplate) => {
 	return CharacterModal
 		.update(
 			props,
@@ -103,7 +111,7 @@ export const updateCharacterGivenOutline = (outline_id: string | number, props: 
 export const deleteCharacterTemp = (id: string | number): Promise<any> => {
 	return Promise.all([
 		addTrash({ character_id: id }),
-		updateCharacterDetail(id, { deleted: 1 })
+		updateCharacter(id, { deleted: 1 })
 	]);
 };
 

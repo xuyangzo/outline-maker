@@ -40,7 +40,7 @@ const LocationSection = (props: LocationSectionProps) => {
 
 	// delete location
 	function onDeleteLocation() {
-		// delete location from db
+		// delete location temporarily
 		deleteLocation(selected)
 			.then(() => {
 				// alert success

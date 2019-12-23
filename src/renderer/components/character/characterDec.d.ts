@@ -34,6 +34,11 @@ export interface CharacterDataValue extends Character {
   updatedAt: string;
 }
 
+export interface CharacterShortDataValue {
+  id: number;
+  name: string;
+}
+
 
 export interface CharacterProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
