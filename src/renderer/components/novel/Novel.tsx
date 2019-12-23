@@ -8,10 +8,12 @@ import { withRouter } from 'react-router-dom';
 
 // custom components
 import NovelHeader from '../novel-header/NovelHeader';
+import CharacterSection from './character-section/CharacterSection';
+import LocationSection from './location-section/LocationSection';
+import OutlineSection from './outline-section/OutlineSection';
 
 // type declaration
 import { NovelProps, NovelState } from './novelDec';
-import { BackgroundDataValue } from '../background/backgroundDec';
 import { Location, LocationDataValue } from '../location/locationDec';
 import { Character, CharacterDataValue } from '../character/characterDec';
 import { NovelDataValue, OutlineDataValue, Outline } from '../sidebar/sidebarDec';
@@ -72,6 +74,21 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
+	}
+
+	// create character
+	onCreateCharacter = () => {
+		this.setState({ createCharacter: true });
+	}
+
+	// create outline
+	onCreateOutline = () => {
+		this.setState({ createOutline: true });
+	}
+
+	// create location
+	onCreateLocation = () => {
+		this.setState({ createLocation: true });
 	}
 
 	// cancel create character
@@ -236,112 +253,40 @@ class Novel extends React.Component<NovelProps, NovelState> {
 							</Button>
 						</Panel>
 						<Panel header="人物列表" key="characters">
-							<Row>
-								{
-									characters.map((character: Character) => (
-										<Col span={6} key={character.id}>
-											<Card
-												title={character.name}
-												bordered={false}
-												hoverable
-												className="custom-card"
-												onClick={() => {
-													this.props.history.push(`/character/${this.props.match.params.id}/${character.id}`);
-												}}
-											>
-												<img src={character.image} alt="no person" />
-											</Card>
-										</Col>
-									))
-								}
-								{
-									shouldRenderCharacter && !characters.length && (
-										<Col span={6}>
-											<Card
-												title="还没有角色哦..."
-												bordered={false}
-												hoverable
-												className="custom-card add-character-card"
-												onClick={() => { this.setState({ createCharacter: true }); }}
-											>
-												<Icon type="user-add" /> 新建角色
-											</Card>
-										</Col>
-									)
-								}
-							</Row>
+							{
+								shouldRenderCharacter && (
+									<CharacterSection
+										characters={characters}
+										novel_id={id}
+										onCreateCharacter={this.onCreateCharacter}
+										refreshCharacter={this.getCharacters}
+									/>
+								)
+							}
 						</Panel>
 						<Panel header="势力列表" key="locations">
-							<Row>
-								{
-									locations.map((location: Location) => (
-										<Col span={8} key={location.id}>
-											<Card
-												title={location.name}
-												bordered={false}
-												hoverable
-												className="custom-card location-card"
-												onClick={() => {
-													this.props.history.push(`/location/${this.props.match.params.id}/${location.id}`);
-												}}
-											>
-												<img src={location.image ? location.image : unknownArea} alt="没图" />
-											</Card>
-										</Col>
-									))
-								}
-								{
-									shouldRenderLocation && !locations.length && (
-										<Col span={6}>
-											<Card
-												title="还没有势力哦..."
-												bordered={false}
-												hoverable
-												className="custom-card add-character-card"
-												onClick={() => { this.setState({ createLocation: true }); }}
-											>
-												<Icon type="usergroup-add" /> 新建势力
-											</Card>
-										</Col>
-									)
-								}
-							</Row>
+							{
+								shouldRenderLocation && (
+									<LocationSection
+										locations={locations}
+										novel_id={id}
+										onCreateLocation={this.onCreateLocation}
+										refreshLocation={this.getLocations}
+									/>
+								)
+							}
 						</Panel>
 						<Panel header="大纲列表" key="outlines">
-							<Row>
-								{
-									outlines.map((outline: Outline) => (
-										<Col span={6} key={outline.id}>
-											<Card
-												title={outline.title}
-												bordered={false}
-												hoverable
-												className="custom-card outline-card"
-												onClick={() => {
-													this.props.history.push(`/outline/${id}/${outline.id}`);
-												}}
-											>
-												<p>{outline.description}</p>
-											</Card>
-										</Col>
-									))
-								}
-								{
-									shouldRenderOutline && !outlines.length && (
-										<Col span={6}>
-											<Card
-												title="还没有大纲哦..."
-												bordered={false}
-												hoverable
-												className="custom-card add-character-card"
-												onClick={() => { this.setState({ createOutline: true }); }}
-											>
-												<Icon type="file-add" /> 新建大纲
-											</Card>
-										</Col>
-									)
-								}
-							</Row>
+							{
+								shouldRenderOutline && (
+									<OutlineSection
+										outlines={outlines}
+										novel_id={id}
+										onCreateOutline={this.onCreateOutline}
+										refreshOutline={this.getOutlines}
+									/>
+								)
+							}
 						</Panel>
 					</Collapse>
 				</div>

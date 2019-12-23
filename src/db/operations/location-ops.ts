@@ -50,3 +50,11 @@ export const createLocation = (novel_id: string | number, props: LocationTemplat
 			...props
 		});
 };
+
+// delete location
+export const deleteLocation = (id: string | number): Promise<any> => {
+	return LocationModal
+		.destroy({
+			where: { id }
+		});
+};

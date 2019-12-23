@@ -53,6 +53,25 @@
     }
   }
 
+  // delete icon
+  .delete-icon {
+    color: crimson;
+    position: absolute;
+    top: 5px;
+    right: 22%;
+    z-index: 10;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .card-container {
+    &:hover > .delete-icon {
+      opacity: 1;
+    }
+  }
+
   // custom card
   .custom-card {
     width: 80%;

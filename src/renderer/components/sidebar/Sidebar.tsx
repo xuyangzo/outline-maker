@@ -65,7 +65,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	// close create novel modal
 	onCloseModal = () => {
-		this.setState({ showModal: false });
+		this.setState({ showModal: false, createdName: '', createdDescription: '' });
 	}
 
 	// name input field chanage
@@ -128,6 +128,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		// create outline
 		createNovel(model)
 			.then(({ 'null': id }: { 'null': number }) => {
+				// alert success
 				Message.success('创建小说成功！');
 				// close modal
 				this.onCloseModal();

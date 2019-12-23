@@ -32,7 +32,10 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 	return Outlines
 		.findAll({
 			where: {
-				novel_id: id
+				novel_id: id,
+				deleted: {
+					[Op.ne]: 1
+				}
 			},
 			order: [['id', 'ASC']]
 		});
@@ -107,13 +110,5 @@ export const deleteOutline = (id: string | number): Promise<any> => {
 // delete outline
 export const deleteOutlineTemp = (id: string | number): Promise<any> => {
 	return Promise
-		.all([updateDeleted(id, 1), addTrash(id)])
-		.then(() => {
-			// alert success message
-			Message.success('大纲已被删除！');
-			return Promise.resolve();
-		})
-		.catch((err: DatabaseError) => {
-			Message.error(err.message);
-		});
+		.all([updateDeleted(id, 1), addTrash(id)]);
 };

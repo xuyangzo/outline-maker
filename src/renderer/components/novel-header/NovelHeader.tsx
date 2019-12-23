@@ -114,7 +114,7 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 						</Dropdown>,
 						<Dropdown key="edit" overlay={editmenu} placement="bottomCenter">
 							<Button type="danger" className="orange-button" ghost>
-								<Icon type="edit" />编辑小说
+								<Icon type="edit" />编辑 ...
 							</Button>
 						</Dropdown>,
 						<Button
