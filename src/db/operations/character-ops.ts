@@ -107,9 +107,8 @@ export const deleteCharacterTemp = (id: string | number): Promise<any> => {
 	]);
 };
 
-// delete character
+// delete character permanently
 export const deleteCharacter = async (id: string | number): Promise<any> => {
-	await deleteOutlineDetailsGivenChar(id);
 	return CharacterModal
 		.destroy({
 			where: { id }

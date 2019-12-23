@@ -1,22 +1,29 @@
 import Trash from '../models/Trash';
 import { deleteFavoriteHelper } from './fav-ops';
-import { updateCharacterGivenOutline } from './character-ops';
+import { updateCharacterGivenOutline, deleteCharacter } from './character-ops';
 import { deleteTimelineGivenOutline } from './timeline-ops';
-import { deleteOutlineDetailGivenOutline } from './detail-ops';
-import { deleteOutline, getOutlinesRange, updateOutline } from './outline-ops';
-
-// type declaration
-import { TrashDataValue } from '../../renderer/components/trash/trashDec';
+import { deleteOutlineDetailsGivenOutline, deleteOutlineDetailsGivenChar } from './detail-ops';
+import { deleteOutline, updateOutline } from './outline-ops';
 
 /**
  * helper functions
  */
 // delete outline from trash table
-const deleteOutlineHelper = (id: string | number): Promise<any> => {
+const deleteOutlineHelper = (outline_id: string | number): Promise<any> => {
 	return Trash
 		.destroy({
 			where: {
-				outline_id: id
+				outline_id
+			}
+		});
+};
+
+// delete character from trash table
+const deleteCharacterHelper = (character_id: string | number): Promise<any> => {
+	return Trash
+		.destroy({
+			where: {
+				character_id
 			}
 		});
 };
@@ -50,7 +57,7 @@ export const deleteOutlinePermanently = async (id: string | number): Promise<any
 	await Promise.all([
 		deleteOutlineHelper(id),
 		deleteFavoriteHelper(id),
-		deleteOutlineDetailGivenOutline(id),
+		deleteOutlineDetailsGivenOutline(id),
 		updateCharacterGivenOutline(id, { outline_id: 0 })
 	]);
 	await deleteTimelineGivenOutline(id);
@@ -69,15 +76,21 @@ export const putbackOutline = (id: string | number): Promise<any> => {
 	]);
 };
 
+/**
+ * delete character permanently
+ * 1) delete outline_details from outline_details table given this character_id
+ * 2) delete character from trash table\
+ * 3) then, delete character
+ */
+export const deleteCharacterPermanently = async (id: string | number): Promise<any> => {
+	await Promise.all([
+		deleteOutlineDetailsGivenChar(id),
+		deleteCharacterHelper(id)
+	]);
+	return deleteCharacter(id);
+};
+
 // get title and description for all trashes
-export const getAllTrashesDetail = (): Promise<any> => {
-	return Trash.findAll()
-		.then((result: any) => {
-			// all outlines in trash
-			const outlines: number[] = result.map(({ dataValues }: { dataValues: TrashDataValue }) => {
-				return dataValues.outline_id;
-			});
-			// grab title and description for those outlines
-			return getOutlinesRange(outlines);
-		});
+export const getAllTrashes = (): Promise<any> => {
+	return Trash.findAll();
 };

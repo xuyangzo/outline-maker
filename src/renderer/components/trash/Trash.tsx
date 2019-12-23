@@ -1,17 +1,20 @@
 import * as React from 'react';
-import { Col, Row, Card, Button, Modal, message as Message } from 'antd';
+import { Col, Row, Card, Button, Modal, message as Message, Collapse } from 'antd';
 import classnames from 'classnames';
+const { Panel } = Collapse;
 
 // enable history
 import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { DatabaseError } from 'sequelize';
-import { TrashProps, TrashState } from './TrashDec';
+import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
+import { Character, CharacterDataValue } from '../character/characterDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
-import { deleteOutlinePermanently, putbackOutline, getAllTrashesDetail } from '../../../db/operations/trash-ops';
+import { deleteOutlinePermanently, putbackOutline, getAllTrashes } from '../../../db/operations/trash-ops';
+import { getCharacter } from '../../../db/operations/character-ops';
 
 // sass
 import './trash.scss';
@@ -24,6 +27,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 		super(props);
 		this.state = {
 			outlines: [],
+			characters: [],
 			confirmVisible: false,
 			backVisible: false,
 			selected: 0,
@@ -32,8 +36,26 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	}
 
 	componentDidMount = () => {
-		getAllTrashesDetail()
+		getAllTrashes()
 			.then((result: any) => {
+				// filter novels, outlines, characters, locations
+				const novels: number[] = [];
+				const outlines: number[] = [];
+				const characters: number[] = [];
+				const locations: number[] = [];
+				result.forEach(({ dataValues }: { dataValues: TrashDataValue }) => {
+					const { novel_id, outline_id, character_id, loc_id } = dataValues;
+					/**
+					 * each array does not conflict with each other
+					 */
+					if (novel_id) novels.push(novel_id);
+					if (outline_id) outlines.push(outline_id);
+					if (character_id) characters.push(character_id);
+					if (loc_id) locations.push(loc_id);
+				});
+
+				this.getCharacters(characters);
+
 				// all detailed outlines in trash
 				this.setState({
 					outlines: result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
@@ -67,7 +89,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 		this.setState({ backVisible: false, selected: 0 });
 	}
 
-	// permanent deletion
+	// permanent deletion for outline
 	onDelete = () => {
 		deleteOutlinePermanently(this.state.selected)
 			.then(() => {
@@ -128,9 +150,26 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			});
 	}
 
+	// get characters
+	getCharacters = (characters: number[]) => {
+		const promises: Promise<any>[] = characters.map((character_id: number) => {
+			return getCharacter(character_id);
+		});
+		Promise
+			.all(promises)
+			.then((result: any) => {
+				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+					const { id, name } = dataValues;
+					return { id, name };
+				});
+
+				this.setState({ characters });
+			});
+	}
+
 	render() {
 		const { expand } = this.props;
-		const { shouldRender } = this.state;
+		const { shouldRender, outlines, characters } = this.state;
 
 		return (
 			<Col
@@ -142,7 +181,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				}
 			>
 				{
-					(this.state.outlines.length === 0 && shouldRender) && (
+					(outlines.length === 0 && shouldRender) && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
@@ -150,33 +189,68 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						</div>
 					)
 				}
-				<Row>
-					{
-						this.state.outlines.map((outline: Outline) => (
-							<Col span={8} key={outline.id}>
-								<Card
-									title={outline.title}
-									bordered={false}
-									hoverable
-									className="custom-card"
-								>
-									<p className="description">{outline.description}</p>
-									<br /><br />
-									<Button
-										type="danger"
-										ghost
-										block
-										className="green-button put-back-button"
-										onClick={() => this.onBackOpen(outline.id)}
-									>
-										放回原处
-									</Button>
-									<Button type="danger" ghost block onClick={() => this.onOpen(outline.id)}>永久删除</Button>
-								</Card>
-							</Col>
-						))
-					}
-				</Row>
+				{
+					outlines.length && characters.length && shouldRender && (
+						<Collapse defaultActiveKey={['characters', 'outlines']}>
+							<Panel header="人物列表" key="characters">
+								<Row>
+									{
+										characters.map((character: Character) => (
+											<Col span={8} key={character.id}>
+												<Card
+													title={character.name}
+													bordered={false}
+													hoverable
+													className="custom-card"
+												>
+													<Button
+														type="danger"
+														ghost
+														block
+														className="green-button put-back-button"
+													// onClick={() => this.onBackOpen(character.id)}
+													>
+														放回原处
+													</Button>
+													<Button type="danger" ghost block>永久删除</Button>
+												</Card>
+											</Col>
+										))
+									}
+								</Row>
+							</Panel>
+							<Panel header="大纲列表" key="outlines">
+								<Row>
+									{
+										outlines.map((outline: Outline) => (
+											<Col span={8} key={outline.id}>
+												<Card
+													title={outline.title}
+													bordered={false}
+													hoverable
+													className="custom-card"
+												>
+													<p className="description">{outline.description}</p>
+													<br /><br />
+													<Button
+														type="danger"
+														ghost
+														block
+														className="green-button put-back-button"
+														onClick={() => this.onBackOpen(outline.id)}
+													>
+														放回原处
+													</Button>
+													<Button type="danger" ghost block onClick={() => this.onOpen(outline.id)}>永久删除</Button>
+												</Card>
+											</Col>
+										))
+									}
+								</Row>
+							</Panel>
+						</Collapse>
+					)
+				}
 				<Modal
 					title="永久删除警告"
 					visible={this.state.confirmVisible}
