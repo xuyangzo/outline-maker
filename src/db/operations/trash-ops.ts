@@ -1,4 +1,5 @@
 import Trash from '../models/Trash';
+import { updateNovel } from './novel-ops';
 import { updateOutline } from './outline-ops';
 import { updateCharacter } from './character-ops';
 import { updateLocation } from './location-ops';
@@ -14,32 +15,12 @@ interface TrashTemplate {
 /**
  * helper functions
  */
-// delete outline from trash table
-const deleteOutlineHelper = (outline_id: string | number): Promise<any> => {
+// delete novel from trash table
+const deleteTrashHelper = (id: string | number, type: string): Promise<any> => {
 	return Trash
 		.destroy({
 			where: {
-				outline_id
-			}
-		});
-};
-
-// delete character from trash table
-const deleteCharacterHelper = (character_id: string | number): Promise<any> => {
-	return Trash
-		.destroy({
-			where: {
-				character_id
-			}
-		});
-};
-
-// delete location from trash table
-const deleteLocationHelper = (loc_id: string | number): Promise<any> => {
-	return Trash
-		.destroy({
-			where: {
-				loc_id
+				[type]: id
 			}
 		});
 };
@@ -59,13 +40,25 @@ export const addTrash = (props: TrashTemplate): Promise<any> => {
 };
 
 /**
+ * put back novel
+ * 1) update novel's deleted field to be 0
+ * 2) delete novel from trash
+ */
+export const putbackNovel = (id: string | number): Promise<any> => {
+	return Promise.all([
+		deleteTrashHelper(id, 'novel_id'),
+		updateNovel(id, { deleted: 0 })
+	]);
+};
+
+/**
  * put back outline
  * 1) update outline's deleted field to be 0
  * 2) delete outline from trash
  */
 export const putbackOutline = (id: string | number): Promise<any> => {
 	return Promise.all([
-		deleteOutlineHelper(id),
+		deleteTrashHelper(id, 'outline_id'),
 		updateOutline(id, { deleted: 0 })
 	]);
 };
@@ -77,7 +70,7 @@ export const putbackOutline = (id: string | number): Promise<any> => {
  */
 export const putbackCharacter = (id: string | number): Promise<any> => {
 	return Promise.all([
-		deleteCharacterHelper(id),
+		deleteTrashHelper(id, 'character_id'),
 		updateCharacter(id, { deleted: 0 })
 	]);
 };
@@ -89,7 +82,7 @@ export const putbackCharacter = (id: string | number): Promise<any> => {
  */
 export const putbackLocation = (id: string | number): Promise<any> => {
 	return Promise.all([
-		deleteLocationHelper(id),
+		deleteTrashHelper(id, 'loc_id'),
 		updateLocation(id, { deleted: 0 })
 	]);
 };

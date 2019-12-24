@@ -187,7 +187,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	}
 
 	render() {
-		const { expand } = this.props;
+		const { expand, refreshSidebar } = this.props;
 		const {
 			id, name, description, wordview, characters, outlines, categories, locations,
 			createCharacter, createOutline, createLocation,
@@ -207,6 +207,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					refreshCharacter={this.getCharacters}
 					refreshOutline={this.getOutlines}
 					refreshLocation={this.getLocations}
+					refreshSidebar={refreshSidebar}
 					createCharacter={createCharacter}
 					createOutline={createOutline}
 					createLocation={createLocation}

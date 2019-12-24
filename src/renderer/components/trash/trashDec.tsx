@@ -17,6 +17,7 @@ export interface TrashProps extends RouteComponentProps {
 }
 
 export interface TrashState {
+	novels: number[];
 	outlines: number[];
 	characters: number[];
 	locations: number[];

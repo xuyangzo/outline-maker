@@ -70,8 +70,7 @@ export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<
 
 // create new outline
 export const createOutline = (props: OutlineModalTemplate) => {
-	return Outlines
-		.create(props);
+	return Outlines.create(props);
 };
 
 // update outline scaling

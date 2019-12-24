@@ -2,36 +2,36 @@ import * as React from 'react';
 import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
-import { OutlineTrashProps } from './outlineTrashDec';
-import { OutlineShortDataValue } from '../../main/mainDec';
+import { NovelTrashProps } from './novelTrashDec';
+import { NovelShortDataValue } from '../../novel/novelDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getOutlineShort, deleteOutlinePermanently } from '../../../../db/operations/outline-ops';
-import { putbackOutline } from '../../../../db/operations/trash-ops';
+import { getNovelShort, deleteNovelPermanently } from '../../../../db/operations/novel-ops';
+import { putbackNovel } from '../../../../db/operations/trash-ops';
 
-const OutlineTrash = (props: OutlineTrashProps) => {
-	const { outlines, refresh } = props;
+const NovelTrash = (props: NovelTrashProps) => {
+	const { novels, refresh, refreshSidebar } = props;
 
 	// hooks
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
 	const [showDeleteModal, setDeleteModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [outlineDetails, setOutlineDetails] = React.useState<OutlineShortDataValue[]>([]);
+	const [novelDetails, setNovelDetails] = React.useState<NovelShortDataValue[]>([]);
 
-	// get outlines when props.outlines changes & didmount
-	React.useEffect(getOutlines, [props.outlines]);
+	// get novels when props.novels changes & didmount
+	React.useEffect(getNovels, [props.novels]);
 
-	// get outlines
-	function getOutlines() {
-		const promises: Promise<any>[] = outlines.map((outline_id: number) => {
-			return getOutlineShort(outline_id);
+	// get novels
+	function getNovels() {
+		const promises: Promise<any>[] = novels.map((novel_id: number) => {
+			return getNovelShort(novel_id);
 		});
 		Promise
 			.all(promises)
 			.then((result: any) => {
-				const outlines = result.map(({ dataValues }: { dataValues: OutlineShortDataValue }) => dataValues);
-				setOutlineDetails(outlines);
+				const novels = result.map(({ dataValues }: { dataValues: NovelShortDataValue }) => dataValues);
+				setNovelDetails(novels);
 			});
 	}
 
@@ -67,36 +67,44 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 		setDeleteModal(false);
 	}
 
-	// delete outline
-	function onDeleteOutline() {
-		// delete outline permanently from db
-		deleteOutlinePermanently(selected)
+	// delete novel
+	function onDeleteNovel() {
+		// delete novel permanently from db
+		deleteNovelPermanently(selected)
 			.then(() => {
 				// alert success
-				Message.success('永久删除大纲成功！');
+				Message.success('永久删除小说成功！');
 				// close modal
 				onCloseDeleteModal();
-				// refresh outlines
+				// refresh novels
 				refresh();
 			})
 			.catch((err: DatabaseError) => {
+				// close modal
+				onCloseDeleteModal();
+				// alert error
 				Message.error(err.message);
 			});
 	}
 
-	// put back outline
-	function onPutBackOutline() {
-		// put back outline from db
-		putbackOutline(selected)
+	// put back novel
+	function onPutBackNovel() {
+		// put back novel from db
+		putbackNovel(selected)
 			.then(() => {
 				// alert success
-				Message.success('大纲已经放回原处！');
+				Message.success('小说已经放回原处！');
 				// close modal
 				onCloseBackModal();
-				// refresh outlines
+				// refresh novels
 				refresh();
+				// refresh sidebar
+				refreshSidebar();
 			})
 			.catch((err: DatabaseError) => {
+				// close modal
+				onCloseDeleteModal();
+				// alert error
 				Message.error(err.message);
 			});
 	}
@@ -104,22 +112,20 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 	return (
 		<Row>
 			{
-				outlineDetails.map((outline: OutlineShortDataValue) => (
-					<Col span={8} key={outline.id}>
+				novelDetails.map((novel: NovelShortDataValue) => (
+					<Col span={8} key={novel.id}>
 						<Card
-							title={outline.title}
+							title={novel.name}
 							bordered={false}
 							hoverable
 							className="custom-card"
 						>
-							<p className="description">{outline.description}</p>
-							<br /><br />
 							<Button
 								type="danger"
 								ghost
 								block
 								className="green-button put-back-button"
-								onClick={(e: React.MouseEvent) => onOpenBackModal(e, outline.id)}
+								onClick={(e: React.MouseEvent) => onOpenBackModal(e, novel.id)}
 							>
 								放回原处
 							</Button>
@@ -127,7 +133,7 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 								type="danger"
 								ghost
 								block
-								onClick={(e: React.MouseEvent) => onOpenDeleteModal(e, outline.id)}
+								onClick={(e: React.MouseEvent) => onOpenDeleteModal(e, novel.id)}
 							>
 								永久删除
 							</Button>
@@ -136,43 +142,48 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 				))
 			}
 			<Modal
-				title="永久删除大纲"
+				title="永久删除小说"
 				visible={showDeleteModal}
-				onOk={onDeleteOutline}
+				onOk={onDeleteNovel}
 				onCancel={onCloseDeleteModal}
 				footer={[
 					<Button type="danger" key="back" onClick={onCloseDeleteModal} ghost>取消</Button>,
 					<Button
 						type="primary"
 						key="submit"
-						onClick={onDeleteOutline}
+						onClick={onDeleteNovel}
 						ghost
 					>确认
 					</Button>
 				]}
 			>
-				大纲永久删除后无法恢复！！！
+				小说永久删除后无法恢复！！！<br />
+				并且删除小说会删除以下内容：<br /><br />
+				<ol>
+					<li>该小说所包含的所有背景、人物、势力、大纲</li>
+					<li>已经位于回收站中的，该小说所包含的所有人物、势力、大纲</li>
+				</ol>
 			</Modal>
 			<Modal
-				title="放回大纲"
+				title="放回小说"
 				visible={showBackModal}
-				onOk={onPutBackOutline}
+				onOk={onPutBackNovel}
 				onCancel={onCloseBackModal}
 				footer={[
 					<Button type="danger" key="back" onClick={onCloseBackModal} ghost>取消</Button>,
 					<Button
 						type="primary"
 						key="submit"
-						onClick={onPutBackOutline}
+						onClick={onPutBackNovel}
 						ghost
 					>确认
 					</Button>
 				]}
 			>
-				是否将大纲放回原处？
+				是否将小说放回原处？
 			</Modal>
 		</Row>
 	);
 };
 
-export default OutlineTrash;
+export default NovelTrash;

@@ -9,6 +9,7 @@ export interface NovelHeaderProps extends RouteComponentProps {
   refreshCharacter: (id: string) => void;
   refreshOutline: (id: string) => void;
   refreshLocation: (id: string) => void;
+  refreshSidebar: () => void;
   cancelCreateCharacter: () => void;
   cancelCreateOutline: () => void;
   cancelCreateLocation: () => void;
@@ -19,4 +20,5 @@ export interface NovelHeaderState {
   characterVisible: boolean;
   outlineVisible: boolean;
   locationVisible: boolean;
+  deleteNovelVisible: boolean;
 }

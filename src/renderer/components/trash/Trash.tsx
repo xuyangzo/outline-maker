@@ -7,6 +7,7 @@ const { Panel } = Collapse;
 import { withRouter } from 'react-router-dom';
 
 // custom components
+import NovelTrash from './novel-trash/NovelTrash';
 import CharacterTrash from './character-trash/CharacterTrash';
 import OutlineTrash from './outline-trash/OutlineTrash';
 import LocationTrash from './location-trash/LocationTrash';
@@ -28,6 +29,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	constructor(props: TrashProps) {
 		super(props);
 		this.state = {
+			novels: [],
 			outlines: [],
 			characters: [],
 			locations: [],
@@ -59,7 +61,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					if (loc_id) locations.push(loc_id);
 				});
 
-				this.setState({ outlines, characters, locations, shouldRender: true });
+				this.setState({ novels, outlines, characters, locations, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -67,8 +69,8 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	}
 
 	render() {
-		const { expand } = this.props;
-		const { shouldRender, outlines, characters, locations } = this.state;
+		const { expand, refreshSidebar } = this.props;
+		const { shouldRender, novels, outlines, characters, locations } = this.state;
 
 		return (
 			<Col
@@ -80,7 +82,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				}
 			>
 				{
-					!outlines.length && !characters.length && !locations.length && shouldRender && (
+					!novels.length && !outlines.length && !characters.length && !locations.length && shouldRender && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
@@ -88,7 +90,18 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						</div>
 					)
 				}
-				<Collapse defaultActiveKey={['characters', 'locations', 'outlines']}>
+				<Collapse defaultActiveKey={['novels', 'characters', 'locations', 'outlines']}>
+					{
+						novels.length && shouldRender && (
+							<Panel header="小说列表" key="novels">
+								<NovelTrash
+									novels={novels}
+									refresh={this.getTrashes}
+									refreshSidebar={refreshSidebar}
+								/>
+							</Panel>
+						)
+					}
 					{
 						characters.length && shouldRender && (
 							<Panel header="角色列表" key="characters">

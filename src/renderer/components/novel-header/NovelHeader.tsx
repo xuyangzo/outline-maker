@@ -5,15 +5,13 @@ import { Icon, Button, PageHeader, Dropdown, Menu } from 'antd';
 import CharacterModal from './character-modal/CharacterModal';
 import OutlineModal from './outline-modal/OutlineModal';
 import LocationModal from './location-modal/LocationModal';
+import NovelModal from './novel-modal/NovelModal';
 
 // enable history
 import { withRouter } from 'react-router-dom';
 
 // type decalration
 import { NovelHeaderProps, NovelHeaderState } from './novelHeaderDec';
-
-// database operations
-import { deleteNovelTemp } from '../../../db/operations/novel-ops';
 
 // sass
 import './novel-header.scss';
@@ -25,7 +23,8 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 			id: props.id,
 			characterVisible: false,
 			outlineVisible: false,
-			locationVisible: false
+			locationVisible: false,
+			deleteNovelVisible: false
 		};
 	}
 
@@ -62,6 +61,16 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 		this.props.cancelCreateLocation();
 	}
 
+	// on open delete novel modal
+	onOpenDeleteNovelModal = () => {
+		this.setState({ deleteNovelVisible: true });
+	}
+
+	// on close delete novel modal
+	onCloseDeleteNovelModal = () => {
+		this.setState({ deleteNovelVisible: false });
+	}
+
 	componentWillReceiveProps = (props: NovelHeaderProps) => {
 		this.setState({
 			id: props.id,
@@ -72,8 +81,8 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 	}
 
 	render() {
-		const { refreshCharacter, refreshOutline, refreshLocation } = this.props;
-		const { characterVisible, outlineVisible, locationVisible, id } = this.state;
+		const { refreshCharacter, refreshOutline, refreshLocation, refreshSidebar } = this.props;
+		const { characterVisible, outlineVisible, locationVisible, deleteNovelVisible, id } = this.state;
 
 		// menu for add drop down
 		const addmenu = (
@@ -96,7 +105,7 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 				<Menu.Item>
 					<Icon type="profile" />编辑模式
 				</Menu.Item>
-				<Menu.Item className="delete-outline-menuitem">
+				<Menu.Item className="delete-outline-menuitem" onClick={this.onOpenDeleteNovelModal}>
 					<Icon type="close-circle" />删除小说
 				</Menu.Item>
 			</Menu>
@@ -145,6 +154,12 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 					showModal={locationVisible}
 					closeModal={this.onCloseLocationModal}
 					refreshLocation={refreshLocation}
+					id={id}
+				/>
+				<NovelModal
+					showModal={deleteNovelVisible}
+					closeModal={this.onCloseDeleteNovelModal}
+					refreshSidebar={refreshSidebar}
 					id={id}
 				/>
 			</React.Fragment>

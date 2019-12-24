@@ -40,7 +40,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		// set selected keys
 		this.setSelectedKey(newProps);
 		// if need to refresh, refresh
-		if (newProps.refresh) this.getNovels();
+		if (newProps.refresh) {
+			this.getNovels();
+			/**
+			 * need to set refresh flag to false
+			 * otherwise will always refresh when receive new props
+			 */
+			newProps.stopRefreshSidebar();
+		}
 	}
 
 	componentDidMount = () => {

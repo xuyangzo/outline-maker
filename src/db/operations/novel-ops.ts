@@ -32,6 +32,15 @@ export const getNovelById = (id: number | string): Promise<any> => {
 		});
 };
 
+// get novel id and name
+export const getNovelShort = (id: number | string): Promise<any> => {
+	return Novel
+		.findOne({
+			attributes: ['id', 'name'],
+			where: { id }
+		});
+};
+
 // create new novel
 export const createNovel = (props: CreateNovelModalTemplate): Promise<any> => {
 	return Novel.create(props);
@@ -51,9 +60,17 @@ export const updateNovel = (id: string | number, props: NovelTemplate): Promise<
  * 1) update novel's deleted field to be 1
  * 2) add novel to trash
  */
-export const deleteNovelTemp = (id: number | string) => {
+export const deleteNovelTemp = (id: number | string): Promise<any> => {
 	return Promise.all([
 		addTrash({ novel_id: id }),
 		updateNovel(id, { deleted: 1 })
 	]);
+};
+
+// delete novel permanently
+export const deleteNovelPermanently = (id: number | string): Promise<any> => {
+	return Novel
+		.destroy({
+			where: { id }
+		});
 };

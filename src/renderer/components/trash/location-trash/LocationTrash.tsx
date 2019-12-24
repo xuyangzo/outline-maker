@@ -19,7 +19,7 @@ const LocationTrash = (props: LocationTrashProps) => {
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [locationDetails, setLocationDetails] = React.useState<LocationShortDataValue[]>([]);
 
-	// get characters when props.characters changes & didmount
+	// get locations when props.locations changes & didmount
 	React.useEffect(getLocations, [props.locations]);
 
 	// get locations

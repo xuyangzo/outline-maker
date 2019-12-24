@@ -7,8 +7,15 @@ interface MatchParams {
   id: string;
 }
 
+export interface NovelShortDataValue {
+  id: number;
+  name: string;
+}
+
 export interface NovelProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
+
+  refreshSidebar: () => void;
 }
 
 export interface NovelState {

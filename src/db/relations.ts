@@ -60,7 +60,6 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
  * in order to create base data for testing
  * in production mode, database has already been synced
  */
-/*
 (async function () {
 	await sequelize
 		.sync({ force: true })
@@ -176,5 +175,3 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 			});
 		});
 }());
-
-*/
