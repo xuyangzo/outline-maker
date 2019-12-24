@@ -34,13 +34,8 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 		findAllFavDetail()
 			.then((result: any) => {
 				// all detailed outlines in favorite
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					return { id: dataValues.id, title: dataValues.title, description: dataValues.description };
-				});
-				this.setState({
-					outlines,
-					shouldRender: true
-				});
+				const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => dataValues);
+				this.setState({ outlines, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);
@@ -82,11 +77,6 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 			});
 	}
 
-	// go to outline page
-	toOutline = (id: number) => {
-		this.props.history.push(`/outline/${id}`);
-	}
-
 	render() {
 		const { expand } = this.props;
 		const { shouldRender } = this.state;
@@ -118,11 +108,18 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 									bordered={false}
 									hoverable
 									className="custom-card"
-									onClick={() => this.toOutline(outline.id)}
+									onClick={() => this.props.history.push(`/outline/${outline.novel_id}/${outline.id}`)}
 								>
 									<p className="description">{outline.description}</p>
 									<br /><br />
-									<Button type="danger" ghost block onClick={(e: any) => this.onOpen(outline.id, e)}>取消收藏</Button>
+									<Button
+										type="danger"
+										ghost
+										block
+										onClick={(e: any) => this.onOpen(outline.id, e)}
+									>
+										取消收藏
+									</Button>
 								</Card>
 							</Col>
 						))

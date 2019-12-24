@@ -18,6 +18,7 @@ CREATE TABLE novels
   name TEXT,
   description TEXT,
   categories TEXT,
+  deleted INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

@@ -4,6 +4,7 @@ import { Outline } from '../sidebar/sidebarDec';
 // favorite templates for database popping
 export interface FavoriteDataValue {
   id: number;
+  novel_id: number;
   outline_id: number;
   createdAt: string;
   updatedAt: string;

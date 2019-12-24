@@ -8,7 +8,8 @@ const Favorite = sequelize.define(
 		id: {
 			field: 'fav_id',
 			type: Sequelize.INTEGER,
-			primaryKey: true
+			primaryKey: true,
+			autoIncrement: true
 		},
 		outline_id: {
 			field: 'outline_id',

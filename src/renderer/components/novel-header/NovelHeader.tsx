@@ -13,6 +13,7 @@ import { withRouter } from 'react-router-dom';
 import { NovelHeaderProps, NovelHeaderState } from './novelHeaderDec';
 
 // database operations
+import { deleteNovelTemp } from '../../../db/operations/novel-ops';
 
 // sass
 import './novel-header.scss';
@@ -96,7 +97,7 @@ class NovelHeader extends React.Component<NovelHeaderProps, NovelHeaderState> {
 					<Icon type="profile" />编辑模式
 				</Menu.Item>
 				<Menu.Item className="delete-outline-menuitem">
-					<Icon type="close-circle" />删除大纲
+					<Icon type="close-circle" />删除小说
 				</Menu.Item>
 			</Menu>
 		);

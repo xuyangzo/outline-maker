@@ -39,6 +39,11 @@ const Novel = sequelize.define(
 			type: Sequelize.STRING,
 			defaultValue: ''
 		},
+		deleted: {
+			field: 'deleted',
+			type: Sequelize.INTEGER,
+			defaultValue: 0
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

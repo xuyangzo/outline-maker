@@ -8,7 +8,8 @@ const Trash = sequelize.define(
 		id: {
 			field: 'trash_id',
 			type: Sequelize.INTEGER,
-			primaryKey: true
+			primaryKey: true,
+			autoIncrement: true
 		},
 		novel_id: {
 			field: 'novel_id',

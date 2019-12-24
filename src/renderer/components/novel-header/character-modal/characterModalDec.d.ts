@@ -5,7 +5,3 @@ export interface CharacterModalProps {
   closeModal: () => void;
   refreshCharacter: (id: string) => void;
 }
-
-export interface CharacterModalState {
-  name: string;
-}

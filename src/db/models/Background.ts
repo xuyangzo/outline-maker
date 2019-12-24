@@ -8,7 +8,8 @@ const Background = sequelize.define(
 		id: {
 			field: 'id',
 			type: Sequelize.INTEGER,
-			primaryKey: true
+			primaryKey: true,
+			autoIncrement: true
 		},
 		novel_id: {
 			field: 'novel_id',

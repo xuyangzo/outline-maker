@@ -2,6 +2,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 export interface Outline {
 	id: number;
+	novel_id: number;
 	title: string;
 	deleted?: number;
 	description?: string;

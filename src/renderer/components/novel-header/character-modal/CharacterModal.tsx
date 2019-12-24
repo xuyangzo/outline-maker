@@ -5,86 +5,74 @@ import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 import { createCharacter } from '../../../../db/operations/character-ops';
 
 // type declaration
-import { CharacterModalProps, CharacterModalState } from './characterModalDec';
+import { CharacterModalProps } from './characterModalDec';
 import { DatabaseError } from 'sequelize';
 
-class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
-	constructor(props: CharacterModalProps) {
-		super(props);
-		this.state = {
-			name: ''
-		};
+const CharacterModal = (props: CharacterModalProps) => {
+	const { showModal, id, closeModal, refreshCharacter } = props;
+	// hooks
+	const [name, setName] = React.useState<string>('');
+
+	// on input change
+	function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const name = event.target.value;
+		setName(name);
 	}
 
-	handleSubmit = () => {
-		// novel_id, outline_id, name, color
-		createCharacter(this.props.id, null, this.state.name, null)
+	// close current modal
+	function onCloseModal() {
+		closeModal();
+		// clear content
+		setName('');
+	}
+
+	// create new character
+	function handleSubmit() {
+		createCharacter({ name, novel_id: id })
 			.then(() => {
 				// alert success
 				Message.success('人物创建成功！');
 				// refresh character
-				this.props.refreshCharacter(this.props.id);
-				// close modal
-				this.props.closeModal();
-				// clear modal data
-				this.setState({
-					name: ''
-				});
+				refreshCharacter(id);
+				// close modal and clear input
+				onCloseModal();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
 	}
 
-	// on input change
-	onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const name = event.target.value;
-		this.setState({ name });
-	}
-
-	// close current modal
-	closeModal = () => {
-		this.props.closeModal();
-		// clear content
-		this.setState({ name: '' });
-	}
-
-	render() {
-		const { showModal } = this.props;
-		const { name } = this.state;
-
-		return (
-			<Modal
-				title="新建角色"
-				visible={showModal}
-				onOk={this.handleSubmit}
-				onCancel={this.closeModal}
-				footer={[
-					<Button type="danger" key="back" onClick={this.closeModal} ghost>取消</Button>,
-					<Button
-						type="primary"
-						key="submit"
-						onClick={this.handleSubmit}
-						ghost
-					>确认
-					</Button>
-				]}
-			>
-				<Form onSubmit={this.handleSubmit} className="login-form">
-					<Form.Item>
-						<Input
-							value={name}
-							onChange={this.onChange}
-							prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
-							placeholder="主角姓名（最多 20 个字）"
-							ref={(input: Input) => input && input.focus()}
-						/>
-						更多的人设可以在添加角色后进行设置。
-					</Form.Item>
-				</Form>
-			</Modal>
-		);
-	}
-}
+	return (
+		<Modal
+			title="新建角色"
+			visible={showModal}
+			onOk={handleSubmit}
+			onCancel={closeModal}
+			footer={[
+				<Button type="danger" key="back" onClick={closeModal} ghost>取消</Button>,
+				<Button
+					type="primary"
+					key="submit"
+					onClick={handleSubmit}
+					ghost
+				>确认
+				</Button>
+			]}
+		>
+			<Form onSubmit={handleSubmit} className="login-form">
+				<Form.Item>
+					<Input
+						value={name}
+						onChange={onChange}
+						prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
+						placeholder="主角姓名（最多 20 个字）"
+						ref={(input: Input) => input && input.focus()}
+					/>
+					更多的人设可以在添加角色后进行设置。
+				</Form.Item>
+			</Form>
+		</Modal>
+	);
+};
 
 export default CharacterModal;

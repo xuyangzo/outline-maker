@@ -27,6 +27,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	constructor(props: MainHeaderProps) {
 		super(props);
 		this.state = {
+			id: props.match.params.id,
 			confirmVisible: false,
 			characterVisible: false,
 			timelineVisible: false,
@@ -35,14 +36,13 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 		};
 	}
 
-	componentWillReceiveProps = (newProps: MainHeaderProps) => {
-		const id: string = newProps.location.pathname.slice(9);
-		this.setHeartIcon(id);
+	componentWillReceiveProps = (props: MainHeaderProps) => {
+		this.setState({ id: props.match.params.id });
+		this.setHeartIcon(props.match.params.id);
 	}
 
 	componentDidMount = () => {
-		const id: string = this.props.location.pathname.slice(9);
-		this.setHeartIcon(id);
+		this.setHeartIcon(this.state.id);
 	}
 
 	// open delete modal

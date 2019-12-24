@@ -53,25 +53,17 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 		});
 };
 
-// get all non-deleted outlines
-export const getAllNonDeletedOutlinesRange = (outlines: string[] | number[]): Promise<any> => {
+// get all outlines given id range
+export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<any> => {
 	return Outlines.
 		findAll({
+			attributes: ['id', 'novel_id', 'title', 'description'],
 			where: {
 				id: outlines,
 				deleted: {
 					[Op.ne]: 1
 				}
 			},
-			order: [['updatedAt', 'DESC']]
-		});
-};
-
-// get outlines given array
-export const getOutlinesRange = (outlines: number[]): Promise<any> => {
-	return Outlines.
-		findAll({
-			where: { id: outlines },
 			order: [['updatedAt', 'DESC']]
 		});
 };

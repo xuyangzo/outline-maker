@@ -17,6 +17,7 @@ export interface MainHeaderProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface MainHeaderState {
+  id: string;
   confirmVisible: boolean;
   characterVisible: boolean;
   timelineVisible: boolean;

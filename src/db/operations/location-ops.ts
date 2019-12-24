@@ -3,6 +3,7 @@ const Op = require('sequelize').Op;
 import { addTrash } from './trash-ops';
 
 interface LocationTemplate {
+	novel_id?: string;
 	name?: string;
 	image?: string;
 	intro?: string;
@@ -52,12 +53,8 @@ export const updateLocation = (id: string | number, props: LocationTemplate): Pr
 };
 
 // create location
-export const createLocation = (novel_id: string | number, props: LocationTemplate): Promise<any> => {
-	return LocationModal
-		.create({
-			novel_id,
-			...props
-		});
+export const createLocation = (props: LocationTemplate): Promise<any> => {
+	return LocationModal.create(props);
 };
 
 // delete location temporarily

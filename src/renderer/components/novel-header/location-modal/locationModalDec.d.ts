@@ -5,7 +5,3 @@ export interface LocationModalProps {
   closeModal: () => void;
   refreshLocation: (id: string) => void;
 }
-
-export interface LocationModalState {
-  name: string;
-}

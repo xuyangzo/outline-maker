@@ -1,6 +1,4 @@
 import { RouteComponentProps } from 'react-router-dom';
-import { CharacterShortDataValue } from '../character/characterDec';
-import { Outline } from '../sidebar/sidebarDec';
 
 export interface TrashDataValue {
 	id: number;

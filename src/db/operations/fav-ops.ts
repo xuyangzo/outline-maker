@@ -1,5 +1,5 @@
 import Favorite from '../models/Favorite';
-import { getAllNonDeletedOutlinesRange, updateOutlineFav, updateOutline } from '../operations/outline-ops';
+import { getOutlinesGivenIdRange, updateOutlineFav, updateOutline } from '../operations/outline-ops';
 
 // antd
 import { message as Message } from 'antd';
@@ -55,7 +55,7 @@ export const findAllFavDetail = async (): Promise<any> => {
 	});
 
 	// grab title and description for those outlines
-	return getAllNonDeletedOutlinesRange(outlines);
+	return getOutlinesGivenIdRange(outlines);
 };
 
 // cancel favorite and update outline table

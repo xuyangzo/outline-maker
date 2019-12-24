@@ -8,7 +8,8 @@ const Outlines = sequelize.define(
 		id: {
 			field: 'id',
 			type: Sequelize.INTEGER,
-			primaryKey: true
+			primaryKey: true,
+			autoIncrement: true
 		},
 		title: {
 			field: 'title',

@@ -2,7 +2,7 @@ import CharacterModal from '../models/Character';
 import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
-type CharacterTemplate = {
+interface CharacterTemplate {
 	outline_id?: number | string;
 	novel_id?: number | string;
 	name?: string;
@@ -16,7 +16,7 @@ type CharacterTemplate = {
 	characteristics?: string;
 	experience?: string;
 	deleted?: number;
-};
+}
 
 // get character given character id
 export const getCharacter = (id: string | number): Promise<any> => {
@@ -62,32 +62,9 @@ export const getAllCharacters = (id: string): Promise<any> => {
 };
 
 // create new character
-export const createCharacter = (
-	novel_id: string,
-	outline_id: string | null,
-	name: string,
-	color: string | null
-): Promise<any> => {
-	return CharacterModal
-		.create({
-			name,
-			novel_id,
-			outline_id,
-			color: color ? color : '#ffa39e'
-		});
+export const createCharacter = (props: CharacterTemplate): Promise<any> => {
+	return CharacterModal.create(props);
 };
-
-// update current character
-// export const updateCharacter = (id: string | number, name: string, color: string): Promise<any> => {
-// 	const modalToUpdate: { name?: string, color?: string } = {};
-// 	if (name) modalToUpdate.name = name;
-// 	if (color) modalToUpdate.color = color;
-// 	return CharacterModal
-// 		.update(
-// 			modalToUpdate,
-// 			{ where: { id } }
-// 		);
-// };
 
 // update character with given props
 export const updateCharacter = (id: string | number, props: CharacterTemplate) => {
