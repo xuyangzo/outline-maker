@@ -29,9 +29,16 @@ export const getAllLocationsByNovel = (novel_id: string | number): Promise<any> 
 export const getLocation = (id: string | number): Promise<any> => {
 	return LocationModal
 		.findOne({
-			where: {
-				id
-			}
+			where: { id }
+		});
+};
+
+// get location id and name given id
+export const getLocationShort = (id: string | number): Promise<any> => {
+	return LocationModal
+		.findOne({
+			attributes: ['id', 'name'],
+			where: { id }
 		});
 };
 
@@ -53,18 +60,18 @@ export const createLocation = (novel_id: string | number, props: LocationTemplat
 		});
 };
 
-// delete location
-export const deleteLocation = (id: string | number): Promise<any> => {
-	return LocationModal
-		.destroy({
-			where: { id }
-		});
-};
-
 // delete location temporarily
 export const deleteLocationTemp = (id: string | number): Promise<any> => {
 	return Promise.all([
 		addTrash({ loc_id: id }),
 		updateLocation(id, { deleted: 1 })
 	]);
+};
+
+// delete location
+export const deleteLocationPermanently = (id: string | number): Promise<any> => {
+	return LocationModal
+		.destroy({
+			where: { id }
+		});
 };

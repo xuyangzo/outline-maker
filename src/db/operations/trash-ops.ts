@@ -1,6 +1,7 @@
 import Trash from '../models/Trash';
-import { updateCharacter } from './character-ops';
 import { updateOutline } from './outline-ops';
+import { updateCharacter } from './character-ops';
+import { updateLocation } from './location-ops';
 
 // type declaration
 interface TrashTemplate {
@@ -33,9 +34,24 @@ const deleteCharacterHelper = (character_id: string | number): Promise<any> => {
 		});
 };
 
+// delete location from trash table
+const deleteLocationHelper = (loc_id: string | number): Promise<any> => {
+	return Trash
+		.destroy({
+			where: {
+				loc_id
+			}
+		});
+};
+
 /**
  * functions to use
  */
+// get all trashes
+export const getAllTrashes = (): Promise<any> => {
+	return Trash.findAll();
+};
+
 // add current novel/outline/character/location to trash table
 export const addTrash = (props: TrashTemplate): Promise<any> => {
 	return Trash
@@ -56,6 +72,8 @@ export const putbackOutline = (id: string | number): Promise<any> => {
 
 /**
  * put back character
+ * 1) update character's deleted field to be 0
+ * 2) delete character from trash
  */
 export const putbackCharacter = (id: string | number): Promise<any> => {
 	return Promise.all([
@@ -64,7 +82,14 @@ export const putbackCharacter = (id: string | number): Promise<any> => {
 	]);
 };
 
-// get title and description for all trashes
-export const getAllTrashes = (): Promise<any> => {
-	return Trash.findAll();
+/**
+ * put back location
+ * 1) update location's deleted field to be 0
+ * 2) delete location from trash
+ */
+export const putbackLocation = (id: string | number): Promise<any> => {
+	return Promise.all([
+		deleteLocationHelper(id),
+		updateLocation(id, { deleted: 0 })
+	]);
 };

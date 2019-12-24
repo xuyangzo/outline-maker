@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 // custom components
 import CharacterTrash from './character-trash/CharacterTrash';
 import OutlineTrash from './outline-trash/OutlineTrash';
+import LocationTrash from './location-trash/LocationTrash';
 
 // type declaration
 import { DatabaseError } from 'sequelize';
@@ -29,6 +30,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 		this.state = {
 			outlines: [],
 			characters: [],
+			locations: [],
 			shouldRender: false
 		};
 	}
@@ -57,7 +59,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					if (loc_id) locations.push(loc_id);
 				});
 
-				this.setState({ outlines, characters, shouldRender: true });
+				this.setState({ outlines, characters, locations, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -66,7 +68,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	render() {
 		const { expand } = this.props;
-		const { shouldRender, outlines, characters } = this.state;
+		const { shouldRender, outlines, characters, locations } = this.state;
 
 		return (
 			<Col
@@ -78,7 +80,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				}
 			>
 				{
-					(!outlines.length && !characters.length && shouldRender) && (
+					!outlines.length && !characters.length && !locations.length && shouldRender && (
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
@@ -86,12 +88,22 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						</div>
 					)
 				}
-				<Collapse defaultActiveKey={['characters', 'outlines']}>
+				<Collapse defaultActiveKey={['characters', 'locations', 'outlines']}>
 					{
 						characters.length && shouldRender && (
 							<Panel header="角色列表" key="characters">
 								<CharacterTrash
 									characters={characters}
+									refresh={this.getTrashes}
+								/>
+							</Panel>
+						)
+					}
+					{
+						locations.length && shouldRender && (
+							<Panel header="势力列表" key="locations">
+								<LocationTrash
+									locations={locations}
 									refresh={this.getTrashes}
 								/>
 							</Panel>

@@ -21,5 +21,6 @@ export interface TrashProps extends RouteComponentProps {
 export interface TrashState {
 	outlines: number[];
 	characters: number[];
+	locations: number[];
 	shouldRender: boolean;
 }
