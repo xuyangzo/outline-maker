@@ -10,7 +10,7 @@ import { Location } from '../../location/locationDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { deleteLocation } from '../../../../db/operations/location-ops';
+import { deleteLocationTemp } from '../../../../db/operations/location-ops';
 
 // image
 import unknownArea from '../../../../public/unknown_gray.jpg';
@@ -41,7 +41,7 @@ const LocationSection = (props: LocationSectionProps) => {
 	// delete location
 	function onDeleteLocation() {
 		// delete location temporarily
-		deleteLocation(selected)
+		deleteLocationTemp(selected)
 			.then(() => {
 				// alert success
 				Message.success('删除势力成功！');
@@ -111,7 +111,7 @@ const LocationSection = (props: LocationSectionProps) => {
 					</Button>
 				]}
 			>
-				势力删除后无法恢复！是否继续？
+				势力删除后可以去垃圾箱恢复！是否继续？
 			</Modal>
 		</Row>
 	);

@@ -119,7 +119,7 @@ export const updateDeleted = (id: string | number, deleted: number): Promise<any
 };
 
 // permanent deletion
-export const deleteOutline = (id: string | number): Promise<any> => {
+export const deleteOutlinePermanently = (id: string | number): Promise<any> => {
 	return Outlines
 		.destroy({
 			where: { id }

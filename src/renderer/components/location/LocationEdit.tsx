@@ -14,7 +14,7 @@ import { LocationProps, LocationState, Location as LocationDec } from './locatio
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getLocation, updateLocationDetail } from '../../../db/operations/location-ops';
+import { getLocation, updateLocation } from '../../../db/operations/location-ops';
 
 // utils
 import { ctrlsPress } from '../../utils/utils';
@@ -108,7 +108,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			name, image, intro, texture, location, controller
 		};
 
-		return updateLocationDetail(id, props)
+		return updateLocation(id, props)
 			.then(() => {
 				Message.success('保存成功！');
 				return Promise.resolve();

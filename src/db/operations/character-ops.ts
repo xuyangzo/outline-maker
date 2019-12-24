@@ -115,8 +115,11 @@ export const deleteCharacterTemp = (id: string | number): Promise<any> => {
 	]);
 };
 
-// delete character permanently
-export const deleteCharacter = async (id: string | number): Promise<any> => {
+/**
+ * delete character permanently
+ * already set CASCADE in relations, so just need to directly destroy
+ */
+export const deleteCharacterPermanently = async (id: string | number): Promise<any> => {
 	return CharacterModal
 		.destroy({
 			where: { id }

@@ -19,6 +19,9 @@ import { CharacterContainer, CharacterEditContainer } from '../containers/Charac
 import { LocationContainer, LocationEditContainer } from '../containers/LocationContainer';
 import { BackgroundContainer, BackgroundEditContainer } from '../containers/BackgroundContainer';
 
+// set database model relations
+require('../../db/relations');
+
 // sass
 import './overwrite.scss';
 import './app.scss';

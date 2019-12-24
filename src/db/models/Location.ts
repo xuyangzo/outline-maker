@@ -47,6 +47,11 @@ const Location = sequelize.define(
 			field: 'controller',
 			type: Sequelize.STRING
 		},
+		deleted: {
+			field: 'deleted',
+			type: Sequelize.INTEGER,
+			defaultValue: 0
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

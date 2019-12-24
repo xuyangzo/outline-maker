@@ -7,8 +7,8 @@ import { OutlineShortDataValue } from '../../main/mainDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getOutlineShort } from '../../../../db/operations/outline-ops';
-import { putbackOutline, deleteOutlinePermanently } from '../../../../db/operations/trash-ops';
+import { getOutlineShort, deleteOutlinePermanently } from '../../../../db/operations/outline-ops';
+import { putbackOutline } from '../../../../db/operations/trash-ops';
 
 const OutlineTrash = (props: OutlineTrashProps) => {
 	const { outlines, refresh } = props;

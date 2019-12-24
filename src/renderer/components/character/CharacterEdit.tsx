@@ -14,7 +14,7 @@ import { CharacterProps, CharacterEditState, Character as CharacterDec } from '.
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getCharacter, updateCharacterDetail } from '../../../db/operations/character-ops';
+import { getCharacter, updateCharacter } from '../../../db/operations/character-ops';
 
 // utils
 import { ctrlsPress } from '../../utils/utils';
@@ -149,7 +149,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			experience: experience.filter(a => a).join(',')
 		};
 
-		return updateCharacterDetail(id, props)
+		return updateCharacter(id, props)
 			.then(() => {
 				Message.success('保存成功！');
 				return Promise.resolve();

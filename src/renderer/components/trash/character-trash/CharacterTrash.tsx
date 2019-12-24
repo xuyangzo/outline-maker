@@ -7,8 +7,8 @@ import { CharacterShortDataValue } from '../../character/characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getCharacterShort } from '../../../../db/operations/character-ops';
-import { deleteCharacterPermanently, putbackCharacter } from '../../../../db/operations/trash-ops';
+import { getCharacterShort, deleteCharacterPermanently } from '../../../../db/operations/character-ops';
+import { putbackCharacter } from '../../../../db/operations/trash-ops';
 
 const CharacterTrash = (props: CharacterTrashProps) => {
 	const { characters, refresh } = props;
@@ -80,6 +80,9 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 				refresh();
 			})
 			.catch((err: DatabaseError) => {
+				// close modal
+				onCloseDeleteModal();
+				// alert error
 				Message.error(err.message);
 			});
 	}
@@ -97,6 +100,9 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 				refresh();
 			})
 			.catch((err: DatabaseError) => {
+				// close modal
+				onCloseDeleteModal();
+				// alert error
 				Message.error(err.message);
 			});
 	}

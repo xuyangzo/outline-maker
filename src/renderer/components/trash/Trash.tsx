@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, Row, Card, Button, Modal, message as Message, Collapse } from 'antd';
+import { Col, message as Message, Collapse } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
 
@@ -60,7 +60,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 				this.setState({ outlines, characters, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
-				console.error(err);
+				Message.error(err.message);
 			});
 	}
 
@@ -86,24 +86,28 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						</div>
 					)
 				}
-				{
-					(outlines.length || characters.length) && shouldRender && (
-						<Collapse defaultActiveKey={['characters', 'outlines']}>
+				<Collapse defaultActiveKey={['characters', 'outlines']}>
+					{
+						characters.length && shouldRender && (
 							<Panel header="角色列表" key="characters">
 								<CharacterTrash
 									characters={characters}
 									refresh={this.getTrashes}
 								/>
 							</Panel>
+						)
+					}
+					{
+						outlines.length && shouldRender && (
 							<Panel header="大纲列表" key="outlines">
 								<OutlineTrash
 									outlines={outlines}
 									refresh={this.getTrashes}
 								/>
 							</Panel>
-						</Collapse>
-					)
-				}
+						)
+					}
+				</Collapse>
 			</Col>
 		);
 	}
