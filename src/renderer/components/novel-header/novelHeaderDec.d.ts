@@ -18,4 +18,6 @@ export interface NovelHeaderProps extends RouteComponentProps {
   quitEditMode: () => void;
   batchDelete: () => void;
   resetBatchDelete: () => void;
+  onSave: () => void;
+  resetSave: () => void;
 }

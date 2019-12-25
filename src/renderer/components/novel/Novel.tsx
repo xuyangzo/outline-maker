@@ -27,7 +27,7 @@ import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
 
 // utils
-import { tagColors, imageMapping } from '../../utils/constants';
+import { imageMapping } from '../../utils/constants';
 
 // sass
 import './novel.scss';
@@ -50,7 +50,8 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			shouldRenderOutline: false,
 			shouldRenderLocation: false,
 			isEdit: false,
-			batchDelete: false
+			batchDelete: false,
+			save: false
 		};
 	}
 
@@ -120,6 +121,16 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.setState({ batchDelete: false });
 	}
 
+	// should save
+	onSave = () => {
+		this.setState({ save: true });
+	}
+
+	// reset save status
+	onResetSave = () => {
+		this.setState({ save: false });
+	}
+
 	// get all characters
 	getCharacters = (id: string) => {
 		getAllCharactersByNovel(id)
@@ -175,7 +186,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	render() {
 		const { expand, refreshSidebar } = this.props;
 		const {
-			id, name, description, characters, outlines, categories, locations, isEdit,
+			id, characters, outlines, locations, isEdit, save,
 			createCharacter, createOutline, createLocation,
 			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation, batchDelete
 		} = this.state;
@@ -206,11 +217,14 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					quitEditMode={this.onQuitEditMode}
 					batchDelete={this.onBatchDelete}
 					resetBatchDelete={this.onResetBatchDelete}
+					onSave={this.onSave}
+					resetSave={this.onResetSave}
 				/>
 				<div className="novel-content">
 					<IntroSection
 						novel_id={id}
 						isEdit={isEdit}
+						shouldSave={save}
 					/>
 					<Collapse defaultActiveKey={['background', 'characters', 'outlines', 'locations']}>
 						<Panel header="背景设定" key="background">

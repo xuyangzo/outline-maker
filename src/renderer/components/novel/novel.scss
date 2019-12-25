@@ -36,16 +36,58 @@
     line-height: 30px;
   }
 
-  // novel's tag
-  .novel-tag {
+  // container of tags
+  .tag-container {
     display: inline-block;
-    margin: 0 5px;
-    transform: translateY(-5px);
-    padding: 2.5px 8px;
-    border: 1px solid palevioletred;
-    color: palevioletred;
-    border-radius: 10px;
-    font-size: 10px;
+
+    // novel's tag
+    .novel-tag {
+      display: inline-block;
+      margin: 0 5px;
+      transform: translateY(-5px);
+      padding: 2.5px 8px;
+      border: 1px solid palevioletred;
+      color: palevioletred;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+
+    // novel's tags under edit mode
+    .novel-tag-edit {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      color: rgb(185, 184, 184);
+      border-color: rgb(185, 184, 184);
+      cursor: pointer;
+    }
+
+    // tag container's header
+    .tag-container-header {
+      width: 100%;
+    }
+
+    // tag container's content
+    .tag-container-content {
+      padding-top: 20px;
+    }
+
+    // tag container's header under edit mode
+    .tag-container-header-edit {
+      border-bottom: 1px solid #d9d9d9;
+      padding-bottom: 10px;
+      height: 35px;
+    }
+  }
+
+  // ccontainer of edit mode
+  .tag-container-edit {
+    display: block;
+    width: 60%;
+    margin: 20px 0;
+    padding: 20px 15px;
+    border-radius: 5px;
+    border: 1px solid #d9d9d9;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   // background section, each line
@@ -88,7 +130,7 @@
   .check-all-box {
     position: absolute;
     top: -45px;
-    right: 40px;
+    right: 20px;
   }
 
   // delete icon

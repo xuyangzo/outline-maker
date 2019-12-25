@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { message as Message, Input } from 'antd';
+import { message as Message, Input, Icon } from 'antd';
 const { TextArea } = Input;
 
 // type declaration
@@ -8,13 +8,13 @@ import { NovelDataValue } from '../novelDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getNovel } from '../../../../db/operations/novel-ops';
+import { getNovel, updateNovel } from '../../../../db/operations/novel-ops';
 
 // utils
-import { tagColors } from '../../../utils/constants';
+import { tagColors, tags } from '../../../utils/constants';
 
 const IntroSection = (props: IntroSectionProps) => {
-	const { novel_id, isEdit } = props;
+	const { novel_id, isEdit, shouldSave } = props;
 
 	// hooks
 	const [name, setName] = React.useState<string>('');
@@ -22,9 +22,12 @@ const IntroSection = (props: IntroSectionProps) => {
 	const [categories, setCategories] = React.useState<string[]>([]);
 	React.useEffect(
 		() => {
-			getNovelContent();
+			// save
+			if (shouldSave) onSave();
+			// refresh content
+			else getNovelContent();
 		},
-		[props.novel_id]
+		[props.novel_id, props.shouldSave]
 	);
 
 	// on input change
@@ -39,6 +42,34 @@ const IntroSection = (props: IntroSectionProps) => {
 		setDescription(description);
 	}
 
+	// add new tag
+	function onAddTag(tag: string) {
+		if (categories.length === 4) {
+			Message.error('最多只能选择四个标签！');
+			return;
+		}
+
+		setCategories(categories.concat(tag));
+	}
+
+	// delete new tag
+	function onDeleteTag(tag: string) {
+		setCategories(categories.filter((currTag: string) => currTag !== tag));
+	}
+
+	// on save
+	function onSave() {
+		updateNovel(novel_id, { name, description, categories: categories.join(',') })
+			.then(() => {
+				Message.success('保存成功！');
+				// refresh content
+				getNovelContent();
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	// get novel content
 	function getNovelContent() {
 		getNovel(novel_id)
@@ -50,6 +81,69 @@ const IntroSection = (props: IntroSectionProps) => {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	// categories elements under normal mode
+	function categoriesNonEditJSX(): React.ReactElement<{}> {
+		return (
+			<div className="tag-container">
+				{
+					categories.map((category: string, index: number) => (
+						<div
+							className="novel-tag"
+							key={category}
+							style={{
+								color: tagColors[index],
+								borderColor: tagColors[index]
+							}}
+						>{category}
+						</div>
+					))
+				}
+			</div>
+		);
+	}
+
+	// categories elements under edit mode
+	function categoriesEditJSX(): React.ReactElement {
+		return (
+			<div className="tag-container tag-container-edit">
+				<div className="tag-container-header tag-container-header-edit">
+					{
+						categories.map((category: string, index: number) => (
+							<div
+								className="novel-tag"
+								key={category}
+								style={{
+									color: tagColors[index],
+									borderColor: tagColors[index]
+								}}
+							>
+								{category}&nbsp;&nbsp;
+								<Icon
+									type="close"
+									style={{ color: tagColors[index], cursor: 'pointer' }}
+									onClick={() => onDeleteTag(category)}
+								/>
+							</div>
+						))
+					}
+				</div>
+				<div className="tag-container-content">
+					{
+						tags.map((tag: string) => (
+							<div
+								className="novel-tag novel-tag-edit"
+								key={tag}
+								onClick={() => onAddTag(tag)}
+							>
+								{tag}
+							</div>
+						))
+					}
+				</div>
+			</div>
+		);
 	}
 
 	return (
@@ -69,24 +163,7 @@ const IntroSection = (props: IntroSectionProps) => {
 						<h2 style={{ display: 'inline-block', marginRight: '10px' }}>{name}</h2>
 					)
 			}
-			{
-				categories.map((category: string, index: number) => (
-					<div
-						className="novel-tag"
-						key={category}
-						style={{
-							color: tagColors[index],
-							borderColor: tagColors[index]
-						}}
-					>{category}
-					</div>
-				))
-			}
-			{
-				!categories.length && (
-					<div className="novel-tag">暂无标签</div>
-				)
-			}
+			{isEdit ? categoriesEditJSX() : categoriesNonEditJSX()}
 			{
 				isEdit ? (
 					<TextArea

@@ -41,4 +41,5 @@ export interface NovelState {
   shouldRenderLocation: boolean;
   isEdit: boolean;
   batchDelete: boolean;
+  save: boolean;
 }

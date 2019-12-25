@@ -21,7 +21,8 @@ const NovelHeader = (props: NovelHeaderProps) => {
 		createCharacter, createLocation, createOutline,
 		cancelCreateCharacter, cancelCreateLocation, cancelCreateOutline,
 		refreshCharacter, refreshOutline, refreshLocation, refreshSidebar,
-		id, isEdit, enterEditMode, quitEditMode, batchDelete, resetBatchDelete
+		id, isEdit, enterEditMode, quitEditMode, batchDelete, resetBatchDelete,
+		onSave, resetSave
 	} = props;
 
 	// hooks to control the modal
@@ -45,17 +46,17 @@ const NovelHeader = (props: NovelHeaderProps) => {
 			// extra components for non-edit mode
 			return [
 				(
-					<Button type="primary" key="quit-edit" ghost onClick={quitEditMode}>
-						<Icon type="rollback" />退出编辑
-					</Button>
-				),
-				(
 					<Button type="danger" key="batch-delete" ghost onClick={() => setBatchDeleteModal(true)}>
 						<Icon type="delete" />批量删除
 					</Button>
 				),
 				(
-					<Button type="primary" key="save" ghost className="green-button">
+					<Button type="primary" key="quit-edit" ghost onClick={quitEditMode}>
+						<Icon type="rollback" />退出编辑
+					</Button>
+				),
+				(
+					<Button type="primary" key="save" ghost className="green-button" onClick={save}>
 						<Icon type="save" />保存文本
 					</Button>
 				)
@@ -110,6 +111,17 @@ const NovelHeader = (props: NovelHeaderProps) => {
 		 */
 		resetBatchDelete();
 		setBatchDeleteModal(false);
+	}
+
+	// start save
+	async function save() {
+		await onSave();
+		/**
+		 * need to reset save status
+		 * otherwise, hooks will not trigger
+		 * (because there is no state change)
+		 */
+		resetSave();
 	}
 
 	return (
