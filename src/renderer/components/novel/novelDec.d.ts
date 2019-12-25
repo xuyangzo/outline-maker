@@ -7,6 +7,13 @@ interface MatchParams {
   id: string;
 }
 
+export interface NovelDataValue {
+  id: number;
+  name: string;
+  description: string;
+  categories: string;
+}
+
 export interface NovelShortDataValue {
   id: number;
   name: string;

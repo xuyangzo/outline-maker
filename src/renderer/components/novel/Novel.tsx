@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom';
 
 // custom components
 import NovelHeader from '../novel-header/NovelHeader';
+import IntroSection from './intro-section/IntroSection';
 import BackgroundSection from './background-section/BackgroundSection';
 import CharacterSection from './character-section/CharacterSection';
 import LocationSection from './location-section/LocationSection';
@@ -17,11 +18,10 @@ import OutlineSection from './outline-section/OutlineSection';
 import { NovelProps, NovelState } from './novelDec';
 import { Location, LocationDataValue } from '../location/locationDec';
 import { Character, CharacterDataValue } from '../character/characterDec';
-import { NovelDataValue, OutlineDataValue, Outline } from '../sidebar/sidebarDec';
+import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
@@ -56,7 +56,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	componentDidMount = () => {
 		const { id } = this.props.match.params;
-		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -66,7 +65,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		const { id } = props.match.params;
 		this.setState({ id });
 
-		this.getNovelContent(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -120,21 +118,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	// reset batch deletion status
 	onResetBatchDelete = () => {
 		this.setState({ batchDelete: false });
-	}
-
-	// get novel content
-	getNovelContent = (id: string) => {
-		getNovelById(id)
-			.then(({ dataValues }: { dataValues: NovelDataValue }) => {
-				this.setState({
-					name: dataValues.name,
-					description: dataValues.description,
-					categories: dataValues.categories ? dataValues.categories.split(',') : []
-				});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
 	}
 
 	// get all characters
@@ -225,27 +208,10 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					resetBatchDelete={this.onResetBatchDelete}
 				/>
 				<div className="novel-content">
-					<h2 style={{ display: 'inline-block', marginRight: '10px' }}>{name}</h2>
-					{
-						categories.map((category: string, index: number) => (
-							<div
-								className="novel-tag"
-								key={category}
-								style={{
-									color: tagColors[index],
-									borderColor: tagColors[index]
-								}}
-							>{category}
-							</div>
-						))
-					}
-					{
-						!categories.length && (
-							<div className="novel-tag">暂无标签</div>
-						)
-					}
-					<p className="novel-description">{description}</p>
-					<br />
+					<IntroSection
+						novel_id={id}
+						isEdit={isEdit}
+					/>
 					<Collapse defaultActiveKey={['background', 'characters', 'outlines', 'locations']}>
 						<Panel header="背景设定" key="background">
 							<BackgroundSection

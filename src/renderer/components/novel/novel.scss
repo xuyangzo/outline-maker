@@ -13,6 +13,21 @@
     margin-left: 18px;
   }
 
+  // input for novel title
+  .novel-title-input {
+    font-size: 21px;
+    font-weight: bold;
+    width: 400px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid black;
+    overflow: visible;
+    display: block;
+    margin-bottom: 10px;
+    transform: translate(-1px, -1px);
+    color: rgba(0,0,0,.85);
+  }
+
   // novel's description
   .novel-description {
     white-space: pre-line;

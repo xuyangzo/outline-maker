@@ -25,7 +25,7 @@ export const getAllNovels = (): Promise<any> => {
 };
 
 // get novel given id
-export const getNovelById = (id: number | string): Promise<any> => {
+export const getNovel = (id: number | string): Promise<any> => {
 	return Novel
 		.findOne({
 			where: { id }
