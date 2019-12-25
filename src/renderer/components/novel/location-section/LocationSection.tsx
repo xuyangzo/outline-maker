@@ -23,6 +23,24 @@ const LocationSection = (props: LocationSectionProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [checkedList, setCheckedList] = React.useState<string[]>([]);
+	React.useEffect(
+		() => {
+			if (props.batchDelete) {
+				if (checkedList.length) {
+					Promise
+						.all(checkedList.map((id: string) => deleteLocationTemp(id)))
+						.then(() => {
+							Message.success('选中的势力已经被删除！');
+							refreshLocation(novel_id);
+						})
+						.catch((err: DatabaseError) => {
+							Message.error(err.message);
+						});
+				}
+			}
+		},
+		[props.batchDelete]
+	);
 
 	// open modal
 	function onOpenModal(e: React.MouseEvent, id: string | number) {

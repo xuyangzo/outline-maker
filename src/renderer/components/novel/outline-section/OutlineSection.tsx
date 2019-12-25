@@ -20,6 +20,24 @@ const OutlineSection = (props: OutlineSectionProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [checkedList, setCheckedList] = React.useState<string[]>([]);
+	React.useEffect(
+		() => {
+			if (props.batchDelete) {
+				if (checkedList.length) {
+					Promise
+						.all(checkedList.map((id: string) => deleteOutlineTemp(id)))
+						.then(() => {
+							Message.success('选中的大纲已经被删除！');
+							refreshOutline(novel_id);
+						})
+						.catch((err: DatabaseError) => {
+							Message.error(err.message);
+						});
+				}
+			}
+		},
+		[props.batchDelete]
+	);
 
 	// open modal
 	function onOpenModal(e: React.MouseEvent, id: string | number) {

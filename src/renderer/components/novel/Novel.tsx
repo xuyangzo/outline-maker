@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Collapse, Icon, Button } from 'antd';
+import { Col, message as Message, Collapse } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
 
@@ -194,7 +194,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		const {
 			id, name, description, characters, outlines, categories, locations, isEdit,
 			createCharacter, createOutline, createLocation,
-			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation
+			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation, batchDelete
 		} = this.state;
 
 		return (
@@ -262,6 +262,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										onCreateCharacter={this.onCreateCharacter}
 										refreshCharacter={this.getCharacters}
 										isEdit={isEdit}
+										batchDelete={batchDelete}
 									/>
 								)
 							}
@@ -275,6 +276,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										onCreateLocation={this.onCreateLocation}
 										refreshLocation={this.getLocations}
 										isEdit={isEdit}
+										batchDelete={batchDelete}
 									/>
 								)
 							}
@@ -288,6 +290,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										onCreateOutline={this.onCreateOutline}
 										refreshOutline={this.getOutlines}
 										isEdit={isEdit}
+										batchDelete={batchDelete}
 									/>
 								)
 							}

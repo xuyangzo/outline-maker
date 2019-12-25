@@ -101,8 +101,13 @@ const NovelHeader = (props: NovelHeaderProps) => {
 	}
 
 	// start batch delete
-	function onBatchDelete() {
-		batchDelete();
+	async function onBatchDelete() {
+		await batchDelete();
+		/**
+		 * need to reset delete status
+		 * otherwise, hooks will not trigger
+		 * (because there is no state change)
+		 */
 		resetBatchDelete();
 		setBatchDeleteModal(false);
 	}
