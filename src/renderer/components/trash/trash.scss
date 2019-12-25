@@ -5,6 +5,13 @@
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
 
+  // clear all button
+  .trash-clear-all-button {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+  }
+
   .empty-trash {
     display: flex;
     flex-direction: column;

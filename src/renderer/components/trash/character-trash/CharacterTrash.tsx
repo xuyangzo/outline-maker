@@ -11,7 +11,7 @@ import { getCharacterShort, deleteCharacterPermanently } from '../../../../db/op
 import { putbackCharacter } from '../../../../db/operations/trash-ops';
 
 const CharacterTrash = (props: CharacterTrashProps) => {
-	const { characters, refresh } = props;
+	const { characters, refresh, batchDelete } = props;
 
 	// hooks
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
@@ -20,7 +20,27 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 	const [characterDetails, setCharacterDetails] = React.useState<CharacterShortDataValue[]>([]);
 
 	// get characters when props.characters changes & didmount
-	React.useEffect(getCharacters, [props.characters]);
+	React.useEffect(
+		() => {
+			// if batch delete
+			if (batchDelete) {
+				Promise
+					.all(characters.map((id: number) => deleteCharacterPermanently(id)))
+					.then(() => {
+						Message.success('角色已永久删除！');
+						// refresh
+						refresh();
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+			}
+			// otherwise, update characters
+			else getCharacters();
+		},
+		[props.characters, props.batchDelete]
+	);
 
 	// get characters
 	function getCharacters() {
@@ -32,6 +52,9 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 			.then((result: any) => {
 				const characters = result.map(({ dataValues }: { dataValues: CharacterShortDataValue }) => dataValues);
 				setCharacterDetails(characters);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 

@@ -29,6 +29,8 @@ const CharacterSection = (props: CharacterSectionProps) => {
 						.then(() => {
 							Message.success('选中的角色已经被删除！');
 							refreshCharacter(novel_id);
+							// clear checked list
+							setCheckedList([]);
 						})
 						.catch((err: DatabaseError) => {
 							Message.error(err.message);

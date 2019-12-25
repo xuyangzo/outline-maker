@@ -32,6 +32,8 @@ const LocationSection = (props: LocationSectionProps) => {
 						.then(() => {
 							Message.success('选中的势力已经被删除！');
 							refreshLocation(novel_id);
+							// clear checked list
+							setCheckedList([]);
 						})
 						.catch((err: DatabaseError) => {
 							Message.error(err.message);

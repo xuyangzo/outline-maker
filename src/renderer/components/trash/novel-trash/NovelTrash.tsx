@@ -11,7 +11,7 @@ import { getNovelShort, deleteNovelPermanently } from '../../../../db/operations
 import { putbackNovel } from '../../../../db/operations/trash-ops';
 
 const NovelTrash = (props: NovelTrashProps) => {
-	const { novels, refresh, refreshSidebar } = props;
+	const { novels, refresh, refreshSidebar, batchDelete } = props;
 
 	// hooks
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
@@ -20,7 +20,28 @@ const NovelTrash = (props: NovelTrashProps) => {
 	const [novelDetails, setNovelDetails] = React.useState<NovelShortDataValue[]>([]);
 
 	// get novels when props.novels changes & didmount
-	React.useEffect(getNovels, [props.novels]);
+	React.useEffect(
+		() => {
+			// if batch delete
+			if (batchDelete) {
+				Promise
+					.all(novels.map((id: number) => deleteNovelPermanently(id)))
+					.then(() => {
+						Message.success('小说已永久删除！');
+						// refresh trash page and sidebar
+						refresh();
+						refreshSidebar();
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+			}
+			// otherwise, update novels
+			else getNovels();
+		},
+		[props.novels, props.batchDelete]
+	);
 
 	// get novels
 	function getNovels() {

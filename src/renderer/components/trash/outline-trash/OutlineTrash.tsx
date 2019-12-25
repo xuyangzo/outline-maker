@@ -11,7 +11,7 @@ import { getOutlineShort, deleteOutlinePermanently } from '../../../../db/operat
 import { putbackOutline } from '../../../../db/operations/trash-ops';
 
 const OutlineTrash = (props: OutlineTrashProps) => {
-	const { outlines, refresh } = props;
+	const { outlines, refresh, batchDelete } = props;
 
 	// hooks
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
@@ -20,7 +20,27 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 	const [outlineDetails, setOutlineDetails] = React.useState<OutlineShortDataValue[]>([]);
 
 	// get outlines when props.outlines changes & didmount
-	React.useEffect(getOutlines, [props.outlines]);
+	React.useEffect(
+		() => {
+			// if batch delete
+			if (batchDelete) {
+				Promise
+					.all(outlines.map((id: number) => deleteOutlinePermanently(id)))
+					.then(() => {
+						Message.success('势力已永久删除！');
+						// refresh
+						refresh();
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+			}
+			// otherwise, update outlines
+			else getOutlines();
+		},
+		[props.outlines, props.batchDelete]
+	);
 
 	// get outlines
 	function getOutlines() {

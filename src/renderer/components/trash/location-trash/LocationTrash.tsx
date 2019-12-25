@@ -11,7 +11,7 @@ import { getLocationShort, deleteLocationPermanently } from '../../../../db/oper
 import { putbackLocation } from '../../../../db/operations/trash-ops';
 
 const LocationTrash = (props: LocationTrashProps) => {
-	const { locations, refresh } = props;
+	const { locations, refresh, batchDelete } = props;
 
 	// hooks
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
@@ -20,7 +20,27 @@ const LocationTrash = (props: LocationTrashProps) => {
 	const [locationDetails, setLocationDetails] = React.useState<LocationShortDataValue[]>([]);
 
 	// get locations when props.locations changes & didmount
-	React.useEffect(getLocations, [props.locations]);
+	React.useEffect(
+		() => {
+			// if batch delete
+			if (batchDelete) {
+				Promise
+					.all(locations.map((id: number) => deleteLocationPermanently(id)))
+					.then(() => {
+						Message.success('势力已永久删除！');
+						// refresh
+						refresh();
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+			}
+			// otherwise, update locations
+			else getLocations();
+		},
+		[props.locations, props.batchDelete]
+	);
 
 	// get locations
 	function getLocations() {

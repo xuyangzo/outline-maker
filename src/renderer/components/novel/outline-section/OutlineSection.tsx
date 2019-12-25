@@ -29,6 +29,8 @@ const OutlineSection = (props: OutlineSectionProps) => {
 						.then(() => {
 							Message.success('选中的大纲已经被删除！');
 							refreshOutline(novel_id);
+							// clear checked list
+							setCheckedList([]);
 						})
 						.catch((err: DatabaseError) => {
 							Message.error(err.message);

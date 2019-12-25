@@ -22,4 +22,6 @@ export interface TrashState {
 	characters: number[];
 	locations: number[];
 	shouldRender: boolean;
+	batchDelete: boolean;
+	showClearModal: boolean;
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Collapse } from 'antd';
+import { Col, message as Message, Collapse, Button, Modal } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
 
@@ -33,7 +33,9 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			outlines: [],
 			characters: [],
 			locations: [],
-			shouldRender: false
+			shouldRender: false,
+			batchDelete: false,
+			showClearModal: false
 		};
 	}
 
@@ -68,9 +70,24 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			});
 	}
 
+	// open clear modal
+	onOpenClearModal = () => {
+		this.setState({ showClearModal: true });
+	}
+
+	// close clear modal
+	onCloseClearModal = () => {
+		this.setState({ showClearModal: false });
+	}
+
+	// start batch deletion
+	onBatchDelete = () => {
+		this.setState({ batchDelete: true, showClearModal: false });
+	}
+
 	render() {
 		const { expand, refreshSidebar } = this.props;
-		const { shouldRender, novels, outlines, characters, locations } = this.state;
+		const { shouldRender, novels, outlines, characters, locations, batchDelete, showClearModal } = this.state;
 
 		return (
 			<Col
@@ -81,6 +98,18 @@ class Trash extends React.Component<TrashProps, TrashState> {
 					})
 				}
 			>
+				{
+					(novels.length || outlines.length || characters.length || locations.length) && shouldRender ?
+						(
+							<Button
+								type="danger"
+								ghost
+								className="trash-clear-all-button"
+								onClick={this.onOpenClearModal}
+							>清空回收箱
+							</Button>
+						) : ''
+				}
 				{
 					!novels.length && !outlines.length && !characters.length && !locations.length && shouldRender && (
 						<div className="empty-trash">
@@ -98,6 +127,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 									novels={novels}
 									refresh={this.getTrashes}
 									refreshSidebar={refreshSidebar}
+									batchDelete={batchDelete}
 								/>
 							</Panel>
 						)
@@ -108,6 +138,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 								<CharacterTrash
 									characters={characters}
 									refresh={this.getTrashes}
+									batchDelete={batchDelete}
 								/>
 							</Panel>
 						)
@@ -118,6 +149,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 								<LocationTrash
 									locations={locations}
 									refresh={this.getTrashes}
+									batchDelete={batchDelete}
 								/>
 							</Panel>
 						)
@@ -128,11 +160,30 @@ class Trash extends React.Component<TrashProps, TrashState> {
 								<OutlineTrash
 									outlines={outlines}
 									refresh={this.getTrashes}
+									batchDelete={batchDelete}
 								/>
 							</Panel>
 						)
 					}
 				</Collapse>
+				<Modal
+					title="清空回收箱"
+					visible={showClearModal}
+					onOk={this.onBatchDelete}
+					onCancel={this.onCloseClearModal}
+					footer={[
+						<Button type="danger" key="back" onClick={this.onCloseClearModal} ghost>取消</Button>,
+						<Button
+							type="primary"
+							key="submit"
+							onClick={this.onBatchDelete}
+							ghost
+						>确认
+						</Button>
+					]}
+				>
+					清空回收箱后，数据无法恢复！是否继续？
+				</Modal>
 			</Col>
 		);
 	}

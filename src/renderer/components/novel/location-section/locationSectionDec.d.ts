@@ -5,6 +5,7 @@ export interface LocationSectionProps extends RouteComponentProps {
   locations: Location[];
   novel_id: string;
   isEdit: boolean;
+  batchDelete: boolean;
 
   refreshLocation: (id: string) => void;
   onCreateLocation: () => void;
