@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom';
 
 // custom components
 import NovelHeader from '../novel-header/NovelHeader';
+import BackgroundSection from './background-section/BackgroundSection';
 import CharacterSection from './character-section/CharacterSection';
 import LocationSection from './location-section/LocationSection';
 import OutlineSection from './outline-section/OutlineSection';
@@ -24,16 +25,12 @@ import { getNovelById } from '../../../db/operations/novel-ops';
 import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
-import { getWorldviewGivenNovel } from '../../../db/operations/background-ops';
 
 // utils
 import { tagColors, imageMapping } from '../../utils/constants';
 
 // sass
 import './novel.scss';
-
-// image
-import unknownArea from '../../../public/unknown_gray.jpg';
 
 class Novel extends React.Component<NovelProps, NovelState> {
 	constructor(props: NovelProps) {
@@ -42,7 +39,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			id: props.match.params.id,
 			name: '',
 			description: '',
-			wordview: '',
 			categories: [],
 			characters: [],
 			outlines: [],
@@ -52,14 +48,15 @@ class Novel extends React.Component<NovelProps, NovelState> {
 			createLocation: false,
 			shouldRenderCharacter: false,
 			shouldRenderOutline: false,
-			shouldRenderLocation: false
+			shouldRenderLocation: false,
+			isEdit: false,
+			batchDelete: false
 		};
 	}
 
 	componentDidMount = () => {
 		const { id } = this.props.match.params;
 		this.getNovelContent(id);
-		this.getWorldview(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -70,7 +67,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.setState({ id });
 
 		this.getNovelContent(id);
-		this.getWorldview(id);
 		this.getCharacters(id);
 		this.getOutlines(id);
 		this.getLocations(id);
@@ -106,6 +102,26 @@ class Novel extends React.Component<NovelProps, NovelState> {
 		this.setState({ createLocation: false });
 	}
 
+	// enter edit mode
+	onEnterEditMode = () => {
+		this.setState({ isEdit: true });
+	}
+
+	// quit edit mode
+	onQuitEditMode = () => {
+		this.setState({ isEdit: false });
+	}
+
+	// should batch delete
+	onBatchDelete = () => {
+		this.setState({ batchDelete: true });
+	}
+
+	// reset batch deletion status
+	onResetBatchDelete = () => {
+		this.setState({ batchDelete: false });
+	}
+
 	// get novel content
 	getNovelContent = (id: string) => {
 		getNovelById(id)
@@ -115,19 +131,6 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					description: dataValues.description,
 					categories: dataValues.categories ? dataValues.categories.split(',') : []
 				});
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-	}
-
-	// get worldview
-	getWorldview = (id: string) => {
-		getWorldviewGivenNovel(id)
-			.then((result: any) => {
-				// datavalues might be null here
-				if (result) this.setState({ wordview: result.dataValues.content });
-				else this.setState({ wordview: '暂时还没有世界观设定...' });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -189,7 +192,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	render() {
 		const { expand, refreshSidebar } = this.props;
 		const {
-			id, name, description, wordview, characters, outlines, categories, locations,
+			id, name, description, characters, outlines, categories, locations, isEdit,
 			createCharacter, createOutline, createLocation,
 			shouldRenderCharacter, shouldRenderOutline, shouldRenderLocation
 		} = this.state;
@@ -215,6 +218,11 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					cancelCreateOutline={this.onCancelCreateOutline}
 					cancelCreateLocation={this.onCancelCreateLocation}
 					id={id}
+					isEdit={isEdit}
+					enterEditMode={this.onEnterEditMode}
+					quitEditMode={this.onQuitEditMode}
+					batchDelete={this.onBatchDelete}
+					resetBatchDelete={this.onResetBatchDelete}
 				/>
 				<div className="novel-content">
 					<h2 style={{ display: 'inline-block', marginRight: '10px' }}>{name}</h2>
@@ -240,18 +248,10 @@ class Novel extends React.Component<NovelProps, NovelState> {
 					<br />
 					<Collapse defaultActiveKey={['background', 'characters', 'outlines', 'locations']}>
 						<Panel header="背景设定" key="background">
-							<div className="background-property">
-								{wordview}
-							</div>
-							<Button
-								type="primary"
-								className="green-button borderless-button"
-								style={{ marginLeft: 15, marginTop: 20 }}
-								onClick={() => { this.props.history.push(`/background/${this.props.match.params.id}`); }}
-								ghost
-							>
-								查看更多设定 <Icon type="arrow-right" />
-							</Button>
+							<BackgroundSection
+								novel_id={id}
+								isEdit={isEdit}
+							/>
 						</Panel>
 						<Panel header="角色列表" key="characters">
 							{
@@ -261,6 +261,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										novel_id={id}
 										onCreateCharacter={this.onCreateCharacter}
 										refreshCharacter={this.getCharacters}
+										isEdit={isEdit}
 									/>
 								)
 							}
@@ -273,6 +274,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										novel_id={id}
 										onCreateLocation={this.onCreateLocation}
 										refreshLocation={this.getLocations}
+										isEdit={isEdit}
 									/>
 								)
 							}
@@ -285,6 +287,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										novel_id={id}
 										onCreateOutline={this.onCreateOutline}
 										refreshOutline={this.getOutlines}
+										isEdit={isEdit}
 									/>
 								)
 							}

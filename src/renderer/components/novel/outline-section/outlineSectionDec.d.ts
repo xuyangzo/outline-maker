@@ -4,6 +4,7 @@ import { Outline } from '../../sidebar/sidebarDec';
 export interface OutlineSectionProps extends RouteComponentProps {
   outlines: Outline[];
   novel_id: string;
+  isEdit: boolean;
 
   refreshOutline: (id: string) => void;
   onCreateOutline: () => void;

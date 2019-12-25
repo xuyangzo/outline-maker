@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Icon, Modal, Button } from 'antd';
+import { Col, message as Message, Card, Row, Icon, Modal, Button, Checkbox } from 'antd';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -8,16 +8,18 @@ import { withRouter } from 'react-router-dom';
 import { OutlineSectionProps } from './outlineSectionDec';
 import { Outline } from '../../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // database operations
 import { deleteOutlineTemp } from '../../../../db/operations/outline-ops';
 
 const OutlineSection = (props: OutlineSectionProps) => {
-	const { outlines, novel_id, onCreateOutline, refreshOutline } = props;
+	const { outlines, novel_id, onCreateOutline, refreshOutline, isEdit } = props;
 
 	// hooks
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
+	const [checkedList, setCheckedList] = React.useState<string[]>([]);
 
 	// open modal
 	function onOpenModal(e: React.MouseEvent, id: string | number) {
@@ -52,11 +54,53 @@ const OutlineSection = (props: OutlineSectionProps) => {
 			});
 	}
 
+	function onCheckboxChange(e: CheckboxChangeEvent) {
+		const id: string = e.target.name || '';
+		const checked: boolean = e.target.checked;
+
+		// push id to checked list
+		if (checked) setCheckedList(checkedList.concat(id));
+		else setCheckedList(checkedList.filter((checked: string) => checked !== id));
+	}
+
+	// when check all checkbox changes
+	function onCheckAllChange(e: CheckboxChangeEvent) {
+		const checked: boolean = e.target.checked;
+		// check all checkbox
+		if (checked) setCheckedList(outlines.map((outline: Outline) => outline.id.toString()));
+		// uncheck all checkbox
+		else setCheckedList([]);
+	}
+
 	return (
 		<Row>
 			{
+				isEdit && (
+					<Checkbox
+						indeterminate={checkedList.length > 0 && checkedList.length < outlines.length}
+						onChange={onCheckAllChange}
+						checked={checkedList.length === outlines.length}
+						className="check-all-box"
+					>
+						大纲全选
+					</Checkbox>
+				)
+			}
+			{
 				outlines.map((outline: Outline) => (
 					<Col span={6} key={outline.id} className="card-container">
+						{
+							isEdit && (
+								<div className="card-edit-cover">
+									<Checkbox
+										className="custom-checkbox"
+										onChange={onCheckboxChange}
+										name={outline.id.toString()}
+										checked={checkedList.indexOf(outline.id.toString()) !== -1}
+									/>
+								</div>
+							)
+						}
 						<div
 							className="delete-icon"
 							onClick={(e: React.MouseEvent) => onOpenModal(e, outline.id)}

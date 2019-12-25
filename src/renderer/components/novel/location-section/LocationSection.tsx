@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Row, Icon, Modal, Button } from 'antd';
+import { Col, message as Message, Card, Row, Icon, Modal, Button, Checkbox } from 'antd';
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom';
 import { LocationSectionProps } from './locationSectionDec';
 import { Location } from '../../location/locationDec';
 import { DatabaseError } from 'sequelize';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // database operations
 import { deleteLocationTemp } from '../../../../db/operations/location-ops';
@@ -16,11 +17,12 @@ import { deleteLocationTemp } from '../../../../db/operations/location-ops';
 import unknownArea from '../../../../public/unknown_gray.jpg';
 
 const LocationSection = (props: LocationSectionProps) => {
-	const { locations, novel_id, onCreateLocation, refreshLocation } = props;
+	const { locations, novel_id, onCreateLocation, refreshLocation, isEdit } = props;
 
 	// hooks
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
+	const [checkedList, setCheckedList] = React.useState<string[]>([]);
 
 	// open modal
 	function onOpenModal(e: React.MouseEvent, id: string | number) {
@@ -55,11 +57,53 @@ const LocationSection = (props: LocationSectionProps) => {
 			});
 	}
 
+	function onCheckboxChange(e: CheckboxChangeEvent) {
+		const id: string = e.target.name || '';
+		const checked: boolean = e.target.checked;
+
+		// push id to checked list
+		if (checked) setCheckedList(checkedList.concat(id));
+		else setCheckedList(checkedList.filter((checked: string) => checked !== id));
+	}
+
+	// when check all checkbox changes
+	function onCheckAllChange(e: CheckboxChangeEvent) {
+		const checked: boolean = e.target.checked;
+		// check all checkbox
+		if (checked) setCheckedList(locations.map((location: Location) => location.id.toString()));
+		// uncheck all checkbox
+		else setCheckedList([]);
+	}
+
 	return (
 		<Row>
 			{
+				isEdit && (
+					<Checkbox
+						indeterminate={checkedList.length > 0 && checkedList.length < locations.length}
+						onChange={onCheckAllChange}
+						checked={checkedList.length === locations.length}
+						className="check-all-box"
+					>
+						势力全选
+					</Checkbox>
+				)
+			}
+			{
 				locations.map((location: Location) => (
 					<Col span={8} key={location.id} className="card-container">
+						{
+							isEdit && (
+								<div className="card-edit-cover">
+									<Checkbox
+										className="custom-checkbox"
+										onChange={onCheckboxChange}
+										name={location.id.toString()}
+										checked={checkedList.indexOf(location.id.toString()) !== -1}
+									/>
+								</div>
+							)
+						}
 						<div
 							className="delete-icon"
 							onClick={(e: React.MouseEvent) => onOpenModal(e, location.id)}

@@ -68,10 +68,30 @@
 	color: rgba(0, 0,0, 0.7);
 }
 
-.ant-tooltip-arrow::before{
+.ant-tooltip-arrow:before{
 	background-color: ghostwhite !important;
 	border-color: ghostwhite !important;
 	box-shadow: -3px 3px 7px ghostwhite;
+}
+
+.ant-checkbox-inner {
+	width: 25px;
+	height: 25px;
+}
+
+.ant-checkbox-inner:after {
+	width: 8px;
+	height: 15px;
+	top: 45%;
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+	width: 12px;
+	height: 12px;
+}
+
+.ant-collapse-content.ant-collapse-content-active {
+	overflow: visible !important;
 }
 
 // create button without border

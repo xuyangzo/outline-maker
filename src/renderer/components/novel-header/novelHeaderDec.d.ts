@@ -5,6 +5,7 @@ export interface NovelHeaderProps extends RouteComponentProps {
   createOutline: boolean;
   createLocation: boolean;
   id: string;
+  isEdit: boolean;
 
   refreshCharacter: (id: string) => void;
   refreshOutline: (id: string) => void;
@@ -13,12 +14,8 @@ export interface NovelHeaderProps extends RouteComponentProps {
   cancelCreateCharacter: () => void;
   cancelCreateOutline: () => void;
   cancelCreateLocation: () => void;
-}
-
-export interface NovelHeaderState {
-  id: string;
-  characterVisible: boolean;
-  outlineVisible: boolean;
-  locationVisible: boolean;
-  deleteNovelVisible: boolean;
+  enterEditMode: () => void;
+  quitEditMode: () => void;
+  batchDelete: () => void;
+  resetBatchDelete: () => void;
 }

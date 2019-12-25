@@ -22,7 +22,6 @@ export interface NovelState {
   id: string;
   name: string;
   description: string;
-  wordview: string;
   categories: string[];
   characters: Character[];
   outlines: Outline[];
@@ -33,4 +32,6 @@ export interface NovelState {
   shouldRenderCharacter: boolean;
   shouldRenderOutline: boolean;
   shouldRenderLocation: boolean;
+  isEdit: boolean;
+  batchDelete: boolean;
 }

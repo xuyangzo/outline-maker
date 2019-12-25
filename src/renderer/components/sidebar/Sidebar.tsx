@@ -18,7 +18,7 @@ import { getAllNovels, createNovel } from '../../../db/operations/novel-ops';
 // utils
 import { getSelectedKey } from '../../utils/utils';
 
-// sidebar
+// sass
 import './sidebar.scss';
 
 // image
@@ -59,10 +59,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	// once a menu is selected
 	onSelect = ({ key }: { key: string }) => {
-		this.setState((prevState: SidebarState) => ({
-			...prevState,
-			selected: [key]
-		}));
+		this.setState({ selected: [key] });
 	}
 
 	// open create novel modal
@@ -95,10 +92,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	// get selected key
 	setSelectedKey = (props: SidebarProps) => {
 		// set selected keys
-		this.setState((prevState: SidebarState) => ({
-			...prevState,
-			selected: [getSelectedKey(props.location.pathname)]
-		}));
+		this.setState({ selected: [getSelectedKey(props.location.pathname)] });
 	}
 
 	// get all novels
@@ -157,12 +151,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		const arrow: string = expand ? 'double-left' : 'double-right';
 		const action: () => void = expand ? shrinkSidebar : growSidebar;
 
-		// sets default selected
-		let selected = 'tutorial';
-		if (this.props.location.pathname.indexOf('outline') !== -1) {
-			selected = this.props.location.pathname.slice(9);
-		}
-
 		return (
 			<section id="sidebar" className="sidebar">
 				<Col
@@ -211,9 +199,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					>
 						<Icon type={arrow} />
 					</aside>
-					{/* <button className="add-outline-button" onClick={createOutline}>
-						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;创建大纲
-					</button> */}
 					<Row align="middle" style={{ height: '120px' }}>
 						<Col span={11} className="flex-container">
 							<img src={logo} alt="logo" className="sidebar-logo" />
@@ -229,7 +214,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;新建小说
 					</button>
 					<Menu
-						defaultSelectedKeys={[selected]}
+						defaultSelectedKeys={['tutorial']}
 						selectedKeys={this.state.selected}
 						defaultOpenKeys={['novel']}
 						mode="inline"
