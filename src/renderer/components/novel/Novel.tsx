@@ -22,7 +22,7 @@ import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getAllCharactersByNovel } from '../../../db/operations/character-ops';
+import { getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
 import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
 
@@ -133,7 +133,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	// get all characters
 	getCharacters = (id: string) => {
-		getAllCharactersByNovel(id)
+		getAllCharactersGivenNovel(id)
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
@@ -243,6 +243,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										refreshCharacter={this.getCharacters}
 										isEdit={isEdit}
 										batchDelete={batchDelete}
+										save={save}
 									/>
 								)
 							}

@@ -134,7 +134,7 @@ const LocationSection = (props: LocationSectionProps) => {
 							title={location.name}
 							bordered={false}
 							hoverable
-							className="custom-card location-card"
+							className="novel-custom-card location-card"
 							onClick={() => {
 								props.history.push(`/location/${novel_id}/${location.id}`);
 							}}

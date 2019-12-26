@@ -131,7 +131,7 @@ const OutlineSection = (props: OutlineSectionProps) => {
 							title={outline.title}
 							bordered={false}
 							hoverable
-							className="custom-card outline-card"
+							className="novel-custom-card outline-card"
 							onClick={() => {
 								props.history.push(`/outline/${novel_id}/${outline.id}`);
 							}}

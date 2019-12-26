@@ -6,6 +6,7 @@ export interface CharacterSectionProps extends RouteComponentProps {
   novel_id: string;
   isEdit: boolean;
   batchDelete: boolean;
+  save: boolean;
 
   refreshCharacter: (id: string) => void;
   onCreateCharacter: () => void;

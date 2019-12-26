@@ -56,8 +56,8 @@
     .novel-tag-edit {
       margin-top: 5px;
       margin-bottom: 5px;
-      color: rgb(185, 184, 184);
-      border-color: rgb(185, 184, 184);
+      color: rgb(170, 169, 169);
+      border-color: rgb(170, 169, 169);
       cursor: pointer;
     }
 
@@ -133,81 +133,6 @@
     right: 20px;
   }
 
-  // delete icon
-  .delete-icon {
-    color: crimson;
-    position: absolute;
-    top: 5px;
-    right: 22%;
-    z-index: 10;
-    font-size: 20px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  .card-container {
-    &:hover > .delete-icon {
-      opacity: 1;
-    }
-
-    // card edit cover
-    .card-edit-cover {
-      width: 80%;
-      height: calc(100% - 20px);
-      background: rgba(211, 211, 211, 0.7);
-      z-index: 100;
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      // custom check box
-      .custom-checkbox {
-        position: absolute;
-        top: 6px;
-        right: 5px;
-      }
-    }
-  }
-
-  // custom card
-  .custom-card {
-    width: 80%;
-    margin-bottom: 20px;
-    overflow: hidden;
-    text-align: center;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-
-    // overwrite ant design style
-    .ant-card-head {
-      border-bottom: none !important;
-    }
-    .ant-card-body {
-      padding: 0 !important;
-      position: relative;
-      height: 220px;
-      overflow: hidden;
-    }
-
-    img {
-      height: 300px;
-      min-width: 100%;
-      transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-      position: absolute;
-      top: -9999px;
-      bottom: -9999px;
-      left: -9999px;
-      right: -9999px;
-      margin: auto;
-      display: block;
-
-      &:hover {
-        transform: scale(1.1);
-      }
-    }
-  }
-
   // card for location
   .location-card {
     .ant-card-body {
@@ -222,4 +147,92 @@
       height: auto;
     }
   }
+}
+
+/**
+ * enable card style during drag
+ * because react-sortable-hoc appends element to body during drag
+ */
+.card-container {
+  &:hover > .delete-icon {
+    opacity: 1;
+  }
+
+  // card edit cover
+  .card-edit-cover {
+    width: 80%;
+    height: calc(100% - 20px);
+    background: rgba(211, 211, 211, 0.7);
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    // custom check box
+    .custom-checkbox {
+      position: absolute;
+      top: 6px;
+      right: 5px;
+    }
+  }
+}
+
+// custom card
+.novel-custom-card {
+  width: 80%;
+  margin-bottom: 20px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+
+  // overwrite ant design style
+  .ant-card-head {
+    border-bottom: none !important;
+  }
+  .ant-card-body {
+    padding: 0 !important;
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  img {
+    height: 300px;
+    min-width: 100%;
+    transition: transform 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;
+    display: block;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// list items
+.card-li {
+  width: 25%;
+  margin: 0;
+  list-style-type: none;
+  display: inline-block;
+  position: relative;
+}
+
+// delete icon
+.delete-icon {
+  color: crimson;
+  position: absolute;
+  top: 5px;
+  right: 22%;
+  z-index: 10;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }

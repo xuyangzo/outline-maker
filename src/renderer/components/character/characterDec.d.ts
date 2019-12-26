@@ -23,6 +23,7 @@ export interface Character {
   characteristics?: string | undefined;
   experience?: string | undefined;
   deleted?: number;
+  novelPageOrder?: number;
 }
 
 /**

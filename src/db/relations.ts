@@ -120,7 +120,8 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				appearance: '丑,不知道咋说,jj还小',
 				characteristics: '高傲',
 				experience: '啥都没有',
-				deleted: 0
+				deleted: 0,
+				novelPageOrder: 1
 			});
 
 			await CharacterModel.create({
@@ -128,7 +129,64 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				outline_id: 1,
 				name: '菜比',
 				color: '#ffbb96',
-				deleted: 0
+				deleted: 0,
+				novelPageOrder: 2
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比2',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 3
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比3',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 4
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比4',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 5
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比5',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 6
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比6',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 7
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比7',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 8
+			});
+			await CharacterModel.create({
+				novel_id: 1,
+				outline_id: 1,
+				name: '菜比8',
+				color: '#ffbb96',
+				deleted: 0,
+				novelPageOrder: 9
 			});
 
 			await TimelineModel.create({

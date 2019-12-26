@@ -1,4 +1,4 @@
-import CharacterModal from '../models/Character';
+import CharacterModel from '../models/Character';
 import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
@@ -16,21 +16,20 @@ interface CharacterTemplate {
 	characteristics?: string;
 	experience?: string;
 	deleted?: number;
+	novelPageOrder?: number;
 }
 
 // get character given character id
 export const getCharacter = (id: string | number): Promise<any> => {
-	return CharacterModal
+	return CharacterModel
 		.findOne({
-			where: {
-				id
-			}
+			where: { id }
 		});
 };
 
 // get id and name of character given character id
 export const getCharacterShort = (id: string | number): Promise<any> => {
-	return CharacterModal
+	return CharacterModel
 		.findOne({
 			attributes: ['id', 'name'],
 			where: { id }
@@ -38,8 +37,8 @@ export const getCharacterShort = (id: string | number): Promise<any> => {
 };
 
 // get all characters given novel id
-export const getAllCharactersByNovel = (id: string | number): Promise<any> => {
-	return CharacterModal
+export const getAllCharactersGivenNovel = (id: string | number): Promise<any> => {
+	return CharacterModel
 		.findAll({
 			where: {
 				novel_id: id,
@@ -47,13 +46,13 @@ export const getAllCharactersByNovel = (id: string | number): Promise<any> => {
 					[Op.ne]: 1
 				}
 			},
-			order: [['id', 'ASC']]
+			order: [['novelPageOrder', 'ASC']]
 		});
 };
 
 // get all characters given outline id
-export const getAllCharacters = (id: string): Promise<any> => {
-	return CharacterModal
+export const getAllCharactersGivenOutline = (id: string): Promise<any> => {
+	return CharacterModel
 		.findAll({
 			where: {
 				outline_id: id
@@ -62,13 +61,19 @@ export const getAllCharacters = (id: string): Promise<any> => {
 };
 
 // create new character
-export const createCharacter = (props: CharacterTemplate): Promise<any> => {
-	return CharacterModal.create(props);
+export const createCharacter = async (props: CharacterTemplate): Promise<any> => {
+	// get the max order
+	const maxOrder: number | null = await CharacterModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
+	return CharacterModel
+		.create({
+			...props,
+			novelPageOrder: (maxOrder || 0) + 1
+		});
 };
 
 // update character with given props
 export const updateCharacter = (id: string | number, props: CharacterTemplate) => {
-	return CharacterModal
+	return CharacterModel
 		.update(
 			props,
 			{ where: { id } }
@@ -77,7 +82,7 @@ export const updateCharacter = (id: string | number, props: CharacterTemplate) =
 
 // update charater given outline_id
 export const updateCharacterGivenOutline = (outline_id: string | number, props: CharacterTemplate) => {
-	return CharacterModal
+	return CharacterModel
 		.update(
 			props,
 			{ where: { outline_id } }
@@ -97,7 +102,7 @@ export const deleteCharacterTemp = (id: string | number): Promise<any> => {
  * already set CASCADE in relations, so just need to directly destroy
  */
 export const deleteCharacterPermanently = async (id: string | number): Promise<any> => {
-	return CharacterModal
+	return CharacterModel
 		.destroy({
 			where: { id }
 		});

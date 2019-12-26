@@ -65,7 +65,7 @@ const CharacterModal = (props: CharacterModalProps) => {
 						value={name}
 						onChange={onChange}
 						prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
-						placeholder="主角姓名（最多 20 个字）"
+						placeholder="角色姓名（最多 20 个字）"
 						ref={(input: Input) => input && input.focus()}
 					/>
 					更多的人设可以在添加角色后进行设置。
