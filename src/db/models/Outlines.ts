@@ -58,6 +58,10 @@ const Outlines = sequelize.define(
 			type: Sequelize.INTEGER,
 			defaultValue: 0
 		},
+		novelPageOrder: {
+			field: 'n_order',
+			type: Sequelize.INTEGER
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

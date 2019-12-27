@@ -66,7 +66,10 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 		.then(async () => {
 			await NovelModel.create({
 				name: '豪门特种兵之孤胆贼王',
-				description: '什么几把书名',
+				description: `三年前，他为了一个女人闯下大祸，被迫服役三年。
+				三年后，他王者归来，这个女人却已转投仇人怀抱，最好的兄弟也因此家破人亡。
+				这一生很简单，天在上地在下，兄弟在心中，爱人在怀中，便足矣。
+				这一生不简单，神挡杀神，佛挡杀佛，我愿屠尽三千世界，让这天下再无可阻我之物！`,
 				categories: '豪门,孤儿,盗贼,特种兵'
 			});
 
@@ -76,7 +79,62 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				novel_id: 1,
 				scaling: 0.75,
 				fav: 0,
-				delete: 0
+				delete: 0,
+				novelPageOrder: 1
+			});
+			await OutlineModel.create({
+				title: '默认模板2',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 2
+			});
+			await OutlineModel.create({
+				title: '默认模板3',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 3
+			});
+			await OutlineModel.create({
+				title: '默认模板4',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 4
+			});
+			await OutlineModel.create({
+				title: '默认模板5',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 5
+			});
+			await OutlineModel.create({
+				title: '默认模板6',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 6
+			});
+			await OutlineModel.create({
+				title: '默认模板7',
+				description: '默认介绍',
+				novel_id: 1,
+				scaling: 0.75,
+				fav: 0,
+				delete: 0,
+				novelPageOrder: 7
 			});
 
 			await BackgroundModel.create({
@@ -104,7 +162,68 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				texture: '一座纯白的塔',
 				location: '第一世界中央',
 				controller: '天尊',
-				deleted: 0
+				deleted: 0,
+				novelPageOrder: 1
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔2',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 2
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔3',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 3
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔4',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 4
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔5',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 5
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔6',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 6
+			});
+			await LocationModel.create({
+				novel_id: 1,
+				name: '天之塔7',
+				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
+				texture: '一座纯白的塔',
+				location: '第一世界中央',
+				controller: '天尊',
+				deleted: 0,
+				novelPageOrder: 7
 			});
 
 			await CharacterModel.create({

@@ -12,6 +12,7 @@ interface OutlineTemplate {
 	scaling?: string;
 	fav?: number;
 	deleted?: number;
+	novelPageOrder?: number;
 }
 
 // get outline given id
@@ -31,14 +32,6 @@ export const getOutlineShort = (id: string | number): Promise<any> => {
 		});
 };
 
-// get all outlines
-export const getAllOutlines = (): Promise<any> => {
-	return Outlines
-		.findAll({
-			order: [['id', 'DESC']]
-		});
-};
-
 // get all outlines given novel
 export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 	return Outlines
@@ -49,7 +42,7 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 					[Op.ne]: 1
 				}
 			},
-			order: [['id', 'ASC']]
+			order: [['novelPageOrder', 'ASC']]
 		});
 };
 
@@ -69,8 +62,13 @@ export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<
 };
 
 // create new outline
-export const createOutline = (props: OutlineModalTemplate) => {
-	return Outlines.create(props);
+export const createOutline = async (props: OutlineModalTemplate) => {
+	const maxOrder: number | null = await Outlines.max('novelPageOrder', { where: { novel_id: props.novel_id } });
+	return Outlines
+		.create({
+			...props,
+			novelPageOrder: (maxOrder || 0) + 1
+		});
 };
 
 // update outline scaling

@@ -24,7 +24,7 @@ import { DatabaseError } from 'sequelize';
 // database operations
 import { getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
-import { getAllLocationsByNovel } from '../../../db/operations/location-ops';
+import { getAllLocationsGivenNovel } from '../../../db/operations/location-ops';
 
 // utils
 import { imageMapping } from '../../utils/constants';
@@ -168,7 +168,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 
 	// get all locations
 	getLocations = (id: string) => {
-		getAllLocationsByNovel(id)
+		getAllLocationsGivenNovel(id)
 			.then((result: any) => {
 				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
 					const { id, image, intro, texture, location, controller, name } = dataValues;
@@ -258,6 +258,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										refreshLocation={this.getLocations}
 										isEdit={isEdit}
 										batchDelete={batchDelete}
+										save={save}
 									/>
 								)
 							}
@@ -272,6 +273,7 @@ class Novel extends React.Component<NovelProps, NovelState> {
 										refreshOutline={this.getOutlines}
 										isEdit={isEdit}
 										batchDelete={batchDelete}
+										save={save}
 									/>
 								)
 							}

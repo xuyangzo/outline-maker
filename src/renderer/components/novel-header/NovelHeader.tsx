@@ -57,7 +57,7 @@ const NovelHeader = (props: NovelHeaderProps) => {
 				),
 				(
 					<Button type="primary" key="save" ghost className="green-button" onClick={save}>
-						<Icon type="save" />保存文本
+						<Icon type="save" />保存编辑
 					</Button>
 				)
 			];

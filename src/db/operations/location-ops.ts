@@ -1,4 +1,4 @@
-import LocationModal from '../models/Location';
+import LocationModel from '../models/Location';
 const Op = require('sequelize').Op;
 import { addTrash } from './trash-ops';
 
@@ -11,24 +11,26 @@ interface LocationTemplate {
 	location?: string;
 	controller?: string;
 	deleted?: number;
+	novelPageOrder?: number;
 }
 
 // get all locations given novel id
-export const getAllLocationsByNovel = (novel_id: string | number): Promise<any> => {
-	return LocationModal
+export const getAllLocationsGivenNovel = (novel_id: string | number): Promise<any> => {
+	return LocationModel
 		.findAll({
 			where: {
 				novel_id,
 				deleted: {
 					[Op.ne]: 1
 				}
-			}
+			},
+			order: [['novelPageOrder', 'ASC']]
 		});
 };
 
 // get location given id
 export const getLocation = (id: string | number): Promise<any> => {
-	return LocationModal
+	return LocationModel
 		.findOne({
 			where: { id }
 		});
@@ -36,7 +38,7 @@ export const getLocation = (id: string | number): Promise<any> => {
 
 // get location id and name given id
 export const getLocationShort = (id: string | number): Promise<any> => {
-	return LocationModal
+	return LocationModel
 		.findOne({
 			attributes: ['id', 'name'],
 			where: { id }
@@ -45,7 +47,7 @@ export const getLocationShort = (id: string | number): Promise<any> => {
 
 // update location
 export const updateLocation = (id: string | number, props: LocationTemplate): Promise<any> => {
-	return LocationModal
+	return LocationModel
 		.update(
 			props,
 			{ where: { id } }
@@ -53,8 +55,14 @@ export const updateLocation = (id: string | number, props: LocationTemplate): Pr
 };
 
 // create location
-export const createLocation = (props: LocationTemplate): Promise<any> => {
-	return LocationModal.create(props);
+export const createLocation = async (props: LocationTemplate): Promise<any> => {
+	// get the max order
+	const maxOrder: number | null = await LocationModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
+	return LocationModel
+		.create({
+			...props,
+			novelPageOrder: (maxOrder || 0) + 1
+		});
 };
 
 // delete location temporarily
@@ -67,7 +75,7 @@ export const deleteLocationTemp = (id: string | number): Promise<any> => {
 
 // delete location
 export const deleteLocationPermanently = (id: string | number): Promise<any> => {
-	return LocationModal
+	return LocationModel
 		.destroy({
 			where: { id }
 		});

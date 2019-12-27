@@ -32,6 +32,7 @@ CREATE TABLE outlines
   scaling TEXT,
   fav INTEGER,
   deleted INTEGER,
+  n_order INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (novel_id) REFERENCES novels (id)
@@ -83,6 +84,7 @@ create table locations
   location TEXT,
   controller TEXT,
   deleted INTEGER,
+  n_order INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (novel_id) REFERENCES novels (id)

@@ -132,25 +132,11 @@
     top: -45px;
     right: 20px;
   }
-
-  // card for location
-  .location-card {
-    .ant-card-body {
-      height: 140px;
-    }
-  }
-
-  // card for outline
-  .outline-card {
-    .ant-card-body {
-      min-height: 120px;
-      height: auto;
-    }
-  }
 }
 
 /**
- * enable card style during drag
+ * all the following styles are are attached to body
+ * the purpose is to enable card style during drag
  * because react-sortable-hoc appends element to body during drag
  */
 .card-container {
@@ -224,6 +210,18 @@
   position: relative;
 }
 
+// list items for location
+.card-li-location {
+  width: 33%;
+}
+
+// card for location
+.location-card {
+  .ant-card-body {
+    height: 140px;
+  }
+}
+
 // delete icon
 .delete-icon {
   color: crimson;
@@ -235,4 +233,12 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+// card for outline
+.outline-card {
+  .ant-card-body {
+    min-height: 120px;
+    height: auto;
+  }
 }

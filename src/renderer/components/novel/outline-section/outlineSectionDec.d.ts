@@ -6,6 +6,7 @@ export interface OutlineSectionProps extends RouteComponentProps {
   novel_id: string;
   isEdit: boolean;
   batchDelete: boolean;
+  save: boolean;
 
   refreshOutline: (id: string) => void;
   onCreateOutline: () => void;

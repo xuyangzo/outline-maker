@@ -58,7 +58,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				}
 			}
 
-			// reset characters
+			// refresh characters
 			setCharacters(characters);
 		},
 		[props.batchDelete, props.characters, props.save]
@@ -118,7 +118,6 @@ const CharacterSection = (props: CharacterSectionProps) => {
 
 	// when reorder finishes triggering
 	function onSortEnd({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
-		// swap order of two elements
 		setCharacters(arrayMove(changedCharacters, oldIndex, newIndex));
 	}
 
@@ -126,32 +125,18 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	const SortableItem = SortableElement(({ value }: { value: Character }) => (
 		<li className="card-li">
 			<div key={value.id} className="card-container">
-				{
-					isEdit && (
-						<div className="card-edit-cover">
-							<Checkbox
-								className="custom-checkbox"
-								onChange={onCheckboxChange}
-								name={value.id.toString()}
-								checked={checkedList.indexOf(value.id.toString()) !== -1}
-							/>
-						</div>
-					)
-				}
-				<div
-					className="delete-icon"
-					onClick={(e: React.MouseEvent) => onOpenModal(e, value.id)}
-				>
-					<Icon type="close" />
+				<div className="card-edit-cover">
+					<Checkbox
+						className="custom-checkbox"
+						onChange={onCheckboxChange}
+						name={value.id.toString()}
+						checked={checkedList.indexOf(value.id.toString()) !== -1}
+					/>
 				</div>
 				<Card
 					title={value.name}
 					bordered={false}
-					hoverable
 					className="novel-custom-card"
-					onClick={() => {
-						props.history.push(`/value/${novel_id}/${value.id}`);
-					}}
 				>
 					<img src={value.image} alt="图片自爆了" />
 				</Card>
@@ -177,18 +162,6 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				{
 					characters.map((character: Character) => (
 						<Col span={6} key={character.id} className="card-container">
-							{
-								isEdit && (
-									<div className="card-edit-cover">
-										<Checkbox
-											className="custom-checkbox"
-											onChange={onCheckboxChange}
-											name={character.id.toString()}
-											checked={checkedList.indexOf(character.id.toString()) !== -1}
-										/>
-									</div>
-								)
-							}
 							<div
 								className="delete-icon"
 								onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
@@ -246,7 +219,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 							title="还没有角色哦..."
 							bordered={false}
 							hoverable
-							className="custom-card add-character-card"
+							className="novel-custom-card add-character-card"
 							onClick={onCreateCharacter}
 						>
 							<Icon type="user-add" /> 新建角色
