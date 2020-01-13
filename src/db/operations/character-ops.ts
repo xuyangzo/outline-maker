@@ -15,6 +15,7 @@ interface CharacterTemplate {
 	appearance?: string;
 	characteristics?: string;
 	experience?: string;
+	color?: string;
 	deleted?: number;
 	novelPageOrder?: number;
 }
@@ -55,7 +56,10 @@ export const getAllCharactersGivenOutline = (id: string): Promise<any> => {
 	return CharacterModel
 		.findAll({
 			where: {
-				outline_id: id
+				outline_id: id,
+				deleted: {
+					[Op.ne]: 1
+				}
 			}
 		});
 };

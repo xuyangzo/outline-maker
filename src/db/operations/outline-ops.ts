@@ -71,15 +71,6 @@ export const createOutline = async (props: OutlineModalTemplate) => {
 		});
 };
 
-// update outline scaling
-export const updateScaling = (id: string | number, scaling: string): Promise<any> => {
-	return Outlines
-		.update(
-			{ scaling },
-			{ where: { id } }
-		);
-};
-
 // update outline
 export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<any> => {
 	return Outlines

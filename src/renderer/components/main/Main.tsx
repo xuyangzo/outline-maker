@@ -21,10 +21,10 @@ import {
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { updateScaling, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
+import { updateOutline, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
 import {
-	getAllCharacters, createCharacter,
-	updateCharacter, deleteCharacter
+	createCharacter, updateCharacter,
+	deleteCharacterTemp, getAllCharactersGivenOutline
 } from '../../../db/operations/character-ops';
 import {
 	getAllTimelines, createTimeline,
@@ -146,12 +146,12 @@ class Main extends React.Component<MainProps, MainState> {
 		// if there is no change, directly return
 		if (!this.state.changed) return;
 
-		const { id } = this.props.match.params;
+		const { novel_id, id } = this.props.match.params;
 		const promises: Promise<any>[] = [];
 
 		// delete all previous characters
 		this.state.deletedCharacters.forEach((id: number) => {
-			if (id >= 0) promises.push(deleteCharacter(id));
+			if (id >= 0) promises.push(deleteCharacterTemp(id));
 		});
 
 		// delete all previous timelines
@@ -162,9 +162,24 @@ class Main extends React.Component<MainProps, MainState> {
 		// save all created/updated characters
 		this.state.characters.forEach((character: Character) => {
 			// create that character
-			if (character.created) promises.push(createCharacter(id, id, character.name, character.color));
-			// update that character
-			else if (character.updated) promises.push(updateCharacter(character.id, character.name, character.color));
+			if (character.created) {
+				promises.push(
+					createCharacter({
+						novel_id,
+						name: character.name,
+						color: character.color,
+						outline_id: id,
+					})
+				);
+			} else if (character.updated) {
+				// update that character
+				promises.push(
+					updateCharacter(character.id, {
+						name: character.name,
+						color: character.color
+					})
+				);
+			}
 		});
 
 		// save all created/updated timelines
@@ -196,12 +211,11 @@ class Main extends React.Component<MainProps, MainState> {
 				 */
 				const characters: number[] = [];
 				const timelines: number[] = [];
-				created.forEach((
-					{ dataValues, 'null': id }:
-						{ dataValues: CharacterDataValue & TimelineDataValue, 'null': number }
-				) => {
-					if (dataValues.name) characters.push(id);
-					else if (dataValues.time) timelines.push(id);
+				created.forEach(({ dataValues }: { dataValues: CharacterDataValue & TimelineDataValue }) => {
+					console.log(dataValues);
+					if (dataValues.name) characters.push(dataValues.id);
+					else if (dataValues.time) timelines.push(dataValues.id);
+					console.log(characters, timelines);
 				});
 
 				/**
@@ -262,9 +276,7 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// set scaling of page
 	onChangeScaling = (scaling: string) => {
-		const { id } = this.props.match.params;
-		// insert scaling to database
-		updateScaling(id, scaling)
+		updateOutline(this.state.id, { scaling })
 			.then(() => {
 				this.setState({ scaling });
 			})
@@ -428,7 +440,7 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// get all characters
 	getCharacters = (id: string) => {
-		getAllCharacters(id)
+		getAllCharactersGivenOutline(id)
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {

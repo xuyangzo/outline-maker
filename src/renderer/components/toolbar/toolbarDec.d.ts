@@ -4,7 +4,3 @@ export interface ToolbarProps {
   onChangeScaling: (scaling: string) => void;
   onTogglePlus: (checked: boolean) => void;
 }
-
-export interface ToolbarState {
-
-}
