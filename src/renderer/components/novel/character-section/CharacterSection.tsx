@@ -61,7 +61,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 			// refresh characters
 			setCharacters(characters);
 		},
-		[props.batchDelete, props.characters, props.save]
+		[props.batchDelete, props.characters, props.save, props.isEdit]
 	);
 
 	// open modal

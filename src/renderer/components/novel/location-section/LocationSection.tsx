@@ -63,7 +63,7 @@ const LocationSection = (props: LocationSectionProps) => {
 			// refresh locations
 			setLocations(locations);
 		},
-		[props.batchDelete, props.locations, props.save]
+		[props.batchDelete, props.locations, props.save, props.isEdit]
 	);
 
 	// open modal

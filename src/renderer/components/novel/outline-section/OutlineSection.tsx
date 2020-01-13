@@ -61,7 +61,7 @@ const OutlineSection = (props: OutlineSectionProps) => {
 			// refresh outlines
 			setOutlines(outlines);
 		},
-		[props.batchDelete, props.outlines, props.save]
+		[props.batchDelete, props.outlines, props.save, props.isEdit]
 	);
 
 	// open modal
