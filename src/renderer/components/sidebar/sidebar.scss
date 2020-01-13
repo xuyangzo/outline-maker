@@ -53,7 +53,7 @@
 			text-align: center;
 			width: 25px;
 			position: fixed;
-			left: 19%;
+			left: calc(20.83% - 25px);
 			top: 0;
 			z-index: 1000;
 			background: white;

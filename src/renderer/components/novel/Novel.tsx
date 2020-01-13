@@ -28,6 +28,7 @@ import { getAllLocationsGivenNovel } from '../../../db/operations/location-ops';
 
 // utils
 import { imageMapping } from '../../utils/constants';
+import { ctrlsPress } from '../../utils/utils';
 
 // sass
 import './novel.scss';
@@ -104,11 +105,15 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	// enter edit mode
 	onEnterEditMode = () => {
 		this.setState({ isEdit: true });
+		// add event listener for control + s
+		document.addEventListener('keydown', this.onSavePress);
 	}
 
 	// quit edit mode
 	onQuitEditMode = () => {
 		this.setState({ isEdit: false });
+		// remove event listener
+		document.removeEventListener('keydown', this.onSavePress);
 	}
 
 	// should batch delete
@@ -129,6 +134,17 @@ class Novel extends React.Component<NovelProps, NovelState> {
 	// reset save status
 	onResetSave = () => {
 		this.setState({ save: false });
+	}
+
+	// should save and then reset save
+	onSaveAndReset = async () => {
+		await this.onSave();
+		this.onResetSave();
+	}
+
+	// when save shortcut is presses
+	onSavePress = (e: KeyboardEvent) => {
+		ctrlsPress(e, this.onSaveAndReset);
 	}
 
 	// get all characters
