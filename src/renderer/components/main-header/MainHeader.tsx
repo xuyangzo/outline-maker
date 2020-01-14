@@ -138,7 +138,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	render() {
 		const {
-			title, description, createCharacterLocally,
+			title, description, createCharacterLocally, importCharacterLocally,
 			createTimelineLocally, refresh, refreshMain, onSave
 		} = this.props;
 		// use different icons for whether current outline is favorite
@@ -234,9 +234,12 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 					<p>被删除的大纲可以在垃圾箱进行恢复</p>
 				</Modal>
 				<CharacterModal
+					novel_id={this.props.match.params.novel_id}
+					outline_id={this.props.match.params.id}
 					showModal={this.state.characterVisible}
 					closeModal={this.onCancelCharacter}
 					createCharacterLocally={createCharacterLocally}
+					importCharacterLocally={importCharacterLocally}
 				/>
 				<TimelineModal
 					showModal={this.state.timelineVisible}
@@ -246,7 +249,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 				<IntroModal
 					title={title}
 					description={description}
-					id={this.props.location.pathname.slice(9)}
+					id={this.props.match.params.id}
 					refreshSidebar={refresh}
 					refreshMain={refreshMain}
 					showModal={this.state.introVisible}

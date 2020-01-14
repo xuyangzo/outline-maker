@@ -6,26 +6,15 @@ interface MatchParams {
 	id: string;
 }
 
-export interface Character {
+export interface MainCharacter {
 	id: number;
 	name: string;
 	color: string;
+	outline_id?: string;
 	image?: string;
 	gender?: string;
 	created?: boolean;
 	updated?: boolean;
-}
-
-export interface CharacterDataValue {
-	id: number;
-	outline_id: number;
-	novel_id: number;
-	name: string;
-	color: string;
-	image: string;
-	gender: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface Timeline {
@@ -81,11 +70,12 @@ export interface MainState {
 	id: string;
 	title: string;
 	description: string;
-	characters: Character[];
+	characters: MainCharacter[];
 	timelines: Timeline[];
 	contents: OutlineContent;
 	changed: boolean;
 	shouldScroll: boolean;
+	shouldRender: boolean;
 	scaling: string;
 	showPlusIcons: boolean;
 	colors: string[];

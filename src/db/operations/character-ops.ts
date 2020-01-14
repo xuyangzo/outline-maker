@@ -64,6 +64,46 @@ export const getAllCharactersGivenOutline = (id: string): Promise<any> => {
 		});
 };
 
+// get all valid characters for outline importing
+export const getAllValidCharacters = (novel_id: string, outline_id: string): Promise<any> => {
+	console.log(novel_id, outline_id);
+	return CharacterModel
+		.findAll({
+			where: {
+				novel_id,
+				deleted: {
+					[Op.ne]: 1
+				},
+				[Op.or]: [
+					{
+						outline_id: {
+							[Op.ne]: outline_id
+						}
+					},
+					{
+						outline_id: {
+							[Op.eq]: null
+						}
+					}
+				]
+			},
+		});
+};
+
+// get all characters' names and ids given outline id
+export const getAllCharactersGivenOutlineShort = (id: string): Promise<any> => {
+	return CharacterModel
+		.findAll({
+			attributes: ['name', 'id'],
+			where: {
+				outline_id: id,
+				deleted: {
+					[Op.ne]: 1
+				}
+			}
+		});
+};
+
 // create new character
 export const createCharacter = async (props: CharacterTemplate): Promise<any> => {
 	// get the max order

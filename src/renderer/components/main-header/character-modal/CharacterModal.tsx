@@ -1,18 +1,57 @@
 import * as React from 'react';
-import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
+import { Button, Modal, Form, Input, Icon, message as Message, Select } from 'antd';
+const { Option } = Select;
 
 // type declaration
 import { CharacterModalProps, CharacterModalState } from './characterModalDec';
+import { Character, CharacterDataValue } from '../../character/characterDec';
+import { DatabaseError } from 'sequelize';
+
+// database operations
+import { getAllValidCharacters } from '../../../../db/operations/character-ops';
 
 class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
 	constructor(props: CharacterModalProps) {
 		super(props);
 		this.state = {
-			name: ''
+			name: '',
+			characters: [],
+			selectedCharacter: ''
 		};
 	}
 
+	componentDidMount = () => {
+		getAllValidCharacters(this.props.novel_id, this.props.outline_id)
+			.then((result: any) => {
+				// get all characters
+				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+					const { name, id } = dataValues;
+					return { name, id };
+				});
+
+				// set characters
+				this.setState({ characters });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	handleLocalSubmit = () => {
+		const { selectedCharacter } = this.state;
+		/**
+		 * if selected character is not empty
+		 * set the character to be selected character
+		 */
+		if (selectedCharacter) {
+			this.props.importCharacterLocally(selectedCharacter);
+			// close modal
+			this.props.closeModal();
+			// clear modal data
+			this.setState({ name: '', selectedCharacter: '' });
+			return;
+		}
+
 		// validation
 		if (!this.state.name.length) {
 			Message.error('角色姓名不能为空！');
@@ -23,36 +62,35 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 			return;
 		}
 
+		// create character locally
 		this.props.createCharacterLocally(this.state.name);
 		// close modal
 		this.props.closeModal();
 		// clear modal data
-		this.setState({
-			name: ''
-		});
+		this.setState({ name: '' });
 	}
 
 	// on input change
 	onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const name = event.target.value;
-		this.setState((prevState: CharacterModalState) => ({
-			...prevState,
-			name
-		}));
+		this.setState({ name });
+	}
+
+	// when select character
+	onSelectCharacter = (value: string) => {
+		this.setState({ selectedCharacter: value });
 	}
 
 	// close current modal
 	closeModal = () => {
 		this.props.closeModal();
 		// clear content
-		this.setState({
-			name: ''
-		});
+		this.setState({ name: '' });
 	}
 
 	render() {
 		const { showModal } = this.props;
-		const { name } = this.state;
+		const { name, characters, selectedCharacter } = this.state;
 
 		return (
 			<Modal
@@ -79,8 +117,20 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 							prefix={<Icon type="user-add" style={{ color: 'rgba(0,0,0,.25)' }} />}
 							placeholder="主角姓名（最多 20 个字）"
 							ref={(input: Input) => input && input.focus()}
+							disabled={selectedCharacter !== ''}
 						/>
 						更多的人设可以在添加角色后进行设置。
+					</Form.Item>
+					<Form.Item>
+						或者，从已经创建的人物中选择：<br />
+						<Select defaultValue="" style={{ width: 200 }} onChange={this.onSelectCharacter}>
+							<Option value="">无</Option>
+							{
+								characters.map((character: Character) => (
+									<Option value={character.id} key={character.id}>{character.name}</Option>
+								))
+							}
+						</Select>
 					</Form.Item>
 				</Form>
 			</Modal>

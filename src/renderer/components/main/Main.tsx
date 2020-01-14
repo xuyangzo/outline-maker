@@ -15,15 +15,16 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import { OutlineDataValue } from '../sidebar/sidebarDec';
 import {
-	MainProps, MainState, CharacterDataValue, Character,
+	MainProps, MainState, MainCharacter,
 	TimelineDataValue, Timeline, OutlineDetailDataValue, ContentCard
 } from './mainDec';
+import { CharacterDataValue } from '../character/characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
 import { updateOutline, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
 import {
-	createCharacter, updateCharacter,
+	createCharacter, updateCharacter, getCharacter,
 	deleteCharacterTemp, getAllCharactersGivenOutline
 } from '../../../db/operations/character-ops';
 import {
@@ -38,6 +39,9 @@ import { onTextAreaResize, filterUpdateById, ctrlsPress, filterSaveResult } from
 
 // sass
 import './main.scss';
+
+// image
+import empty from '../../../public/empty-outline.png';
 
 class Main extends React.Component<MainProps, MainState> {
 	// reference to the main-content
@@ -55,6 +59,7 @@ class Main extends React.Component<MainProps, MainState> {
 			changed: false,
 			contents: new Map<number, Map<number, ContentCard>>(),
 			shouldScroll: true,
+			shouldRender: false,
 			scaling: '1',
 			showPlusIcons: true,
 			deletedCharacters: [],
@@ -89,7 +94,7 @@ class Main extends React.Component<MainProps, MainState> {
 		// remove event listener for control + s event
 		document.removeEventListener('keydown', this.onSavePress);
 
-		if (this.state.changed) this.onSave(true);
+		// if (this.state.changed) this.onSave(true);
 	}
 
 	// on init
@@ -160,7 +165,7 @@ class Main extends React.Component<MainProps, MainState> {
 		});
 
 		// save all created/updated characters
-		this.state.characters.forEach((character: Character) => {
+		this.state.characters.forEach((character: MainCharacter) => {
 			// create that character
 			if (character.created) {
 				promises.push(
@@ -173,12 +178,13 @@ class Main extends React.Component<MainProps, MainState> {
 				);
 			} else if (character.updated) {
 				// update that character
-				promises.push(
-					updateCharacter(character.id, {
-						name: character.name,
-						color: character.color
-					})
-				);
+				const props: any = {
+					name: character.name,
+					color: character.color
+				};
+				// update outline_id if the character is imported
+				if (character.outline_id) props.outline_id = character.outline_id;
+				promises.push(updateCharacter(character.id, props));
 			}
 		});
 
@@ -228,7 +234,7 @@ class Main extends React.Component<MainProps, MainState> {
 				let characterIndex: number = 0;
 				let timelineIndex: number = 0;
 				// create mapping for character id
-				this.state.characters.forEach((character: Character) => {
+				this.state.characters.forEach((character: MainCharacter) => {
 					if (character.id <= 0) {
 						characterMapping.set(character.id, characters[characterIndex]);
 						characterIndex += 1;
@@ -294,7 +300,7 @@ class Main extends React.Component<MainProps, MainState> {
 	createCharacterLocally = (name: string) => {
 		const colorIndex = this.state.characters.length % this.state.colors.length;
 		// create a local character
-		const newCharacter: Character = {
+		const newCharacter: MainCharacter = {
 			name,
 			color: this.state.colors[colorIndex],
 			id: -this.state.characters.length,
@@ -310,6 +316,33 @@ class Main extends React.Component<MainProps, MainState> {
 		}));
 	}
 
+	// import existing character locally
+	importCharacterLocally = (id: string) => {
+		// get that character's information
+		getCharacter(id)
+			.then(({ dataValues }: { dataValues: CharacterDataValue }) => {
+				const { name, color, id } = dataValues;
+				const colorIndex = this.state.characters.length % this.state.colors.length;
+
+				const newCharacter: MainCharacter = {
+					name,
+					color: color ? color : this.state.colors[colorIndex],
+					id: typeof id === 'string' ? parseInt(id, 10) : id,
+					outline_id: this.state.id,
+					updated: true
+				};
+				this.setState((prevState: MainState) => ({
+					...prevState,
+					characters: prevState.characters.concat(newCharacter),
+					changed: true,
+					shouldScroll: false
+				}));
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	// delete character locally (not publish to database yet)
 	deleteCharacterLocally = (id: number) => {
 		// remove character from contents
@@ -319,7 +352,7 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents,
-			characters: prevState.characters.filter((character: Character) => character.id !== id),
+			characters: prevState.characters.filter((character: MainCharacter) => character.id !== id),
 			deletedCharacters: prevState.deletedCharacters.concat(id),
 			changed: true,
 			shouldScroll: false
@@ -397,7 +430,7 @@ class Main extends React.Component<MainProps, MainState> {
 	setColorLocally = (id: number, color: string) => {
 		this.setState((prevState: MainState) => ({
 			...prevState,
-			characters: prevState.characters.map((character: Character) => {
+			characters: prevState.characters.map((character: MainCharacter) => {
 				if (character.id === id) {
 					character.color = color;
 					character.updated = true;
@@ -443,7 +476,7 @@ class Main extends React.Component<MainProps, MainState> {
 		getAllCharactersGivenOutline(id)
 			.then((result: any) => {
 				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+				const characters: MainCharacter[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
 					return { id: dataValues.id, name: dataValues.name, color: dataValues.color };
 				});
 				// set characters
@@ -484,7 +517,8 @@ class Main extends React.Component<MainProps, MainState> {
 				this.setState((prevState: MainState) => ({
 					...prevState,
 					contents,
-					shouldScroll: true
+					shouldScroll: true,
+					shouldRender: true
 				}));
 			})
 			.catch((err: DatabaseError) => {
@@ -496,7 +530,7 @@ class Main extends React.Component<MainProps, MainState> {
 		const { expand, refreshSidebar, refreshMain } = this.props;
 		const {
 			title, description, characters, timelines,
-			contents, scaling, showPlusIcons
+			contents, scaling, showPlusIcons, shouldRender
 		} = this.state;
 
 		return (
@@ -514,6 +548,7 @@ class Main extends React.Component<MainProps, MainState> {
 					refresh={refreshSidebar}
 					refreshMain={refreshMain}
 					createCharacterLocally={this.createCharacterLocally}
+					importCharacterLocally={this.importCharacterLocally}
 					createTimelineLocally={this.createTimelineLocally}
 					onSave={this.onSave}
 				/>
@@ -523,12 +558,20 @@ class Main extends React.Component<MainProps, MainState> {
 					onTogglePlus={this.onTogglePlus}
 				/>
 				<div className="main-content" ref={this.mainRef}>
+					{
+						shouldRender && !characters.length && !timelines.length && (
+							<div className="empty-outline-page">
+								<h2>暂时还没有内容...</h2>
+								<img src={empty} alt="暂时还没有内容..." />
+							</div>
+						)
+					}
 					<table style={{ zoom: scaling }}>
 						<thead>
 							<tr>
 								<th className="timeline-header character-append" />
 								{
-									characters.map((character: Character) => (
+									characters.map((character: MainCharacter) => (
 										<CharacterCard
 											key={character.id}
 											id={character.id}
@@ -554,7 +597,7 @@ class Main extends React.Component<MainProps, MainState> {
 											deleteTimelineLocally={this.deleteTimelineLocally}
 										/>
 										{
-											characters.map((character: Character) => (
+											characters.map((character: MainCharacter) => (
 												<DetailCard
 													key={character.id}
 													color={character.color}

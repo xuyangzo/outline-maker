@@ -12,6 +12,7 @@ export interface MainHeaderProps extends RouteComponentProps<MatchParams> {
   refresh: () => void;
   refreshMain: () => void;
   createCharacterLocally: (name: string) => void;
+  importCharacterLocally: (id: string) => void;
   createTimelineLocally: (time: string) => void;
   onSave: (notUpdateState: boolean) => void;
 }

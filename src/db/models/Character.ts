@@ -71,7 +71,7 @@ const Character = sequelize.define(
 		color: {
 			field: 'color',
 			type: Sequelize.STRING,
-			defaultValue: 'white'
+			defaultValue: '#ffa39e'
 		},
 		deleted: {
 			field: 'deleted',

@@ -12,6 +12,15 @@
       display: none;
     }
 
+    // when page is empty
+    .empty-outline-page {
+      text-align: center;
+      
+      img {
+        margin-top: 20px;
+        width: 40%;
+      }
+    }
 
     table {
       tbody {
