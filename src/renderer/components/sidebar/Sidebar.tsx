@@ -86,7 +86,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 	// once a menu is selected, forward to corresponding outline page
 	select = (e: ClickParam) => {
-		this.props.history.push(`/novel/${e.key}`);
+		this.props.history.push(e.key);
 	}
 
 	// get selected key
@@ -199,17 +199,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 					>
 						<Icon type={arrow} />
 					</aside>
-					<Row align="middle" style={{ height: '120px' }}>
-						<Col span={11} className="flex-container">
-							<img src={logo} alt="logo" className="sidebar-logo" />
-						</Col>
-						<Col span={13} className="flex-container">
-							<div className="app-intro">
-								<h4>朝思</h4>
-								<p>作者：Lynch</p>
-							</div>
-						</Col>
-					</Row>
+					<div className="sidebar-info">
+						<img src={logo} alt="logo" className="sidebar-logo" />
+						<div className="app-intro">
+							<h4>朝思</h4>
+							<p>作者：Lynch</p>
+						</div>
+					</div>
 					<button className="add-outline-button" onClick={this.onOpenModal}>
 						<Icon type="plus-circle" />&nbsp;&nbsp;&nbsp;新建小说
 					</button>
@@ -236,7 +232,10 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 						>
 							{
 								this.state.novels.map((novel: Novel) => (
-									<Menu.Item key={novel.id} onClick={this.select}>{novel.name}</Menu.Item>
+									<SubMenu key={novel.id} title={novel.name}>
+										<Menu.Item key={`/novel/${novel.id}`} onClick={this.select}>小说介绍</Menu.Item>
+										<Menu.Item key={`/character/${novel.id}`} onClick={this.select}>小说人物</Menu.Item>
+									</SubMenu>
 								))
 							}
 						</SubMenu>

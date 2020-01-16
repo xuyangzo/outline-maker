@@ -7,18 +7,29 @@
 		justify-content: center;
 	}
 
-	// app logo in sidebar
-	.sidebar-logo {
-		width: 70%;
-		display: block;
-		margin-left: 20px;
-		cursor: pointer;
-	}
+	// sidebar info section
+	.sidebar-info {
+		height: 120px;
+		white-space: nowrap;
 
-	// app intro
-	.app-intro {
-		p {
-			margin-bottom: 0;
+		// app logo in sidebar
+		.sidebar-logo {
+			width: 72px;
+			display: inline-block;
+			margin-left: 20px;
+			cursor: pointer;
+		}
+
+		// app intro
+		.app-intro {
+			display: inline-block;
+			height: 72px;
+			margin-left: 15px;
+			margin-top: 20px;
+			transform: translateY(10px);
+			p {
+				margin-bottom: 0;
+			}
 		}
 	}
 
@@ -37,6 +48,7 @@
 		flex-grow: 0;
 		flex-shrink: 0;
 		padding-right: 25px;
+		width: 300px;
 		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 		transition: all 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
 		white-space: nowrap;
@@ -53,7 +65,7 @@
 			text-align: center;
 			width: 25px;
 			position: fixed;
-			left: calc(20.83% - 25px);
+			left: 275px;
 			top: 0;
 			z-index: 1000;
 			background: white;

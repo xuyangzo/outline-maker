@@ -1,4 +1,5 @@
-import { Character, Timeline } from '../components/main/mainDec';
+import { Timeline } from '../components/main/mainDec';
+import { Character } from '../components/character/characterDec';
 
 // textarea height auto grow
 export const onTextAreaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

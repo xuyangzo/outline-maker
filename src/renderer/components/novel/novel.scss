@@ -3,6 +3,7 @@
   float: right;
   height: 100vh;
   overflow-y: scroll;
+  width: calc(100% - 300px);
 
   .novel-content {
     padding-left: 40px;
@@ -146,7 +147,7 @@
 
   // card edit cover
   .card-edit-cover {
-    width: 80%;
+    width: 85%;
     height: calc(100% - 20px);
     background: rgba(211, 211, 211, 0.7);
     z-index: 100;

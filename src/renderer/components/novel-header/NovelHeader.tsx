@@ -91,7 +91,7 @@ const NovelHeader = (props: NovelHeaderProps) => {
 			(
 				<Button key="edit" type="danger" className="orange-button" ghost onClick={enterEditMode}>
 					<Icon type="edit" />编辑模式
-					</Button>
+				</Button>
 			),
 			(
 				<Button key="delete" type="danger" ghost onClick={() => setDeleteNovelModal(true)}>

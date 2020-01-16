@@ -1,5 +1,6 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
+import classnames from 'classnames';
 
 // react router
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
@@ -15,7 +16,10 @@ import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
 import FavoriteContainer from '../containers/FavoriteContainer';
 import NovelContainer from '../containers/NovelContainer';
-import { CharacterContainer, CharacterEditContainer } from '../containers/CharacterContainer';
+import {
+	NovelCharacterContainer, NovelCharacterEditContainer,
+	CharacterContainer, CharacterEditContainer
+} from '../containers/CharacterContainer';
 import { LocationContainer, LocationEditContainer } from '../containers/LocationContainer';
 import { BackgroundContainer, BackgroundEditContainer } from '../containers/BackgroundContainer';
 
@@ -30,10 +34,24 @@ import './app.scss';
 import icon from '../../public/icons/png/icon-512@2x.png';
 
 const Application = () => {
+	const [shouldAnimate, setAnimate] = React.useState<boolean>(false);
+
 	return (
 		<div>
-			<div className="open-theme">
-				<img src={icon} alt="app-icon" className="app-icon" /> <span className="app-name">朝思</span>
+			<div
+				className={
+					classnames('open-theme', {
+						'open-theme-animation': shouldAnimate
+					})
+				}
+			>
+				<img
+					src={icon}
+					alt="app-icon"
+					className="app-icon"
+					onLoad={() => setAnimate(true)}
+				/>&nbsp;
+				<span className="app-name">朝思</span>
 			</div>
 			<Row>
 				<Router>
@@ -43,6 +61,8 @@ const Application = () => {
 						<Route path="/novel/:id" exact><NovelContainer /></Route>
 						<Route path="/background/:id" exact><BackgroundContainer /></Route>
 						<Route path="/background/:id/edit" exact><BackgroundEditContainer /></Route>
+						<Route path="/character/:novel_id" exact><NovelCharacterContainer /></Route>
+						<Route path="/character/:novel_id/edit" exact><NovelCharacterEditContainer /></Route>
 						<Route path="/character/:novel_id/:id" exact><CharacterContainer /></Route>
 						<Route path="/character/:novel_id/:id/edit" exact><CharacterEditContainer /></Route>
 						<Route path="/location/:novel_id/:id" exact><LocationContainer /></Route>

@@ -61,16 +61,10 @@ export const findAllFavDetail = async (): Promise<any> => {
 // cancel favorite and update outline table
 export const cancelFavorite = (id: string | number): Promise<any> => {
 	return Promise
-		.all([deleteFavoriteHelper(id), updateOutlineFav(id, 0)])
-		.then(() => {
-			// alert success
-			Message.success('已取消收藏！');
-			return Promise.resolve();
-		})
-		.catch((err: DatabaseError) => {
-			// alert error
-			Message.error(err.message);
-		});
+		.all([
+			deleteFavoriteHelper(id),
+			updateOutlineFav(id, 0)
+		]);
 };
 
 // add to favorite and update outline

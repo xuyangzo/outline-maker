@@ -87,16 +87,20 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	// delete outline
 	onDelete = () => {
-		const id: string = this.props.location.pathname.slice(9);
-		deleteOutlineTemp(id).then(() => {
-			// refresh sidebar
-			this.props.refresh();
-			// close moal
-			this.setState({ confirmVisible: false }, () => {
-				// redirect to tutorial page
-				this.props.history.push('/trash');
+		deleteOutlineTemp(this.props.match.params.id)
+			.then(() => {
+				Message.success('成功删除大纲！');
+				// refresh sidebar
+				this.props.refresh();
+				// close moal
+				this.setState({ confirmVisible: false }, () => {
+					// redirect to tutorial page
+					this.props.history.push('/trash');
+				});
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
-		});
 	}
 
 	// add outline to favorite
@@ -117,8 +121,13 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	onCancelFav = () => {
 		cancelFavorite(this.props.match.params.id)
 			.then(() => {
+				// alert success
+				Message.success('已从收藏夹移除！');
 				// set heart icon to be outlined
 				this.setState({ isFav: false });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
