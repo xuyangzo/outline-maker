@@ -52,6 +52,11 @@
 	font-size: 14px;
 }
 
+.ant-card-body {
+	white-space: pre-line;
+	word-break: break-all;
+}
+
 .ant-upload.ant-upload-select.ant-upload-select-text {
 	width: 100%;
 	button {

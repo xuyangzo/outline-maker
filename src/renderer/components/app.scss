@@ -16,6 +16,9 @@
 
   .app-icon {
     width: 120px;
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(0);
   }
 
   .app-name {
@@ -27,6 +30,11 @@
 
 .open-theme-animation {
   animation: openDisappear 2.5s linear forwards;
+
+  .app-icon {
+    opacity: 1;
+    transform: scale(1.0);
+  }
 }
 
 @keyframes openDisappear {
