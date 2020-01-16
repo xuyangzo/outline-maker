@@ -45,8 +45,9 @@ export const filterSaveResult = (result: any[]): any[] => {
 
 // get selected key
 export const getSelectedKey = (pathname: string): string => {
-	// single novel page
+	// single novel page and background page
 	if (pathname.indexOf('novel') !== -1) return pathname.replace('/edit', '');
+	if (pathname.indexOf('background') !== -1) return pathname.replace('/edit', '');
 
 	// all the characters/locations/outlines page
 	if (
