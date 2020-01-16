@@ -20,7 +20,10 @@ import {
 	NovelCharacterContainer, NovelCharacterEditContainer,
 	CharacterContainer, CharacterEditContainer
 } from '../containers/CharacterContainer';
-import { LocationContainer, LocationEditContainer } from '../containers/LocationContainer';
+import {
+	NovelLocationContainer, NovelLocationEditContainer,
+	LocationContainer, LocationEditContainer
+} from '../containers/LocationContainer';
 import { BackgroundContainer, BackgroundEditContainer } from '../containers/BackgroundContainer';
 
 // set database model relations
@@ -65,6 +68,8 @@ const Application = () => {
 						<Route path="/character/:novel_id/edit" exact><NovelCharacterEditContainer /></Route>
 						<Route path="/character/:novel_id/:id" exact><CharacterContainer /></Route>
 						<Route path="/character/:novel_id/:id/edit" exact><CharacterEditContainer /></Route>
+						<Route path="/location/:novel_id" exact><NovelLocationContainer /></Route>
+						<Route path="/location/:novel_id/edit" exact><NovelLocationEditContainer /></Route>
 						<Route path="/location/:novel_id/:id" exact><LocationContainer /></Route>
 						<Route path="/location/:novel_id/:id/edit" exact><LocationEditContainer /></Route>
 						<Route path="/outline/:novel_id/:id" exact><MainContainer /></Route>

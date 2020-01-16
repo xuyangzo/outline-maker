@@ -4,6 +4,6 @@ interface MatchParams {
 	novel_id: string;
 }
 
-export interface CharacterSectionProps extends RouteComponentProps<MatchParams> {
+export interface NovelCharacterProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
 }

@@ -6,12 +6,12 @@ import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { CharacterSectionProps } from './novelCharacterDec';
+import { NovelCharacterProps } from './novelCharacterDec';
 import { Character, CharacterDataValue } from '../character/characterDec';
 import { DatabaseError } from 'sequelize';
 
 // custom components
-import CharacterModel from './character-model/CharacterModel';
+import CharacterModal from './character-modal/CharacterModal';
 
 // database operations
 import { deleteCharacterTemp, getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
@@ -25,7 +25,7 @@ import './novel-character.scss';
 // image
 import empty from '../../../public/empty-character.png';
 
-const CharacterSection = (props: CharacterSectionProps) => {
+const NovelCharacter = (props: NovelCharacterProps) => {
 	const { novel_id } = props.match.params;
 	const { expand } = props;
 
@@ -180,7 +180,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 			>
 				角色删除后可以在垃圾箱里恢复！
 			</Modal>
-			<CharacterModel
+			<CharacterModal
 				showModal={showCreateModel}
 				closeModal={() => setCreateModel(false)}
 				refreshCharacter={getCharacters}
@@ -190,4 +190,4 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	);
 };
 
-export default withRouter(CharacterSection);
+export default withRouter(NovelCharacter);

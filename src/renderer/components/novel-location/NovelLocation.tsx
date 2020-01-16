@@ -1,0 +1,187 @@
+import * as React from 'react';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader } from 'antd';
+import classnames from 'classnames';
+
+// enable history
+import { withRouter } from 'react-router-dom';
+
+// type declaration
+import { NovelLocationProps } from './novelLocationDec';
+import { Location, LocationDataValue } from '../location/locationDec';
+import { DatabaseError } from 'sequelize';
+
+// custom components
+import LocationModal from './location-modal/LocationModal';
+
+// database operations
+import { deleteLocationTemp, getAllLocationsGivenNovel } from '../../../db/operations/location-ops';
+
+// image
+import empty from '../../../public/empty-character.png';
+import unknownArea from '../../../public/unknown_gray.jpg';
+
+const NovelLocation = (props: NovelLocationProps) => {
+	const { novel_id } = props.match.params;
+	const { expand } = props;
+
+	// hooks
+	const [showModal, setShowModal] = React.useState<boolean>(false);
+	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
+	const [selected, setSelected] = React.useState<string | number>('');
+	const [locations, setLocations] = React.useState<Location[]>([]);
+	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+
+	React.useEffect(getLocations, [props.match.params.novel_id]);
+
+	// open modal
+	function onOpenModal(e: React.MouseEvent, id: string | number) {
+		// prevent bubbling
+		e.preventDefault();
+
+		// set selected
+		setShowModal(true);
+		setSelected(id);
+	}
+
+	// close modal
+	function onCloseModal() {
+		setSelected('');
+		setShowModal(false);
+	}
+
+	// delete location
+	function onDeleteLocation() {
+		// delete location temporarily
+		deleteLocationTemp(selected)
+			.then(() => {
+				// alert success
+				Message.success('删除势力成功！');
+				// close modal
+				onCloseModal();
+				// refresh locations
+				getLocations();
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get all locations
+	function getLocations() {
+		getAllLocationsGivenNovel(novel_id)
+			.then((result: any) => {
+				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
+					const { id, image, intro, texture, location, controller, name } = dataValues;
+					return { id, image, intro, texture, location, controller, name };
+				});
+
+				// set locations
+				setLocations(locations);
+				// should render
+				setShouldRender(true);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	return (
+		<Col
+			span={19}
+			className={
+				classnames('novel-character', {
+					'main-grow': !expand
+				})
+			}
+		>
+			<PageHeader
+				title={''}
+				onBack={() => { props.history.goBack(); }}
+				extra={[
+					(
+						<Button
+							type="danger"
+							key="add-character"
+							ghost
+							className="green-button"
+							onClick={() => setCreateModel(true)}
+						>
+							<Icon type="user-add" />添加势力
+						</Button>
+					),
+					(
+						<Button
+							key="edit"
+							type="danger"
+							className="orange-button"
+							ghost
+							onClick={() => props.history.push(`/location/${novel_id}/edit`)}
+						>
+							<Icon type="edit" />编辑模式
+						</Button>
+					)
+				]}
+				className="novel-character-header"
+			/>
+			<div className="novel-character-container">
+				{
+					locations.map((location: Location) => (
+						<Col span={8} key={location.id} className="card-container">
+							<div
+								className="delete-icon"
+								onClick={(e: React.MouseEvent) => onOpenModal(e, location.id)}
+							>
+								<Icon type="close" />
+							</div>
+							<Card
+								title={location.name}
+								bordered={false}
+								hoverable
+								className="novel-custom-card location-card"
+								onClick={() => {
+									props.history.push(`/location/${novel_id}/${location.id}`);
+								}}
+							>
+								<img src={location.image ? location.image : unknownArea} alt="没图，你能咋滴" />
+							</Card>
+						</Col>
+					))
+				}
+			</div>
+			{
+				shouldRender && !locations.length && (
+					<div className="empty-character">
+						<h2>暂时没有势力呢...</h2>
+						<img src={empty} alt="暂时没有图片..." />
+					</div>
+				)
+			}
+			<Modal
+				title="删除势力"
+				visible={showModal}
+				onOk={onDeleteLocation}
+				onCancel={onCloseModal}
+				footer={[
+					<Button type="danger" key="back" onClick={onCloseModal} ghost>取消</Button>,
+					<Button
+						type="primary"
+						key="submit"
+						onClick={onDeleteLocation}
+						ghost
+					>确认
+					</Button>
+				]}
+			>
+				势力删除后可以去垃圾箱恢复！是否继续？
+			</Modal>
+			<LocationModal
+				showModal={showCreateModel}
+				closeModal={() => setCreateModel(false)}
+				refreshLocation={getLocations}
+				novel_id={novel_id}
+			/>
+		</Col>
+	);
+};
+
+export default withRouter(NovelLocation);

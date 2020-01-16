@@ -8,13 +8,13 @@ import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { CharacterSectionProps } from './novelCharacterDec';
+import { NovelCharacterProps } from './novelCharacterDec';
 import { Character, CharacterDataValue } from '../character/characterDec';
 import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components
-import BatchDeleteModel from './batch-delete-model/BatchDeleteModel';
+import BatchDeleteModel from './batch-delete-modal/BatchDeleteModal';
 
 // database operations
 import { updateCharacter, getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
@@ -28,7 +28,7 @@ import './novel-character.scss';
 // image
 import empty from '../../../public/empty-character.png';
 
-const CharacterSection = (props: CharacterSectionProps) => {
+const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	const { novel_id } = props.match.params;
 	const { expand } = props;
 
@@ -238,4 +238,4 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	);
 };
 
-export default withRouter(CharacterSection);
+export default withRouter(NovelCharacterEdit);
