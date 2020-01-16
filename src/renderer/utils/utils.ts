@@ -47,22 +47,65 @@ export const filterSaveResult = (result: any[]): any[] => {
 export const getSelectedKey = (pathname: string): string => {
 	// set selected keys
 	let selected = 'tutorial';
-	if (pathname.indexOf('novel') !== -1) {
-		selected = pathname.slice(7);
-	} else if (pathname.indexOf('trash') !== -1) {
-		selected = 'trash';
-	} else if (pathname.indexOf('favorite') !== -1) {
-		selected = 'fav';
-	} else if (pathname.indexOf('outline') !== -1) {
-		const next = pathname.slice(9);
-		selected = next.slice(0, next.indexOf('/'));
-	} else if (pathname.indexOf('character') !== -1) {
-		const next = pathname.slice(11);
-		selected = next.slice(0, next.indexOf('/'));
-	} else if (pathname.indexOf('location') !== -1) {
-		const next = pathname.slice(10);
-		selected = next.slice(0, next.indexOf('/'));
-	} else if (pathname.indexOf('background') !== -1) {
+	// novel itself
+	if (pathname.indexOf('novel') !== -1) return pathname.slice(7);
+
+	// all the characters/locations/outlines page
+	if (
+		pathname.indexOf('characters') !== -1 ||
+		pathname.indexOf('locations') !== -1 ||
+		pathname.indexOf('outlines') !== -1
+	) {
+		return pathname;
+	}
+
+	// trash and fav
+	if (pathname.indexOf('trash') !== -1) return 'trash';
+	if (pathname.indexOf('fav') !== -1) return 'fav';
+
+	// single character page
+	if (pathname.indexOf('character') !== -1) {
+		// if /character/novel_id/id, take first 2
+		const searchable = pathname.replace('/edit', '');
+		let sliceIndex = -1;
+		for (let i = searchable.length - 1; i >= 0; --i) {
+			if (searchable[i] === '/') {
+				sliceIndex = i;
+				break;
+			}
+		}
+		return searchable.slice(0, sliceIndex).replace('character', 'characters');
+	}
+
+	// single location page
+	if (pathname.indexOf('location') !== -1) {
+		// if /location/novel_id/id, take first 2
+		const searchable = pathname.replace('/edit', '');
+		let sliceIndex = -1;
+		for (let i = searchable.length - 1; i >= 0; --i) {
+			if (searchable[i] === '/') {
+				sliceIndex = i;
+				break;
+			}
+		}
+		return searchable.slice(0, sliceIndex).replace('location', 'locations');
+	}
+
+	// single outline page
+	if (pathname.indexOf('outline') !== -1) {
+		// if /outline/novel_id/id, take first 2
+		const searchable = pathname.replace('/edit', '');
+		let sliceIndex = -1;
+		for (let i = searchable.length - 1; i >= 0; --i) {
+			if (searchable[i] === '/') {
+				sliceIndex = i;
+				break;
+			}
+		}
+		return searchable.slice(0, sliceIndex).replace('outline', 'outlines');
+	}
+
+	if (pathname.indexOf('background') !== -1) {
 		selected = pathname.slice(12);
 	}
 
