@@ -43,7 +43,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 
 	// when save shortcut is presses
 	onSavePress = (e: KeyboardEvent) => {
-		ctrlsPress(e, () => this.onSave(true));
+		ctrlsPress(e, this.onSave);
 	}
 
 	// when add new property
@@ -184,23 +184,15 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 	}
 
 	// save
-	onSave = (shouldRerender: boolean) => {
-		return createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
+	onSave = () => {
+		createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
 			.then(() => {
 				Message.success('更新成功！');
-				if (shouldRerender) this.setBackground();
-				Promise.resolve();
+				// refresh background
+				this.setBackground();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
-			});
-	}
-
-	// save and quit
-	onSaveAndQuit = () => {
-		this.onSave(false)
-			.then(() => {
-				this.props.history;
 			});
 	}
 
@@ -262,16 +254,16 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 							ghost
 							onClick={() => { this.props.history.goBack(); }}
 						>
-							<Icon type="rollback" />取消编辑
+							<Icon type="rollback" />退出编辑
 						</Button>,
 						<Button
 							key="edit"
 							type="danger"
 							className="green-button"
-							onClick={this.onSaveAndQuit}
+							onClick={this.onSave}
 							ghost
 						>
-							<Icon type="edit" />保存并退出编辑
+							<Icon type="edit" />保存编辑
 						</Button>
 					]}
 				/>

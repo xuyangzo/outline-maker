@@ -100,7 +100,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 	}
 
 	// save changes
-	onSave = (): Promise<any> => {
+	onSave = () => {
 		const { id, name, image, intro, texture, location, controller } = this.state;
 
 		// filter invalid input
@@ -108,21 +108,12 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			name, image, intro, texture, location, controller
 		};
 
-		return updateLocation(id, props)
+		updateLocation(id, props)
 			.then(() => {
 				Message.success('保存成功！');
-				return Promise.resolve();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
-			});
-	}
-
-	// save changes and quit
-	onSaveAndQuit = () => {
-		this.onSave()
-			.then(() => {
-				this.props.history.goBack();
 			});
 	}
 
@@ -172,16 +163,16 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 							ghost
 							onClick={() => { this.props.history.goBack(); }}
 						>
-							<Icon type="rollback" />取消编辑
+							<Icon type="rollback" />退出编辑
 						</Button>,
 						<Button
 							key="edit"
 							type="danger"
 							className="green-button"
-							onClick={this.onSaveAndQuit}
+							onClick={this.onSave}
 							ghost
 						>
-							<Icon type="edit" />保存并退出编辑
+							<Icon type="edit" />保存编辑
 						</Button>
 					]}
 				/>
