@@ -236,7 +236,9 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				gender: 0,
 				height: '178',
 				identity: '世界树的传人',
-				appearance: '丑,不知道咋说,jj还小',
+				appearance: `1.丑
+				2. 不知道咋说
+				3. jj还小`,
 				characteristics: '高傲',
 				experience: '啥都没有',
 				deleted: 0,

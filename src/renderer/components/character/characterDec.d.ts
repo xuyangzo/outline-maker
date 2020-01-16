@@ -59,9 +59,9 @@ export type CharacterEditState = {
   nickname: string,
   gender: number,
   height: string,
-  identity: string[],
-  appearance: string[],
-  characteristics: string[],
-  experience: string[],
+  identity: string,
+  appearance: string,
+  characteristics: string,
+  experience: string,
   [key: string]: any
 };

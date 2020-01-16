@@ -165,7 +165,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 									</Tooltip>
 								</Col>
 								<Col span={16} className="numbered-text">
-									{identity ? getNumberedText(identity) : '暂无'}
+									{identity ? identity : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -179,7 +179,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 									</Tooltip>
 								</Col>
 								<Col span={16} className="numbered-text">
-									{appearance ? getNumberedText(appearance) : '暂无'}
+									{appearance ? appearance : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -193,7 +193,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 									</Tooltip>
 								</Col>
 								<Col span={16} className="numbered-text">
-									{characteristics ? getNumberedText(characteristics) : '暂无'}
+									{characteristics ? characteristics : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -207,7 +207,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 									</Tooltip>
 								</Col>
 								<Col span={16} className="numbered-text">
-									{experience ? getNumberedText(experience) : '暂无'}
+									{experience ? experience : '暂无'}
 								</Col>
 							</Row>
 						</Col>

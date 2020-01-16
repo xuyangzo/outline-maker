@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Row, Col, message as Message, Icon, PageHeader, Button, Select, Upload, Tooltip } from 'antd';
+import { Row, Col, message as Message, Icon, PageHeader, Button, Select, Upload, Tooltip, Input } from 'antd';
 import classnames from 'classnames';
 const { Option } = Select;
+const { TextArea } = Input;
 
 // file stream
 const fs = require('fs');
@@ -36,10 +37,10 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			nickname: '',
 			gender: 0,
 			height: '',
-			identity: [],
-			appearance: [],
-			characteristics: [],
-			experience: []
+			identity: '',
+			appearance: '',
+			characteristics: '',
+			experience: ''
 		};
 	}
 
@@ -65,38 +66,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		this.setState({ [e.target.name]: e.target.value });
 	}
 
-	// when numbered input field changes
-	onNumberedInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-		const type: string = e.target.name;
-		const value: string = e.target.value;
-		this.setState((prevState: CharacterEditState) => ({
-			...prevState,
-			[type]: (prevState[type]).map((item: any, i: number) => {
-				if (i === index) return value;
-				return item;
-			})
-		}));
+	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		this.setState({ [e.target.name]: e.target.value });
 	}
 
 	// when select gender
 	onSelectGender = (value: string) => {
 		this.setState({ gender: parseInt(value, 10) });
-	}
-
-	// when add input
-	onAddInput = (type: string) => {
-		this.setState((prevState: CharacterEditState) => ({
-			...prevState,
-			[type]: (prevState[type]).concat('')
-		}));
-	}
-
-	// when delete input
-	onDeleteInput = (type: string, index: number) => {
-		this.setState((prevState: CharacterEditState) => ({
-			...prevState,
-			[type]: (prevState[type]).filter((item: any, i: number) => i !== index)
-		}));
 	}
 
 	/**
@@ -134,7 +110,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	}
 
 	// when save the event
-	onSave = (): Promise<any> => {
+	onSave = () => {
 		const {
 			id, name, image, age, nickname, gender, height,
 			identity, appearance, characteristics, experience
@@ -143,27 +119,16 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		// filter invalid input
 		const props: { [key: string]: string | number } = {
 			name, image, age, nickname, gender, height,
-			identity: identity.filter(a => a).join(','),
-			appearance: appearance.filter(a => a).join(','),
-			characteristics: characteristics.filter(a => a).join(','),
-			experience: experience.filter(a => a).join(',')
+			identity, appearance, characteristics, experience
 		};
 
-		return updateCharacter(id, props)
+		updateCharacter(id, props)
 			.then(() => {
+				// alert success
 				Message.success('保存成功！');
-				return Promise.resolve();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
-			});
-	}
-
-	// when save and quit
-	onSaveAndQuit = () => {
-		this.onSave()
-			.then(() => {
-				this.props.history.goBack();
 			});
 	}
 
@@ -188,10 +153,10 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 					nickname: nickname ? nickname : '',
 					height: height ? height : '',
 					gender: gender ? gender : 0,
-					identity: identity ? identity.split(',') : [''],
-					appearance: appearance ? appearance.split(',') : [''],
-					characteristics: characteristics ? characteristics.split(',') : [''],
-					experience: experience ? experience.split(',') : ['']
+					identity: identity ? identity : '',
+					appearance: appearance ? appearance : '',
+					characteristics: characteristics ? characteristics : '',
+					experience: experience ? experience : ''
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -229,16 +194,16 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 							ghost
 							onClick={() => { this.props.history.goBack(); }}
 						>
-							<Icon type="rollback" />取消编辑
+							<Icon type="rollback" />退出编辑
 						</Button>,
 						<Button
 							key="edit"
 							type="danger"
 							className="green-button"
-							onClick={this.onSaveAndQuit}
+							onClick={this.onSave}
 							ghost
 						>
-							<Icon type="edit" />保存并退出编辑
+							<Icon type="edit" />保存编辑
 						</Button>
 					]}
 				/>
@@ -338,44 +303,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 									</Tooltip>
 								</Col>
 								<Col span={20}>
-									{
-										identity.map((identityItem: string, index: number) => (
-											<React.Fragment key={index}>
-												{index + 1}.&nbsp;
-												<input
-													type="text"
-													value={identityItem}
-													name="identity"
-													onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onNumberedInputChange(e, index)}
-													placeholder="角色身份"
-													className="character-input long-input"
-												/>
-												&nbsp;
-												<div className="delete-icon-container">
-													<Icon
-														type="delete"
-														className="delete-icon"
-														onClick={() => this.onDeleteInput('identity', index)}
-													/>
-												</div>
-												<br />
-											</React.Fragment>
-										))
-									}
-									<Button
-										type="primary"
-										ghost
-										className="green-button"
-										style={{
-											width: 420,
-											marginTop: 5,
-											marginBottom: 10,
-											height: 25
-										}}
-										onClick={() => this.onAddInput('identity')}
-									>
-										<Icon type="plus" />
-									</Button>
+									<TextArea
+										rows={6}
+										placeholder="身份"
+										value={identity}
+										name="identity"
+										onChange={this.onTextAreaChange}
+									/>
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -389,44 +323,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 									</Tooltip>
 								</Col>
 								<Col span={20} className="numbered-text">
-									{
-										appearance.map((appearanceItem: string, index: number) => (
-											<React.Fragment key={index}>
-												{index + 1}.&nbsp;
-												<input
-													type="text"
-													value={appearanceItem}
-													name="appearance"
-													onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onNumberedInputChange(e, index)}
-													placeholder="角色外貌"
-													className="character-input long-input"
-												/>
-												&nbsp;
-												<div className="delete-icon-container">
-													<Icon
-														type="delete"
-														className="delete-icon"
-														onClick={() => this.onDeleteInput('appearance', index)}
-													/>
-												</div>
-												<br />
-											</React.Fragment>
-										))
-									}
-									<Button
-										type="primary"
-										ghost
-										className="green-button"
-										style={{
-											width: 420,
-											marginTop: 5,
-											marginBottom: 10,
-											height: 25
-										}}
-										onClick={() => this.onAddInput('appearance')}
-									>
-										<Icon type="plus" />
-									</Button>
+									<TextArea
+										rows={6}
+										placeholder="外貌"
+										value={appearance}
+										name="appearance"
+										onChange={this.onTextAreaChange}
+									/>
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -440,44 +343,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 									</Tooltip>
 								</Col>
 								<Col span={20} className="numbered-text">
-									{
-										characteristics.map((characteristicsItem: string, index: number) => (
-											<React.Fragment key={index}>
-												{index + 1}.&nbsp;
-												<input
-													type="text"
-													value={characteristicsItem}
-													name="characteristics"
-													onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onNumberedInputChange(e, index)}
-													placeholder="角色性格"
-													className="character-input long-input"
-												/>
-												&nbsp;
-												<div className="delete-icon-container">
-													<Icon
-														type="delete"
-														className="delete-icon"
-														onClick={() => this.onDeleteInput('characteristics', index)}
-													/>
-												</div>
-												<br />
-											</React.Fragment>
-										))
-									}
-									<Button
-										type="primary"
-										ghost
-										className="green-button"
-										style={{
-											width: 420,
-											marginTop: 5,
-											marginBottom: 10,
-											height: 25
-										}}
-										onClick={() => this.onAddInput('characteristics')}
-									>
-										<Icon type="plus" />
-									</Button>
+									<TextArea
+										rows={6}
+										placeholder="性格"
+										value={characteristics}
+										name="characteristics"
+										onChange={this.onTextAreaChange}
+									/>
 								</Col>
 							</Row>
 							<Row className="character-section">
@@ -491,44 +363,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 									</Tooltip>
 								</Col>
 								<Col span={20} className="numbered-text">
-									{
-										experience.map((experienceItem: string, index: number) => (
-											<React.Fragment key={index}>
-												{index + 1}.&nbsp;
-												<input
-													type="text"
-													value={experienceItem}
-													name="experience"
-													onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.onNumberedInputChange(e, index)}
-													placeholder="角色经历"
-													className="character-input long-input"
-												/>
-												&nbsp;
-												<div className="delete-icon-container">
-													<Icon
-														type="delete"
-														className="delete-icon"
-														onClick={() => this.onDeleteInput('experience', index)}
-													/>
-												</div>
-												<br />
-											</React.Fragment>
-										))
-									}
-									<Button
-										type="primary"
-										ghost
-										className="green-button"
-										style={{
-											width: 420,
-											marginTop: 5,
-											marginBottom: 10,
-											height: 25
-										}}
-										onClick={() => this.onAddInput('experience')}
-									>
-										<Icon type="plus" />
-									</Button>
+									<TextArea
+										rows={6}
+										placeholder="经历"
+										value={experience}
+										name="experience"
+										onChange={this.onTextAreaChange}
+									/>
 								</Col>
 							</Row>
 						</Col>
