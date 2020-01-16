@@ -45,10 +45,8 @@ export const filterSaveResult = (result: any[]): any[] => {
 
 // get selected key
 export const getSelectedKey = (pathname: string): string => {
-	// set selected keys
-	let selected = 'tutorial';
-	// novel itself
-	if (pathname.indexOf('novel') !== -1) return pathname.slice(7);
+	// single novel page
+	if (pathname.indexOf('novel') !== -1) return pathname.replace('/edit', '');
 
 	// all the characters/locations/outlines page
 	if (
@@ -105,11 +103,8 @@ export const getSelectedKey = (pathname: string): string => {
 		return searchable.slice(0, sliceIndex).replace('outline', 'outlines');
 	}
 
-	if (pathname.indexOf('background') !== -1) {
-		selected = pathname.slice(12);
-	}
-
-	return selected;
+	// return tutorial page by default
+	return 'tutorial';
 };
 
 // generate numbered string

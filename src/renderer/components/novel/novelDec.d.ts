@@ -30,16 +30,4 @@ export interface NovelState {
   name: string;
   description: string;
   categories: string[];
-  characters: Character[];
-  outlines: Outline[];
-  locations: Location[];
-  createCharacter: boolean;
-  createOutline: boolean;
-  createLocation: boolean;
-  shouldRenderCharacter: boolean;
-  shouldRenderOutline: boolean;
-  shouldRenderLocation: boolean;
-  isEdit: boolean;
-  batchDelete: boolean;
-  save: boolean;
 }

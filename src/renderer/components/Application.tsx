@@ -15,7 +15,7 @@ import MainContainer from '../containers/MainContainer';
 import TutorialContainer from '../containers/TutorialContainer';
 import TrashContainer from '../containers/TrashContainer';
 import FavoriteContainer from '../containers/FavoriteContainer';
-import NovelContainer from '../containers/NovelContainer';
+import { NovelContainer, NovelEditContainer } from '../containers/NovelContainer';
 import {
 	NovelCharacterContainer, NovelCharacterEditContainer,
 	CharacterContainer, CharacterEditContainer
@@ -63,6 +63,7 @@ const Application = () => {
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
 						<Route path="/novel/:id" exact><NovelContainer /></Route>
+						<Route path="/novel/:id/edit" exact><NovelEditContainer /></Route>
 						<Route path="/background/:id" exact><BackgroundContainer /></Route>
 						<Route path="/background/:id/edit" exact><BackgroundEditContainer /></Route>
 						<Route path="/characters/:novel_id" exact><NovelCharacterContainer /></Route>
