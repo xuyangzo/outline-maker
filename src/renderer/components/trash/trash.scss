@@ -4,6 +4,7 @@
   padding: 50px;
   transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
   float: right;
+  width: calc(100% - 300px);
 
   // clear all button
   .trash-clear-all-button {

@@ -3,6 +3,7 @@
   float: right;
   height: 100vh;
   overflow-y: scroll;
+  width: calc(100% - 300px);
 
   .background-content {
     width: 80%;

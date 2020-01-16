@@ -3,14 +3,21 @@
   float: right;
   height: 100vh;
   overflow-y: scroll;
+  width: calc(100% - 300px);
 
   .character-content {
     padding-left: 40px;
+
+    // right part
+    .character-edit-content {
+      padding-left: calc(8.3% - 40px);
+    }
 
     // each info section
     .character-section {
       margin: 20px 0;
       line-height: 26px;
+      width: 100%;
 
       // question mark icon
       .question-mark {

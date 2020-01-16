@@ -20,11 +20,13 @@ import BatchDeleteModel from './batch-delete-model/BatchDeleteModel';
 import { updateCharacter, getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
 
 // utils
-import { ctrlsPress } from '../../utils/utils';
 import { imageMapping } from '../../utils/constants';
 
 // sass
 import './novel-character.scss';
+
+// image
+import empty from '../../../public/empty-character.png';
 
 const CharacterSection = (props: CharacterSectionProps) => {
 	const { novel_id } = props.match.params;
@@ -34,6 +36,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
 	const [checkedList, setCheckedList] = React.useState<string[]>([]);
 	const [characters, setCharacters] = React.useState<Character[]>([]);
+	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 
 	// use callback hook to listen to the change of characters
 	const handleSavePress = React.useCallback(
@@ -125,6 +128,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				// set characters
 				setCharacters(characters);
 				// should render
+				setShouldRender(true);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -216,17 +220,11 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				</div>
 			</div>
 			{
-				!characters.length && (
-					<Col span={6}>
-						<Card
-							title="还没有角色哦..."
-							bordered={false}
-							hoverable
-							className="novel-custom-card add-character-card"
-						>
-							<Icon type="user-add" /> 新建角色
-						</Card>
-					</Col>
+				shouldRender && !characters.length && (
+					<div className="empty-character">
+						<h2>暂时没有角色呢...</h2>
+						<img src={empty} alt="暂时没有图片..." />
+					</div>
 				)
 			}
 			<BatchDeleteModel

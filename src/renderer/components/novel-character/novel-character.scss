@@ -17,4 +17,13 @@
     top: 20px;
     right: 30px;
   }
+
+  // page when character is empty
+  .empty-character {
+    text-align: center;
+
+    img {
+      width: 40%;
+    }
+  }
 }

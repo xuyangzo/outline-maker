@@ -115,10 +115,10 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 				/>
 				<div className="character-content">
 					<Row className="character-section">
-						<Col span={10}>
+						<Col span={9}>
 							<img src={imageURL} alt="profile image" className="profile-image" />
 						</Col>
-						<Col span={14} style={{ paddingLeft: '40px' }}>
+						<Col span={15} className="character-edit-content">
 							<Row className="character-section">
 								<h2 className="character-name">{name}</h2>
 							</Row>

@@ -22,6 +22,9 @@ import { imageMapping } from '../../utils/constants';
 // sass
 import './novel-character.scss';
 
+// image
+import empty from '../../../public/empty-character.png';
+
 const CharacterSection = (props: CharacterSectionProps) => {
 	const { novel_id } = props.match.params;
 	const { expand } = props;
@@ -31,10 +34,9 @@ const CharacterSection = (props: CharacterSectionProps) => {
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [characters, setCharacters] = React.useState<Character[]>([]);
-	React.useEffect(
-		getCharacters,
-		[props.match.params.novel_id]
-	);
+	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+
+	React.useEffect(getCharacters, [props.match.params.novel_id]);
 
 	// open modal
 	function onOpenModal(e: React.MouseEvent, id: string | number) {
@@ -82,6 +84,7 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				// set characters
 				setCharacters(characters);
 				// should render
+				setShouldRender(true);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -152,17 +155,11 @@ const CharacterSection = (props: CharacterSectionProps) => {
 				}
 			</div>
 			{
-				!characters.length && (
-					<Col span={6}>
-						<Card
-							title="还没有角色哦..."
-							bordered={false}
-							hoverable
-							className="novel-custom-card add-character-card"
-						>
-							<Icon type="user-add" /> 新建角色
-						</Card>
-					</Col>
+				shouldRender && !characters.length && (
+					<div className="empty-character">
+						<h2>暂时没有角色呢...</h2>
+						<img src={empty} alt="暂时没有图片..." />
+					</div>
 				)
 			}
 			<Modal
