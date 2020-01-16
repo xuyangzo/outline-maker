@@ -18,7 +18,7 @@ const BatchDeleteModal = (props: BatchDeleteModalProps) => {
 				.all(checkedList.map((id: string) => deleteLocationTemp(id)))
 				.then(() => {
 					Message.success('选中的势力已经被删除！');
-					// refresh characters
+					// refresh locations
 					refreshLocation();
 					// close model
 					closeModel();

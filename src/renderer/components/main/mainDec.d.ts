@@ -32,6 +32,24 @@ export interface TimelineDataValue {
 	updatedAt: string;
 }
 
+export interface Outline {
+	id: number;
+	novel_id: number;
+	title: string;
+	deleted?: number;
+	description?: string;
+}
+
+export interface OutlineDataValue {
+	id: number;
+	title: string;
+	description: string;
+	novel_id: number;
+	scaling: string;
+	fav: number;
+	deleted: number;
+}
+
 export interface OutlineDetailDataValue {
 	id: number;
 	outline_id: number;

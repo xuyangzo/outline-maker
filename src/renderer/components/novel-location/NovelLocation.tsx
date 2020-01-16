@@ -101,12 +101,12 @@ const NovelLocation = (props: NovelLocationProps) => {
 					(
 						<Button
 							type="danger"
-							key="add-character"
+							key="add-location"
 							ghost
 							className="green-button"
 							onClick={() => setCreateModel(true)}
 						>
-							<Icon type="user-add" />添加势力
+							<Icon type="usergroup-add" />添加势力
 						</Button>
 					),
 					(

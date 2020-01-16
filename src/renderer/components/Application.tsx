@@ -25,6 +25,7 @@ import {
 	LocationContainer, LocationEditContainer
 } from '../containers/LocationContainer';
 import { BackgroundContainer, BackgroundEditContainer } from '../containers/BackgroundContainer';
+import { NovelOutlineContainer, NovelOutlineEditContainer } from '../containers/OutlineContainer';
 
 // set database model relations
 require('../../db/relations');
@@ -72,6 +73,8 @@ const Application = () => {
 						<Route path="/location/:novel_id/edit" exact><NovelLocationEditContainer /></Route>
 						<Route path="/location/:novel_id/:id" exact><LocationContainer /></Route>
 						<Route path="/location/:novel_id/:id/edit" exact><LocationEditContainer /></Route>
+						<Route path="/outline/:novel_id" exact><NovelOutlineContainer /></Route>
+						<Route path="/outline/:novel_id/edit" exact><NovelOutlineEditContainer /></Route>
 						<Route path="/outline/:novel_id/:id" exact><MainContainer /></Route>
 						<Route path="/trash" exact><TrashContainer /></Route>
 						<Route path="/favorite" exact><FavoriteContainer /></Route>

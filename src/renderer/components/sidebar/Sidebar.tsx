@@ -234,8 +234,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 								this.state.novels.map((novel: Novel) => (
 									<SubMenu key={novel.id} title={novel.name}>
 										<Menu.Item key={`/novel/${novel.id}`} onClick={this.select}>小说介绍</Menu.Item>
-										<Menu.Item key={`/character/${novel.id}`} onClick={this.select}>小说人物</Menu.Item>
-										<Menu.Item key={`/location/${novel.id}`} onClick={this.select}>小说势力</Menu.Item>
+										<Menu.Item key={`/character/${novel.id}`} onClick={this.select}>人物列表</Menu.Item>
+										<Menu.Item key={`/location/${novel.id}`} onClick={this.select}>势力列表</Menu.Item>
+										<Menu.Item key={`/outline/${novel.id}`} onClick={this.select}>大纲列表</Menu.Item>
 									</SubMenu>
 								))
 							}

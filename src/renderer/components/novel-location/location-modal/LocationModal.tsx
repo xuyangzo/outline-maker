@@ -47,9 +47,9 @@ const LocationModal = (props: LocationModalProps) => {
 			title="新建势力"
 			visible={showModal}
 			onOk={handleSubmit}
-			onCancel={closeModal}
+			onCancel={onCloseModal}
 			footer={[
-				<Button type="danger" key="back" onClick={closeModal} ghost>取消</Button>,
+				<Button type="danger" key="back" onClick={onCloseModal} ghost>取消</Button>,
 				<Button
 					type="primary"
 					key="submit"

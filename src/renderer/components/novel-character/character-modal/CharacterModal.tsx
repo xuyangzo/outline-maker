@@ -47,9 +47,9 @@ const CharacterModal = (props: CharacterModelProps) => {
 			title="新建角色"
 			visible={showModal}
 			onOk={handleSubmit}
-			onCancel={closeModal}
+			onCancel={onCloseModal}
 			footer={[
-				<Button type="danger" key="back" onClick={closeModal} ghost>取消</Button>,
+				<Button type="danger" key="back" onClick={onCloseModal} ghost>取消</Button>,
 				<Button
 					type="primary"
 					key="submit"
