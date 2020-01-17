@@ -110,6 +110,17 @@
 	}
 }
 
+.ant-collapse-item {
+	&:after {
+		display: table;
+		width: 0;
+		height: 0;
+		visibility: hidden;
+		content: '';
+		clear: both;
+	}
+}
+
 ul {
   padding-left: 0;
 }

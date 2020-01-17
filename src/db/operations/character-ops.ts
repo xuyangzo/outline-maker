@@ -182,3 +182,37 @@ export const deleteCharacterPermanently = async (id: string | number): Promise<a
 			where: { id }
 		});
 };
+
+// search main character
+export const searchMainCharacter = (novel_id: string | number, key: string): Promise<any> => {
+	if (key === '') return getAllMainCharactersGivenNovel(novel_id);
+
+	return CharacterModel
+		.findAll({
+			where: {
+				novel_id,
+				name: {
+					[Op.like]: '%'.concat(key).concat('%')
+				},
+				isMain: 1
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
+};
+
+// search sub characters
+export const searchSubCharacter = (novel_id: string | number, key: string): Promise<any> => {
+	if (key === '') return getAllSubCharactersGivenNovel(novel_id);
+
+	return CharacterModel
+		.findAll({
+			where: {
+				novel_id,
+				name: {
+					[Op.like]: '%'.concat(key).concat('%')
+				},
+				isMain: 0
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
+};

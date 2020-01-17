@@ -69,10 +69,13 @@ const NovelLocation = (props: NovelLocationProps) => {
 			});
 	}
 
-	// when input field changes
+	/**
+	 * when input field changes
+	 * need to apply debounce for 500ms
+	 */
 	function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
 		clearTimeout(timer);
-		const key = e.target.value;
+		const key: string = e.target.value;
 		const currTimer: any = setTimeout(
 			() => {
 				searchLocation(novel_id, key)
@@ -91,7 +94,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 			},
 			500
 		);
-		// set timer
+		// set timer for debounce
 		setTimer(currTimer);
 	}
 
@@ -158,6 +161,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 						placeholder="搜索势力..."
 						onChange={onSearchChange}
 						style={{ width: 200, float: 'right' }}
+						allowClear
 					/>
 				</div>
 				{

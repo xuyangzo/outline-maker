@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Collapse } from 'antd';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Collapse, Input } from 'antd';
 import classnames from 'classnames';
 const { Panel } = Collapse;
+const { Search } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -16,7 +17,7 @@ import CharacterModal from './character-modal/CharacterModal';
 
 // database operations
 import {
-	deleteCharacterTemp,
+	deleteCharacterTemp, searchMainCharacter, searchSubCharacter,
 	getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
 } from '../../../db/operations/character-ops';
 
@@ -40,6 +41,7 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
 	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+	const [timer, setTimer] = React.useState<any>(null);
 
 	React.useEffect(getCharacters, [props.match.params.novel_id]);
 
@@ -76,6 +78,51 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 			});
 	}
 
+	/**
+	 * when input field changes
+	 * need to apply debounce for 500ms
+	 */
+	function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+		clearTimeout(timer);
+		const key: string = e.target.value;
+		const currTimer: any = setTimeout(
+			() => {
+				searchMainCharacter(novel_id, key)
+					.then((result: any) => {
+						// get all characters
+						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+							const { id, name, image, gender } = dataValues;
+							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
+						});
+
+						// set main characters
+						setMainCharacters(characters);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+				searchSubCharacter(novel_id, key)
+					.then((result: any) => {
+						// get all characters
+						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+							const { id, name, image, gender } = dataValues;
+							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
+						});
+
+						// set sub characters
+						setSubCharacters(characters);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+			},
+			500
+		);
+		// set timer for debounce
+		setTimer(currTimer);
+	}
+
 	// get all characters
 	function getCharacters() {
 		getMainCharacters();
@@ -88,8 +135,8 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, color, image, gender } = dataValues;
-					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
+					const { id, name, image, gender } = dataValues;
+					return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
 				});
 
 				// set main characters
@@ -108,8 +155,8 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, color, image, gender } = dataValues;
-					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
+					const { id, name, image, gender } = dataValues;
+					return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
 				});
 
 				// set sub characters
@@ -161,6 +208,14 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 				className="novel-character-header"
 			/>
 			<div className="novel-character-container">
+				<div className="search-bar">
+					<Search
+						placeholder="搜索角色..."
+						onChange={onSearchChange}
+						style={{ width: 200, float: 'right' }}
+						allowClear
+					/>
+				</div>
 				<Collapse defaultActiveKey={['main', 'sub']}>
 					{
 						mainCharacters.length && (
