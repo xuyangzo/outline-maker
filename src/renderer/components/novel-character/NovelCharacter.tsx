@@ -117,7 +117,7 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 						Message.error(err.message);
 					});
 			},
-			500
+			300
 		);
 		// set timer for debounce
 		setTimer(currTimer);

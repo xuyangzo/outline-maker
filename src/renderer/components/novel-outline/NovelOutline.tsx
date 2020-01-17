@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Modal, Button, PageHeader } from 'antd';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Input } from 'antd';
 import classnames from 'classnames';
+const { Search } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -14,7 +15,7 @@ import { DatabaseError } from 'sequelize';
 import OutlineModal from './outline-modal/OutlineModal';
 
 // database operations
-import { deleteOutlineTemp, getAllOutlinesGivenNovel } from '../../../db/operations/outline-ops';
+import { deleteOutlineTemp, getAllOutlinesGivenNovel, searchOutline } from '../../../db/operations/outline-ops';
 
 // image
 import empty from '../../../public/empty-character.png';
@@ -29,6 +30,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [outlines, setOutlines] = React.useState<Outline[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+	const [timer, setTimer] = React.useState<any>(null);
 
 	React.useEffect(getOutlines, [props.match.params.novel_id]);
 
@@ -63,6 +65,35 @@ const NovelOutline = (props: NovelOutlineProps) => {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	/**
+	 * when input field changes
+	 * need to apply debounce for 500ms
+	 */
+	function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+		clearTimeout(timer);
+		const key: string = e.target.value;
+		const currTimer: any = setTimeout(
+			() => {
+				searchOutline(novel_id, key)
+					.then((result: any) => {
+						const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
+							const { id, title, description } = dataValues;
+							return { id, title, description };
+						});
+
+						// set outlines
+						setOutlines(outlines);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+			},
+			300
+		);
+		// set timer for debounce
+		setTimer(currTimer);
 	}
 
 	// get all outlines
@@ -123,6 +154,14 @@ const NovelOutline = (props: NovelOutlineProps) => {
 				className="novel-character-header"
 			/>
 			<div className="novel-character-container">
+				<div className="search-bar">
+					<Search
+						placeholder="搜索大纲..."
+						onChange={onSearchChange}
+						style={{ width: 200, float: 'right' }}
+						allowClear
+					/>
+				</div>
 				{
 					outlines.map((outline: Outline) => (
 						<Col span={6} key={outline.id} className="card-container">

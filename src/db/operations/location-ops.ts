@@ -92,18 +92,6 @@ export const searchLocation = (novel_id: string | number, key: string): Promise<
 				name: {
 					[Op.like]: '%'.concat(key).concat('%')
 				}
-				// [Op.or]: [
-				// 	{
-				// 		name: {
-				// 			[Op.like]: '%'.concat(key).concat('%')
-				// 		}
-				// 	},
-				// 	{
-				// 		intro: {
-				// 			[Op.like]: '%'.concat(key).concat('%')
-				// 		}
-				// 	}
-				// ]
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});

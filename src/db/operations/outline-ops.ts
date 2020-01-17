@@ -1,4 +1,4 @@
-import Outlines from '../models/Outlines';
+import OutlineModel from '../models/Outlines';
 import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
@@ -17,7 +17,7 @@ interface OutlineTemplate {
 
 // get outline given id
 export const getOutline = (id: string | number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.findOne({
 			where: { id }
 		});
@@ -25,7 +25,7 @@ export const getOutline = (id: string | number): Promise<any> => {
 
 // get outline's id, title and description
 export const getOutlineShort = (id: string | number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.findOne({
 			attributes: ['id', 'title', 'description'],
 			where: { id }
@@ -34,7 +34,7 @@ export const getOutlineShort = (id: string | number): Promise<any> => {
 
 // get all outlines given novel
 export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.findAll({
 			where: {
 				novel_id: id,
@@ -48,8 +48,8 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 
 // get all outlines given id range
 export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<any> => {
-	return Outlines.
-		findAll({
+	return OutlineModel
+		.findAll({
 			attributes: ['id', 'novel_id', 'title', 'description'],
 			where: {
 				id: outlines,
@@ -63,8 +63,8 @@ export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<
 
 // create new outline
 export const createOutline = async (props: OutlineModalTemplate) => {
-	const maxOrder: number | null = await Outlines.max('novelPageOrder', { where: { novel_id: props.novel_id } });
-	return Outlines
+	const maxOrder: number | null = await OutlineModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
+	return OutlineModel
 		.create({
 			...props,
 			novelPageOrder: (maxOrder || 0) + 1
@@ -73,7 +73,7 @@ export const createOutline = async (props: OutlineModalTemplate) => {
 
 // update outline
 export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.update(
 			props,
 			{ where: { id } }
@@ -82,7 +82,7 @@ export const updateOutline = (id: string | number, props: OutlineTemplate): Prom
 
 // update outline's fav property
 export const updateOutlineFav = (id: string | number, fav: number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.update(
 			{ fav },
 			{ where: { id } }
@@ -91,7 +91,7 @@ export const updateOutlineFav = (id: string | number, fav: number): Promise<any>
 
 // update outline's deleted property
 export const updateDeleted = (id: string | number, deleted: number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.update(
 			{ deleted },
 			{ where: { id } }
@@ -100,7 +100,7 @@ export const updateDeleted = (id: string | number, deleted: number): Promise<any
 
 // permanent deletion
 export const deleteOutlinePermanently = (id: string | number): Promise<any> => {
-	return Outlines
+	return OutlineModel
 		.destroy({
 			where: { id }
 		});
@@ -116,4 +116,29 @@ export const deleteOutlineTemp = (id: string | number): Promise<any> => {
 		updateOutline(id, { deleted: 1 }),
 		addTrash({ outline_id: id })
 	]);
+};
+
+// search outlines
+export const searchOutline = (novel_id: string | number, key: string): Promise<any> => {
+	if (key === '') return getAllOutlinesGivenNovel(novel_id);
+
+	return OutlineModel
+		.findAll({
+			where: {
+				novel_id,
+				[Op.or]: [
+					{
+						title: {
+							[Op.like]: '%'.concat(key).concat('%')
+						}
+					},
+					{
+						description: {
+							[Op.like]: '%'.concat(key).concat('%')
+						}
+					}
+				]
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
 };
