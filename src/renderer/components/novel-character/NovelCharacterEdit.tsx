@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Button, Checkbox, PageHeader, Collapse } from 'antd';
+import { Col, message as Message, Card, Icon, Button, Checkbox, PageHeader, Collapse, Input } from 'antd';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import classnames from 'classnames';
 const { Panel } = Collapse;
+const { Search } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -19,7 +20,8 @@ import BatchDeleteModel from './batch-delete-modal/BatchDeleteModal';
 
 // database operations
 import {
-	updateCharacter, getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
+	updateCharacter, searchMainCharacter, searchSubCharacter,
+	getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
 } from '../../../db/operations/character-ops';
 
 // utils
@@ -42,6 +44,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
 	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+	const [timer, setTimer] = React.useState<any>(null);
 
 	// use callback hook to listen to the change of characters
 	const handleSavePress = React.useCallback(
@@ -74,6 +77,51 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 		if (controlPress && sPress) {
 			onSaveChanges(mainCharacters.concat(subCharacters));
 		}
+	}
+
+	/**
+	 * when input field changes
+	 * need to apply debounce for 500ms
+	 */
+	function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+		clearTimeout(timer);
+		const key: string = e.target.value;
+		const currTimer: any = setTimeout(
+			() => {
+				searchMainCharacter(novel_id, key)
+					.then((result: any) => {
+						// get all characters
+						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+							const { id, name, image, gender } = dataValues;
+							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
+						});
+
+						// set main characters
+						setMainCharacters(characters);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+
+				searchSubCharacter(novel_id, key)
+					.then((result: any) => {
+						// get all characters
+						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+							const { id, name, image, gender } = dataValues;
+							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
+						});
+
+						// set sub characters
+						setSubCharacters(characters);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+			},
+			300
+		);
+		// set timer for debounce
+		setTimer(currTimer);
 	}
 
 	// when single card's checkbox changed for main characters
@@ -303,6 +351,14 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 					className="main-header"
 				/>
 				<div className="novel-character-container">
+					<div className="search-bar">
+						<Search
+							placeholder="搜索角色..."
+							onChange={onSearchChange}
+							style={{ width: 200, float: 'right' }}
+							allowClear
+						/>
+					</div>
 					<Collapse defaultActiveKey={['main', 'sub']}>
 						{
 							mainCharacters.length && (
@@ -311,7 +367,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 										indeterminate={checkedListMain.length > 0 && checkedListMain.length < mainCharacters.length}
 										onChange={onCheckAllChangeMain}
 										checked={checkedListMain.length === mainCharacters.length}
-										className="check-all-box"
+										className="check-all-box check-all-box-character"
 									>
 										主角全选
 									</Checkbox>
@@ -326,7 +382,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 										indeterminate={checkedListSub.length > 0 && checkedListSub.length < subCharacters.length}
 										onChange={onCheckAllChangeSub}
 										checked={checkedListSub.length === subCharacters.length}
-										className="check-all-box"
+										className="check-all-box check-all-box-character"
 									>
 										配角全选
 									</Checkbox>

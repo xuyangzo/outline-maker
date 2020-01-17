@@ -18,10 +18,28 @@
     }
   }
 
+  // search box under edit mode
+  .search-box-edit {
+    width: 200px;
+    position: absolute;
+    right: 30px;
+    top: 15px;
+  }
+
+  // container under edit mode for location/outline page
+  .novel-character-container-edit {
+    padding-top: 70px;
+  }
+
   // check all checkbox
   .check-all-box {
     position: absolute;
     top: 20px;
+    right: 240px;
+  }
+
+  // check all checkbox for character
+  .check-all-box-character {
     right: 30px;
   }
 

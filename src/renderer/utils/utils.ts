@@ -55,7 +55,7 @@ export const getSelectedKey = (pathname: string): string => {
 		pathname.indexOf('locations') !== -1 ||
 		pathname.indexOf('outlines') !== -1
 	) {
-		return pathname;
+		return pathname.replace('/edit', '');
 	}
 
 	// trash and fav

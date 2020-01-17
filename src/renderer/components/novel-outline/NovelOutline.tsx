@@ -145,7 +145,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 							type="danger"
 							className="orange-button"
 							ghost
-							onClick={() => props.history.push(`/outline/${novel_id}/edit`)}
+							onClick={() => props.history.push(`/outlines/${novel_id}/edit`)}
 						>
 							<Icon type="edit" />编辑模式
 						</Button>

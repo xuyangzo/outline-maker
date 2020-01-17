@@ -147,7 +147,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 							type="danger"
 							className="orange-button"
 							ghost
-							onClick={() => props.history.push(`/location/${novel_id}/edit`)}
+							onClick={() => props.history.push(`/locations/${novel_id}/edit`)}
 						>
 							<Icon type="edit" />编辑模式
 						</Button>
