@@ -73,6 +73,11 @@ const Character = sequelize.define(
 			type: Sequelize.STRING,
 			defaultValue: '#ffa39e'
 		},
+		isMain: {
+			field: 'isMain',
+			type: Sequelize.INTEGER,
+			defaultValue: 0
+		},
 		deleted: {
 			field: 'deleted',
 			type: Sequelize.INTEGER,

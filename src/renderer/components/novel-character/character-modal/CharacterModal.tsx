@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
+import { Button, Modal, Form, Input, Icon, message as Message, Select } from 'antd';
+const { Option } = Select;
 
 // database operations
 import { createCharacter } from '../../../../db/operations/character-ops';
@@ -12,6 +13,7 @@ const CharacterModal = (props: CharacterModelProps) => {
 	const { showModal, novel_id, closeModal, refreshCharacter } = props;
 	// hooks
 	const [name, setName] = React.useState<string>('');
+	const [main, setMain] = React.useState<string>('');
 
 	// on input change
 	function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -26,9 +28,14 @@ const CharacterModal = (props: CharacterModelProps) => {
 		setName('');
 	}
 
+	// when select changes
+	function onSelectChange(value: string) {
+		setMain(value);
+	}
+
 	// create new character
 	function handleSubmit() {
-		createCharacter({ name, novel_id })
+		createCharacter({ name, novel_id, isMain: main === 'main' ? 1 : 0 })
 			.then(() => {
 				// alert success
 				Message.success('人物创建成功！');
@@ -69,6 +76,12 @@ const CharacterModal = (props: CharacterModelProps) => {
 						ref={(input: Input) => input && input.focus()}
 					/>
 					更多的人设可以在添加角色后进行设置。
+				</Form.Item>
+				<Form.Item>
+					<Select defaultValue="sub" style={{ width: 200 }} onChange={onSelectChange}>
+						<Option value="sub">配角</Option>
+						<Option value="main">主角</Option>
+					</Select>
 				</Form.Item>
 			</Form>
 		</Modal>

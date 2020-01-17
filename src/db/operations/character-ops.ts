@@ -17,6 +17,7 @@ interface CharacterTemplate {
 	experience?: string;
 	color?: string;
 	deleted?: number;
+	isMain?: number;
 	novelPageOrder?: number;
 }
 
@@ -46,6 +47,36 @@ export const getAllCharactersGivenNovel = (id: string | number): Promise<any> =>
 				deleted: {
 					[Op.ne]: 1
 				}
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
+};
+
+// get all main characters given novel id
+export const getAllMainCharactersGivenNovel = (id: string | number): Promise<any> => {
+	return CharacterModel
+		.findAll({
+			where: {
+				novel_id: id,
+				deleted: {
+					[Op.ne]: 1
+				},
+				isMain: 1
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
+};
+
+// get all sub characters given novel id
+export const getAllSubCharactersGivenNovel = (id: string | number): Promise<any> => {
+	return CharacterModel
+		.findAll({
+			where: {
+				novel_id: id,
+				deleted: {
+					[Op.ne]: 1
+				},
+				isMain: 0
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Button, Checkbox, PageHeader } from 'antd';
+import { Col, message as Message, Card, Icon, Button, Checkbox, PageHeader, Collapse } from 'antd';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import classnames from 'classnames';
+const { Panel } = Collapse;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -17,7 +18,9 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import BatchDeleteModel from './batch-delete-modal/BatchDeleteModal';
 
 // database operations
-import { updateCharacter, getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
+import {
+	updateCharacter, getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
+} from '../../../db/operations/character-ops';
 
 // utils
 import { imageMapping } from '../../utils/constants';
@@ -34,16 +37,18 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
-	const [checkedList, setCheckedList] = React.useState<string[]>([]);
-	const [characters, setCharacters] = React.useState<Character[]>([]);
+	const [checkedListMain, setCheckedListMain] = React.useState<string[]>([]);
+	const [checkedListSub, setCheckedListSub] = React.useState<string[]>([]);
+	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
+	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 
 	// use callback hook to listen to the change of characters
 	const handleSavePress = React.useCallback(
 		(e: KeyboardEvent) => {
-			onSavePress(e, characters);
+			onSavePress(e, mainCharacters, subCharacters);
 		},
-		[characters]
+		[mainCharacters, subCharacters]
 	);
 
 	// use effect hook
@@ -63,36 +68,60 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	React.useEffect(getCharacters, [props.match.params.novel_id]);
 
 	// when use press control + s
-	function onSavePress(e: KeyboardEvent, characters: Character[]) {
+	function onSavePress(e: KeyboardEvent, mainCharacters: Character[], subCharacters: Character[]) {
 		const controlPress = e.ctrlKey || e.metaKey;
 		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
 		if (controlPress && sPress) {
-			onSaveChanges(characters);
+			onSaveChanges(mainCharacters.concat(subCharacters));
 		}
 	}
 
-	// when single card's checkbox changed
-	function onCheckboxChange(e: CheckboxChangeEvent) {
+	// when single card's checkbox changed for main characters
+	function onCheckboxChangeMain(e: CheckboxChangeEvent) {
 		const id: string = e.target.name || '';
 		const checked: boolean = e.target.checked;
 
 		// push id to checked list
-		if (checked) setCheckedList(checkedList.concat(id));
-		else setCheckedList(checkedList.filter((checked: string) => checked !== id));
+		if (checked) setCheckedListMain(checkedListMain.concat(id));
+		else setCheckedListMain(checkedListMain.filter((checked: string) => checked !== id));
 	}
 
-	// when check all checkbox changes
-	function onCheckAllChange(e: CheckboxChangeEvent) {
+	// when single card's checkbox changed for sub characters
+	function onCheckboxChangeSub(e: CheckboxChangeEvent) {
+		const id: string = e.target.name || '';
+		const checked: boolean = e.target.checked;
+
+		// push id to checked list
+		if (checked) setCheckedListSub(checkedListSub.concat(id));
+		else setCheckedListSub(checkedListSub.filter((checked: string) => checked !== id));
+	}
+
+	// when check all checkbox changes for main characters
+	function onCheckAllChangeMain(e: CheckboxChangeEvent) {
 		const checked: boolean = e.target.checked;
 		// check all checkbox
-		if (checked) setCheckedList(characters.map((character: Character) => character.id.toString()));
+		if (checked) setCheckedListMain(mainCharacters.map((character: Character) => character.id.toString()));
 		// uncheck all checkbox
-		else setCheckedList([]);
+		else setCheckedListMain([]);
 	}
 
-	// when reorder finishes triggering
-	function onSortEnd({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
-		setCharacters(arrayMove(characters, oldIndex, newIndex));
+	// when check all checkbox changes for sub characters
+	function onCheckAllChangeSub(e: CheckboxChangeEvent) {
+		const checked: boolean = e.target.checked;
+		// check all checkbox
+		if (checked) setCheckedListSub(subCharacters.map((character: Character) => character.id.toString()));
+		// uncheck all checkbox
+		else setCheckedListSub([]);
+	}
+
+	// when reorder finishes triggering for main characters
+	function onSortEndMain({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		setMainCharacters(arrayMove(mainCharacters, oldIndex, newIndex));
+	}
+
+	// when reorder finishes triggering for sub characters
+	function onSortEndSub({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		setSubCharacters(arrayMove(subCharacters, oldIndex, newIndex));
 	}
 
 	// save changes
@@ -115,9 +144,21 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 			});
 	}
 
+	// clear all checked list
+	function onClearCheckedList() {
+		setCheckedListMain([]);
+		setCheckedListSub([]);
+	}
+
 	// get all characters
 	function getCharacters() {
-		getAllCharactersGivenNovel(novel_id)
+		getMainCharacters();
+		getSubCharacters();
+	}
+
+	// get all main characters
+	function getMainCharacters() {
+		getAllMainCharactersGivenNovel(novel_id)
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
@@ -125,8 +166,8 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
 				});
 
-				// set characters
-				setCharacters(characters);
+				// set main characters
+				setMainCharacters(characters);
 				// should render
 				setShouldRender(true);
 			})
@@ -135,16 +176,36 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 			});
 	}
 
-	// single item (card)
-	const SortableItem = SortableElement(({ value }: { value: Character }) => (
+	// get all sub characters
+	function getSubCharacters() {
+		getAllSubCharactersGivenNovel(novel_id)
+			.then((result: any) => {
+				// get all characters
+				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+					const { id, name, color, image, gender } = dataValues;
+					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
+				});
+
+				// set sub characters
+				setSubCharacters(characters);
+				// should render
+				setShouldRender(true);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// single item (card) for main characters
+	const SortableItemMain = SortableElement(({ value }: { value: Character }) => (
 		<li className="card-li">
 			<div key={value.id} className="card-container">
 				<div className="card-edit-cover">
 					<Checkbox
 						className="custom-checkbox"
-						onChange={onCheckboxChange}
+						onChange={onCheckboxChangeMain}
 						name={value.id.toString()}
-						checked={checkedList.indexOf(value.id.toString()) !== -1}
+						checked={checkedListMain.indexOf(value.id.toString()) !== -1}
 					/>
 				</div>
 				<Card
@@ -158,12 +219,46 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 		</li>
 	));
 
-	// list of cards
-	const SortableList = SortableContainer(({ items }: { items: Character[] }) => {
+	// single item (card) for sub characters
+	const SortableItemSub = SortableElement(({ value }: { value: Character }) => (
+		<li className="card-li">
+			<div key={value.id} className="card-container">
+				<div className="card-edit-cover">
+					<Checkbox
+						className="custom-checkbox"
+						onChange={onCheckboxChangeSub}
+						name={value.id.toString()}
+						checked={checkedListSub.indexOf(value.id.toString()) !== -1}
+					/>
+				</div>
+				<Card
+					title={value.name}
+					bordered={false}
+					className="novel-custom-card"
+				>
+					<img src={value.image} alt="图片自爆了" />
+				</Card>
+			</div>
+		</li>
+	));
+
+	// list of cards for main characters
+	const SortableListMain = SortableContainer(({ items }: { items: Character[] }) => {
 		return (
 			<ul>
 				{items.map((value: Character, index: number) => (
-					<SortableItem key={value.id} index={index} value={value} />
+					<SortableItemMain key={value.id} index={index} value={value} />
+				))}
+			</ul>
+		);
+	});
+
+	// list of cards for sub characters
+	const SortableListSub = SortableContainer(({ items }: { items: Character[] }) => {
+		return (
+			<ul>
+				{items.map((value: Character, index: number) => (
+					<SortableItemSub key={value.id} index={index} value={value} />
 				))}
 			</ul>
 		);
@@ -199,7 +294,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 								key="save"
 								ghost
 								className="green-button"
-								onClick={() => onSaveChanges(characters)}
+							// onClick={() => onSaveChanges(characters)}
 							>
 								<Icon type="save" />保存编辑
 							</Button>
@@ -208,19 +303,42 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 					className="main-header"
 				/>
 				<div className="novel-character-container">
-					<Checkbox
-						indeterminate={checkedList.length > 0 && checkedList.length < characters.length}
-						onChange={onCheckAllChange}
-						checked={checkedList.length === characters.length}
-						className="check-all-box"
-					>
-						角色全选
-					</Checkbox>
-					<SortableList axis="xy" items={characters} onSortEnd={onSortEnd} />
+					<Collapse defaultActiveKey={['main', 'sub']}>
+						{
+							mainCharacters.length && (
+								<Panel header="主角" key="main" style={{ position: 'relative' }}>
+									<Checkbox
+										indeterminate={checkedListMain.length > 0 && checkedListMain.length < mainCharacters.length}
+										onChange={onCheckAllChangeMain}
+										checked={checkedListMain.length === mainCharacters.length}
+										className="check-all-box"
+									>
+										主角全选
+									</Checkbox>
+									<SortableListMain axis="xy" items={mainCharacters} onSortEnd={onSortEndMain} />
+								</Panel>
+							)
+						}
+						{
+							subCharacters.length && (
+								<Panel header="配角" key="sub" style={{ position: 'relative' }}>
+									<Checkbox
+										indeterminate={checkedListSub.length > 0 && checkedListSub.length < subCharacters.length}
+										onChange={onCheckAllChangeSub}
+										checked={checkedListSub.length === subCharacters.length}
+										className="check-all-box"
+									>
+										配角全选
+									</Checkbox>
+									<SortableListSub axis="xy" items={subCharacters} onSortEnd={onSortEndSub} />
+								</Panel>
+							)
+						}
+					</Collapse>
 				</div>
 			</div>
 			{
-				shouldRender && !characters.length && (
+				shouldRender && !mainCharacters.length && !subCharacters.length && (
 					<div className="empty-character">
 						<h2>暂时没有角色呢...</h2>
 						<img src={empty} alt="暂时没有图片..." />
@@ -229,10 +347,10 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 			}
 			<BatchDeleteModel
 				showModel={showBatchDeleteModel}
-				checkedList={checkedList}
+				checkedList={checkedListMain.concat(checkedListSub)}
 				closeModel={() => setBatchDeleteModel(false)}
 				refreshCharacter={getCharacters}
-				clearCheckedList={() => setCheckedList([])}
+				clearCheckedList={onClearCheckedList}
 			/>
 		</Col>
 	);

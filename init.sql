@@ -66,6 +66,7 @@ CREATE TABLE characters
   characteristics TEXT,
   experience TEXT,
   deleted INTEGER,
+  isMain INTEGER,
   n_order INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,

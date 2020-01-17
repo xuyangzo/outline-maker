@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Modal, Button, PageHeader } from 'antd';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Collapse } from 'antd';
 import classnames from 'classnames';
+const { Panel } = Collapse;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -14,7 +15,10 @@ import { DatabaseError } from 'sequelize';
 import CharacterModal from './character-modal/CharacterModal';
 
 // database operations
-import { deleteCharacterTemp, getAllCharactersGivenNovel } from '../../../db/operations/character-ops';
+import {
+	deleteCharacterTemp,
+	getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
+} from '../../../db/operations/character-ops';
 
 // utils
 import { imageMapping } from '../../utils/constants';
@@ -33,7 +37,8 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [characters, setCharacters] = React.useState<Character[]>([]);
+	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
+	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 
 	React.useEffect(getCharacters, [props.match.params.novel_id]);
@@ -73,7 +78,13 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 
 	// get all characters
 	function getCharacters() {
-		getAllCharactersGivenNovel(novel_id)
+		getMainCharacters();
+		getSubCharacters();
+	}
+
+	// get all main characters
+	function getMainCharacters() {
+		getAllMainCharactersGivenNovel(novel_id)
 			.then((result: any) => {
 				// get all characters
 				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
@@ -81,8 +92,28 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
 				});
 
-				// set characters
-				setCharacters(characters);
+				// set main characters
+				setMainCharacters(characters);
+				// should render
+				setShouldRender(true);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
+	// get all sub characters
+	function getSubCharacters() {
+		getAllSubCharactersGivenNovel(novel_id)
+			.then((result: any) => {
+				// get all characters
+				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
+					const { id, name, color, image, gender } = dataValues;
+					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
+				});
+
+				// set sub characters
+				setSubCharacters(characters);
 				// should render
 				setShouldRender(true);
 			})
@@ -121,7 +152,7 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 							type="danger"
 							className="orange-button"
 							ghost
-							onClick={() => props.history.push(`/character/${novel_id}/edit`)}
+							onClick={() => props.history.push(`/characters/${novel_id}/edit`)}
 						>
 							<Icon type="edit" />编辑模式
 						</Button>
@@ -130,32 +161,61 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 				className="novel-character-header"
 			/>
 			<div className="novel-character-container">
-				{
-					characters.map((character: Character) => (
-						<Col span={6} key={character.id} className="card-container">
-							<div
-								className="delete-icon"
-								onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
-							>
-								<Icon type="close" />
-							</div>
-							<Card
-								title={character.name}
-								bordered={false}
-								hoverable
-								className="novel-custom-card"
-								onClick={() => {
-									props.history.push(`/character/${novel_id}/${character.id}`);
-								}}
-							>
-								<img src={character.image} alt="图片自爆了" />
-							</Card>
-						</Col>
-					))
-				}
+				<Collapse defaultActiveKey={['main', 'sub']}>
+					<Panel header="主角" key="main">
+						{
+							mainCharacters.map((character: Character) => (
+								<Col span={6} key={character.id} className="card-container">
+									<div
+										className="delete-icon"
+										onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
+									>
+										<Icon type="close" />
+									</div>
+									<Card
+										title={character.name}
+										bordered={false}
+										hoverable
+										className="novel-custom-card"
+										onClick={() => {
+											props.history.push(`/character/${novel_id}/${character.id}`);
+										}}
+									>
+										<img src={character.image} alt="图片自爆了" />
+									</Card>
+								</Col>
+							))
+						}
+					</Panel>
+					<Panel header="配角" key="sub">
+						{
+							subCharacters.map((character: Character) => (
+								<Col span={6} key={character.id} className="card-container">
+									<div
+										className="delete-icon"
+										onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
+									>
+										<Icon type="close" />
+									</div>
+									<Card
+										title={character.name}
+										bordered={false}
+										hoverable
+										className="novel-custom-card"
+										onClick={() => {
+											props.history.push(`/character/${novel_id}/${character.id}`);
+										}}
+									>
+										<img src={character.image} alt="图片自爆了" />
+									</Card>
+								</Col>
+							))
+						}
+					</Panel>
+				</Collapse>
 			</div>
 			{
-				shouldRender && !characters.length && (
+				shouldRender && !mainCharacters.length && !subCharacters.length && (
 					<div className="empty-character">
 						<h2>暂时没有角色呢...</h2>
 						<img src={empty} alt="暂时没有图片..." />
