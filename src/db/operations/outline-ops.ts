@@ -3,7 +3,7 @@ import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
 // type declaration
-import { OutlineModalTemplate } from '../../renderer/components/novel-header/outline-modal/outlineModalDec';
+import { OutlineModalTemplate } from '../../renderer/components/novel-outline/outline-modal/outlineModalDec';
 
 interface OutlineTemplate {
 	title?: string;

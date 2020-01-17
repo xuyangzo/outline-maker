@@ -3,7 +3,7 @@ import { Button, Modal, Form, Input, Icon, message as Message } from 'antd';
 const { TextArea } = Input;
 
 // type declaration
-import { OutlineModalTemplate } from '../../novel-header/outline-modal/outlineModalDec';
+import { OutlineModalTemplate } from '../../novel-outline/outline-modal/outlineModalDec';
 import { IntroModalProps, IntroModalState } from './introModalDec';
 import { ValidationErrorItem, DatabaseError } from 'sequelize';
 

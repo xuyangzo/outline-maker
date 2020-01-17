@@ -162,56 +162,64 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 			/>
 			<div className="novel-character-container">
 				<Collapse defaultActiveKey={['main', 'sub']}>
-					<Panel header="主角" key="main">
-						{
-							mainCharacters.map((character: Character) => (
-								<Col span={6} key={character.id} className="card-container">
-									<div
-										className="delete-icon"
-										onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
-									>
-										<Icon type="close" />
-									</div>
-									<Card
-										title={character.name}
-										bordered={false}
-										hoverable
-										className="novel-custom-card"
-										onClick={() => {
-											props.history.push(`/character/${novel_id}/${character.id}`);
-										}}
-									>
-										<img src={character.image} alt="图片自爆了" />
-									</Card>
-								</Col>
-							))
-						}
-					</Panel>
-					<Panel header="配角" key="sub">
-						{
-							subCharacters.map((character: Character) => (
-								<Col span={6} key={character.id} className="card-container">
-									<div
-										className="delete-icon"
-										onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
-									>
-										<Icon type="close" />
-									</div>
-									<Card
-										title={character.name}
-										bordered={false}
-										hoverable
-										className="novel-custom-card"
-										onClick={() => {
-											props.history.push(`/character/${novel_id}/${character.id}`);
-										}}
-									>
-										<img src={character.image} alt="图片自爆了" />
-									</Card>
-								</Col>
-							))
-						}
-					</Panel>
+					{
+						mainCharacters.length && (
+							<Panel header="主角" key="main">
+								{
+									mainCharacters.map((character: Character) => (
+										<Col span={6} key={character.id} className="card-container">
+											<div
+												className="delete-icon"
+												onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
+											>
+												<Icon type="close" />
+											</div>
+											<Card
+												title={character.name}
+												bordered={false}
+												hoverable
+												className="novel-custom-card"
+												onClick={() => {
+													props.history.push(`/character/${novel_id}/${character.id}`);
+												}}
+											>
+												<img src={character.image} alt="图片自爆了" />
+											</Card>
+										</Col>
+									))
+								}
+							</Panel>
+						)
+					}
+					{
+						subCharacters.length && (
+							<Panel header="配角" key="sub">
+								{
+									subCharacters.map((character: Character) => (
+										<Col span={6} key={character.id} className="card-container">
+											<div
+												className="delete-icon"
+												onClick={(e: React.MouseEvent) => onOpenModal(e, character.id)}
+											>
+												<Icon type="close" />
+											</div>
+											<Card
+												title={character.name}
+												bordered={false}
+												hoverable
+												className="novel-custom-card"
+												onClick={() => {
+													props.history.push(`/character/${novel_id}/${character.id}`);
+												}}
+											>
+												<img src={character.image} alt="图片自爆了" />
+											</Card>
+										</Col>
+									))
+								}
+							</Panel>
+						)
+					}
 				</Collapse>
 			</div>
 			{

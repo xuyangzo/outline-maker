@@ -80,3 +80,31 @@ export const deleteLocationPermanently = (id: string | number): Promise<any> => 
 			where: { id }
 		});
 };
+
+// search location
+export const searchLocation = (novel_id: string | number, key: string): Promise<any> => {
+	if (key === '') return getAllLocationsGivenNovel(novel_id);
+
+	return LocationModel
+		.findAll({
+			where: {
+				novel_id,
+				name: {
+					[Op.like]: '%'.concat(key).concat('%')
+				}
+				// [Op.or]: [
+				// 	{
+				// 		name: {
+				// 			[Op.like]: '%'.concat(key).concat('%')
+				// 		}
+				// 	},
+				// 	{
+				// 		intro: {
+				// 			[Op.like]: '%'.concat(key).concat('%')
+				// 		}
+				// 	}
+				// ]
+			},
+			order: [['novelPageOrder', 'ASC']]
+		});
+};

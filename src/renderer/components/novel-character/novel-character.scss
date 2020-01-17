@@ -7,8 +7,15 @@
 
   .novel-character-container {
     padding-left: 40px;
-    padding-top: 60px;
+    padding-top: 10px;
     position: relative;
+
+    // search bar
+    .search-bar {
+      width: calc(100% - 24px);
+      height: 45px;
+      margin-bottom: 15px;
+    }
   }
 
   // check all checkbox

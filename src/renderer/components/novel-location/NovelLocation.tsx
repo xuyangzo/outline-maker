@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Modal, Button, PageHeader } from 'antd';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Input } from 'antd';
 import classnames from 'classnames';
+const { Search } = Input;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -14,11 +15,12 @@ import { DatabaseError } from 'sequelize';
 import LocationModal from './location-modal/LocationModal';
 
 // database operations
-import { deleteLocationTemp, getAllLocationsGivenNovel } from '../../../db/operations/location-ops';
+import { deleteLocationTemp, getAllLocationsGivenNovel, searchLocation } from '../../../db/operations/location-ops';
 
 // image
 import empty from '../../../public/empty-character.png';
 import unknownArea from '../../../public/unknown_gray.jpg';
+import { Timeouts } from 'webdriverio';
 
 const NovelLocation = (props: NovelLocationProps) => {
 	const { novel_id } = props.match.params;
@@ -30,6 +32,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [locations, setLocations] = React.useState<Location[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
+	const [timer, setTimer] = React.useState<any>(null);
 
 	React.useEffect(getLocations, [props.match.params.novel_id]);
 
@@ -64,6 +67,32 @@ const NovelLocation = (props: NovelLocationProps) => {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	// when input field changes
+	function onSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
+		clearTimeout(timer);
+		const key = e.target.value;
+		const currTimer: any = setTimeout(
+			() => {
+				searchLocation(novel_id, key)
+					.then((result: any) => {
+						const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
+							const { id, image, intro, texture, location, controller, name } = dataValues;
+							return { id, image, intro, texture, location, controller, name };
+						});
+
+						// set locations
+						setLocations(locations);
+					})
+					.catch((err: DatabaseError) => {
+						Message.error(err.message);
+					});
+			},
+			500
+		);
+		// set timer
+		setTimer(currTimer);
 	}
 
 	// get all locations
@@ -124,6 +153,13 @@ const NovelLocation = (props: NovelLocationProps) => {
 				className="novel-character-header"
 			/>
 			<div className="novel-character-container">
+				<div className="search-bar">
+					<Search
+						placeholder="搜索势力..."
+						onChange={onSearchChange}
+						style={{ width: 200, float: 'right' }}
+					/>
+				</div>
 				{
 					locations.map((location: Location) => (
 						<Col span={8} key={location.id} className="card-container">
