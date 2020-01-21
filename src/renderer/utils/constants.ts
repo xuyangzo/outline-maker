@@ -77,6 +77,7 @@ interface CharacterIllustrations {
 	appearance: string;
 	characteristics: string;
 	experience: string;
+	outlines: string;
 }
 
 const characteristicsHelper: string = '例如：”性格胆小，害怕与别人交流，害怕任何眼神接触。“';
@@ -87,5 +88,6 @@ export const characterIllustrations: CharacterIllustrations = {
 	identity: '明面 + 隐藏的身份。\n\n明面身份比如：大家族的弟子\n隐藏身份比如：远古血脉传承者\n\n可以有多个。',
 	appearance: '包含但不限于以下要素：\n\n1. 发型\n2. 外貌\n3. 气质\n4. 衣着\n5. 身材',
 	characteristics: '建议用较长的句子描述，\n而不是仅仅使用词语来形容。\n\n'.concat(characteristicsHelper),
-	experience: '该角色在出场之前的经历是什么。\n\n不一定需要写得很长，但这玩意儿对于角色性格和剧情推动的作用很重要。'
+	experience: '该角色在出场之前的经历是什么。\n\n不一定需要写得很长，但这玩意儿对于角色性格和剧情推动的作用很重要。',
+	outlines: '该角色所属的大纲（可以有多个）'
 };

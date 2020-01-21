@@ -194,7 +194,10 @@ export const searchMainCharacter = (novel_id: string | number, key: string): Pro
 				name: {
 					[Op.like]: '%'.concat(key).concat('%')
 				},
-				isMain: 1
+				isMain: 1,
+				deleted: {
+					[Op.ne]: 1
+				}
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});
@@ -211,7 +214,10 @@ export const searchSubCharacter = (novel_id: string | number, key: string): Prom
 				name: {
 					[Op.like]: '%'.concat(key).concat('%')
 				},
-				isMain: 0
+				isMain: 0,
+				deleted: {
+					[Op.ne]: 1
+				}
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});

@@ -55,6 +55,10 @@
 .ant-card-body {
 	white-space: pre-line;
 	word-break: break-all;
+
+	p {
+		padding: 0 15px;
+	}
 }
 
 .ant-upload.ant-upload-select.ant-upload-select-text {
@@ -147,4 +151,11 @@ ul {
 .pink-button {
 	border-color: pink !important;
 	color: pink !important;
+}
+
+// custom link style
+.custom-link {
+	text-decoration: none;
+	color: rgb(209, 154, 223);
+	display: block;
 }

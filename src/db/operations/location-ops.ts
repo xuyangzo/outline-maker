@@ -91,6 +91,9 @@ export const searchLocation = (novel_id: string | number, key: string): Promise<
 				novel_id,
 				name: {
 					[Op.like]: '%'.concat(key).concat('%')
+				},
+				deleted: {
+					[Op.ne]: 1
 				}
 			},
 			order: [['novelPageOrder', 'ASC']]

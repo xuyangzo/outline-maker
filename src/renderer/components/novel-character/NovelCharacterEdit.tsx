@@ -366,7 +366,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 									<Checkbox
 										indeterminate={checkedListMain.length > 0 && checkedListMain.length < mainCharacters.length}
 										onChange={onCheckAllChangeMain}
-										checked={checkedListMain.length === mainCharacters.length}
+										checked={checkedListMain.length === mainCharacters.length && mainCharacters.length !== 0}
 										className="check-all-box check-all-box-character"
 									>
 										主角全选
@@ -381,7 +381,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 									<Checkbox
 										indeterminate={checkedListSub.length > 0 && checkedListSub.length < subCharacters.length}
 										onChange={onCheckAllChangeSub}
-										checked={checkedListSub.length === subCharacters.length}
+										checked={checkedListSub.length === subCharacters.length && subCharacters.length !== 0}
 										className="check-all-box check-all-box-character"
 									>
 										配角全选

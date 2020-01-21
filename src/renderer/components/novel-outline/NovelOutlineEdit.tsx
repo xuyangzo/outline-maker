@@ -245,7 +245,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 					<Checkbox
 						indeterminate={checkedList.length > 0 && checkedList.length < outlines.length}
 						onChange={onCheckAllChange}
-						checked={checkedList.length === outlines.length}
+						checked={checkedList.length === outlines.length && outlines.length !== 0}
 						className="check-all-box"
 					>
 						大纲全选

@@ -11,10 +11,6 @@ const Character = sequelize.define(
 			primaryKey: true,
 			autoIncrement: true
 		},
-		outline_id: {
-			field: 'outline_id',
-			type: Sequelize.INTEGER
-		},
 		novel_id: {
 			field: 'novel_id',
 			type: Sequelize.INTEGER

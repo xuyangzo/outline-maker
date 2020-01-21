@@ -8,6 +8,7 @@ import OutlineDetailModel from './models/OutlineDetails';
 import OutlineModel from './models/Outlines';
 import TimelineModel from './models/Timeline';
 import TrashModel from './models/Trash';
+import CharacterOutlineModel from './models/CharacterOutlines';
 
 // foreign keys for novel model
 NovelModel.hasMany(OutlineModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
@@ -17,11 +18,11 @@ NovelModel.hasMany(LocationModel, { foreignKey: 'novel_id', onDelete: 'CASCADE',
 NovelModel.hasMany(TrashModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for outline model
-OutlineModel.hasMany(CharacterModel, { foreignKey: 'outline_id', onDelete: 'SET NULL', constraints: true });
 OutlineModel.hasMany(TimelineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 OutlineModel.hasMany(OutlineDetailModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 OutlineModel.hasMany(FavoriteModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 OutlineModel.hasMany(TrashModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
+OutlineModel.hasMany(CharacterOutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 OutlineModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for background model
@@ -30,7 +31,7 @@ BackgroundModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCA
 // foreign keys for character model
 CharacterModel.hasMany(OutlineDetailModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.hasMany(TrashModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
-CharacterModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'SET NULL', constraints: true });
+CharacterModel.hasMany(CharacterOutlineModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for location model
@@ -55,6 +56,10 @@ TrashModel.belongsTo(LocationModel, { foreignKey: 'loc_id', onDelete: 'CASCADE',
 TrashModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 
+// foreign keys for character_outlines model
+CharacterOutlineModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+CharacterOutlineModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
+
 /**
  * enable the following only in development mode
  * in order to create base data for testing
@@ -74,8 +79,10 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 			});
 
 			await OutlineModel.create({
-				title: '默认模板',
-				description: '默认介绍',
+				title: '第一卷 刘姥姥初试云雨情',
+				description: `书中自有颜如玉，书中自有黄金屋。
+				一旦学有所成，便能朝为田舍郎，暮登天子堂。
+				韩四不通经史，不谙子集，无缘科举，想光宗耀祖，只能去捐一个官！`,
 				novel_id: 1,
 				scaling: 0.75,
 				fav: 0,
@@ -83,58 +90,13 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				novelPageOrder: 1
 			});
 			await OutlineModel.create({
-				title: '默认模板2',
+				title: '第二卷 贾宝玉倒拔垂杨柳',
 				description: '默认介绍',
 				novel_id: 1,
 				scaling: 0.75,
 				fav: 0,
 				delete: 0,
 				novelPageOrder: 2
-			});
-			await OutlineModel.create({
-				title: '默认模板3',
-				description: '默认介绍',
-				novel_id: 1,
-				scaling: 0.75,
-				fav: 0,
-				delete: 0,
-				novelPageOrder: 3
-			});
-			await OutlineModel.create({
-				title: '默认模板4',
-				description: '默认介绍',
-				novel_id: 1,
-				scaling: 0.75,
-				fav: 0,
-				delete: 0,
-				novelPageOrder: 4
-			});
-			await OutlineModel.create({
-				title: '默认模板5',
-				description: '默认介绍',
-				novel_id: 1,
-				scaling: 0.75,
-				fav: 0,
-				delete: 0,
-				novelPageOrder: 5
-			});
-			await OutlineModel.create({
-				title: '默认模板6',
-				description: '默认介绍',
-				novel_id: 1,
-				scaling: 0.75,
-				fav: 0,
-				delete: 0,
-				novelPageOrder: 6
-			});
-			await OutlineModel.create({
-				title: '默认模板7',
-				description: '默认介绍',
-				novel_id: 1,
-				scaling: 0.75,
-				fav: 0,
-				delete: 0,
-				novelPageOrder: 7
 			});
 
 			await BackgroundModel.create({
@@ -149,10 +111,10 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 			await BackgroundModel.create({
 				novel_id: 1,
 				title: '圣者',
-				content: `每一代圣者都是1男（领导者）+ 4女（后宫），仅仅这一个万年时代有，目的是为了拯救世界
-			每隔 1000 年，四大圣树便会重获新生，并且会有一代圣者诞生，故事开始时便是第九代圣者
-			每一代圣者大概都只存在了十年，然后四位女性便再次化作了圣树的种子，男性则是死于天魔下
-			圣者诞生的目的就是为了对抗破灭天魔，虽然也顺便处理过一些别的魂兽（比如说玛丽雷基）`
+				content: `每一代圣者都是1男（领导者）+ 4女（后宫），仅仅这一个万年时代有，为了拯救世界
+			每隔 1000 年，四大圣树便会重获新生，并且会有一代圣者诞生，故事开始是第九代圣者
+			每一代圣者大概都只存在了十年，然后四位女性便再次化作了圣树的种子，男性则是暴毙
+			圣者诞生的目的就是为了对抗破灭天魔，虽然也顺便处理过一些别的魂兽（如玛丽雷基）`
 			});
 
 			await LocationModel.create({
@@ -185,50 +147,9 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				deleted: 0,
 				novelPageOrder: 3
 			});
-			await LocationModel.create({
-				novel_id: 1,
-				name: '天之塔4',
-				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
-				texture: '一座纯白的塔',
-				location: '第一世界中央',
-				controller: '天尊',
-				deleted: 0,
-				novelPageOrder: 4
-			});
-			await LocationModel.create({
-				novel_id: 1,
-				name: '天之塔5',
-				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
-				texture: '一座纯白的塔',
-				location: '第一世界中央',
-				controller: '天尊',
-				deleted: 0,
-				novelPageOrder: 5
-			});
-			await LocationModel.create({
-				novel_id: 1,
-				name: '天之塔6',
-				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
-				texture: '一座纯白的塔',
-				location: '第一世界中央',
-				controller: '天尊',
-				deleted: 0,
-				novelPageOrder: 6
-			});
-			await LocationModel.create({
-				novel_id: 1,
-				name: '天之塔7',
-				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
-				texture: '一座纯白的塔',
-				location: '第一世界中央',
-				controller: '天尊',
-				deleted: 0,
-				novelPageOrder: 7
-			});
 
 			await CharacterModel.create({
 				novel_id: 1,
-				outline_id: 1,
 				name: '大佬',
 				color: '#ffa39e',
 				age: '18',
@@ -245,10 +166,8 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 				isMain: 1,
 				novelPageOrder: 1
 			});
-
 			await CharacterModel.create({
 				novel_id: 1,
-				outline_id: 1,
 				name: '菜比',
 				color: '#ffbb96',
 				deleted: 0,
@@ -257,7 +176,6 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 			});
 			await CharacterModel.create({
 				novel_id: 1,
-				outline_id: 1,
 				name: '菜比2',
 				color: '#ffbb96',
 				deleted: 0,
@@ -265,27 +183,27 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 			});
 			await CharacterModel.create({
 				novel_id: 1,
-				outline_id: 1,
 				name: '菜比3',
 				color: '#ffbb96',
 				deleted: 0,
 				novelPageOrder: 4
 			});
-			await CharacterModel.create({
-				novel_id: 1,
-				outline_id: 1,
-				name: '菜比4',
-				color: '#ffbb96',
-				deleted: 0,
-				novelPageOrder: 5
+
+			await CharacterOutlineModel.create({
+				character_id: 1,
+				outline_id: 1
 			});
-			await CharacterModel.create({
-				novel_id: 1,
-				outline_id: 1,
-				name: '菜比5',
-				color: '#ffbb96',
-				deleted: 0,
-				novelPageOrder: 6
+			await CharacterOutlineModel.create({
+				character_id: 1,
+				outline_id: 2
+			});
+			await CharacterOutlineModel.create({
+				character_id: 3,
+				outline_id: 1
+			});
+			await CharacterOutlineModel.create({
+				character_id: 4,
+				outline_id: 2
 			});
 
 			await TimelineModel.create({

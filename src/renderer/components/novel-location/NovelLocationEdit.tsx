@@ -242,7 +242,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 					<Checkbox
 						indeterminate={checkedList.length > 0 && checkedList.length < locations.length}
 						onChange={onCheckAllChange}
-						checked={checkedList.length === locations.length}
+						checked={checkedList.length === locations.length && locations.length !== 0}
 						className="check-all-box"
 					>
 						势力全选

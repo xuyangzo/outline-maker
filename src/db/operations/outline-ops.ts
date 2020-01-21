@@ -1,4 +1,5 @@
 import OutlineModel from '../models/Outlines';
+import CharacterOutlineModel from '../models/CharacterOutlines';
 import { addTrash } from '../operations/trash-ops';
 const Op = require('sequelize').Op;
 
@@ -137,8 +138,24 @@ export const searchOutline = (novel_id: string | number, key: string): Promise<a
 							[Op.like]: '%'.concat(key).concat('%')
 						}
 					}
-				]
+				],
+				deleted: {
+					[Op.ne]: 1
+				}
 			},
 			order: [['novelPageOrder', 'ASC']]
+		});
+};
+
+// get all outlines that target character belongs to
+export const getAllOutlinesGivenCharacter = (character_id: string | number): Promise<any> => {
+	return OutlineModel
+		.findAll({
+			attributes: ['id', 'title'],
+			include: [{
+				model: CharacterOutlineModel,
+				where: { character_id },
+				required: true,
+			}]
 		});
 };

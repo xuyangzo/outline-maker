@@ -46,22 +46,28 @@ export interface CharacterProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface CharacterState extends Character {
-  [key: string]: string | number | undefined;
+  outlines: OutlineGivenCharacter[];
+  [key: string]: string | number | undefined | OutlineGivenCharacter[];
 }
 
-export type CharacterEditState = {
-  id: number | string,
-  outline_id: number | string | undefined,
-  novel_id: number | string,
-  name: string,
-  image: string,
-  age: string,
-  nickname: string,
-  gender: number,
-  height: string,
-  identity: string,
-  appearance: string,
-  characteristics: string,
-  experience: string,
-  [key: string]: any
-};
+export interface CharacterEditState {
+  id: number | string;
+  outline_id: number | string | undefined;
+  novel_id: number | string;
+  name: string;
+  image: string;
+  age: string;
+  nickname: string;
+  gender: number;
+  height: string;
+  identity: string;
+  appearance: string;
+  characteristics: string;
+  experience: string;
+  [key: string]: any;
+}
+
+export interface OutlineGivenCharacter {
+  id: number;
+  title: string;
+}

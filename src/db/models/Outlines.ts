@@ -23,8 +23,8 @@ const Outlines = sequelize.define(
 					msg: '标题不能为空'
 				},
 				len: {
-					args: [0, 10],
-					msg: '标题应该在 10 个字之内！'
+					args: [0, 20],
+					msg: '标题应该在 20 个字之内！'
 				}
 			}
 		},
@@ -34,8 +34,8 @@ const Outlines = sequelize.define(
 			defaultValue: '描述被吃了...',
 			validate: {
 				len: {
-					args: [0, 100],
-					msg: '描述应该在 100 个字之内！'
+					args: [0, 300],
+					msg: '描述应该在 300 个字之内！'
 				}
 			}
 		},

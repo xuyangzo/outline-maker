@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS trashes;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS outline_details;
 DROP TABLE IF EXISTS characters;
+DROP TABLE IF EXISTS character_outlines;
 DROP TABLE IF EXISTS timelines;
 DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS outlines;
@@ -53,7 +54,7 @@ CREATE TABLE characters
 (
   character_id INTEGER PRIMARY KEY AUTOINCREMENT,
   novel_id INTEGER,
-  outline_id INTEGER,
+  characters TEXT,
   name TEXT,
   image TEXT,
   color TEXT,
@@ -70,8 +71,16 @@ CREATE TABLE characters
   n_order INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (outline_id) REFERENCES outlines (id),
   FOREIGN KEY (novel_id) REFERENCES novels (id)
+);
+
+create table character_outlines
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  outline_id INTEGER,
+  character_id INTEGER,
+  FOREIGN KEY (outline_id) REFERENCES outlines (id),
+  FOREIGN KEY (character_id) REFERENCES characters (character_id)
 );
 
 create table locations

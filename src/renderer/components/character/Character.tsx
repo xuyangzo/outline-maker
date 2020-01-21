@@ -3,17 +3,20 @@ import { Row, Col, message as Message, Icon, PageHeader, Button, Tooltip } from 
 import classnames from 'classnames';
 
 // enable history
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 // type declaration
-import { CharacterProps, CharacterState, Character as CharacterDec } from './characterDec';
+import {
+	CharacterProps, CharacterState, Character as CharacterDec,
+	OutlineGivenCharacter
+} from './characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getCharacter } from '../../../db/operations/character-ops';
+import { getAllOutlinesGivenCharacter } from '../../../db/operations/outline-ops';
 
 // utils
-import { getNumberedText } from '../../utils/utils';
 import { imageMapping, characterIllustrations } from '../../utils/constants';
 
 // sass
@@ -35,14 +38,17 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			identity: '',
 			appearance: '',
 			characteristics: '',
-			experience: ''
+			experience: '',
+			outlines: []
 		};
 	}
 
 	componentDidMount = () => {
 		this.setCharacter();
+		this.setOutlines();
 	}
 
+	// set information about a single character
 	setCharacter = () => {
 		getCharacter(this.state.id)
 			.then(({ dataValues }: { dataValues: CharacterDec }) => {
@@ -60,11 +66,25 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			});
 	}
 
+	// set outline information about a character
+	setOutlines = () => {
+		getAllOutlinesGivenCharacter(this.state.id)
+			.then((result: any) => {
+				console.log('result', result);
+				const outlines: OutlineGivenCharacter[] = result.map(
+					({ dataValues }: { dataValues: OutlineGivenCharacter }) => dataValues);
+				this.setState({ outlines });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err);
+			});
+	}
+
 	render() {
 		const { expand } = this.props;
 		const {
-			name, image, age, nickname, gender, height,
-			identity, appearance, characteristics, experience
+			name, image, age, nickname, gender, height, outlines,
+			identity, appearance, characteristics, experience, id
 		} = this.state;
 
 		// mapping of image
@@ -132,25 +152,25 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 										<Icon type="question-circle" className="question-mark" />
 									</Tooltip>
 								</Col>
-								<Col span={8}>
+								<Col span={16}>
 									{nickname ? nickname : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
 								<Col span={4} style={{ width: '60px' }}>性别：</Col>
-								<Col span={8}>
+								<Col span={16}>
 									{genderText ? genderText : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
 								<Col span={4} style={{ width: '60px' }}>年龄：</Col>
-								<Col span={8}>
+								<Col span={16}>
 									{age ? age : '暂无'}
 								</Col>
 							</Row>
 							<Row className="character-section">
 								<Col span={4} style={{ width: '60px' }}>身高：</Col>
-								<Col span={8}>
+								<Col span={16}>
 									{height ? height : '暂无'}
 								</Col>
 							</Row>
@@ -208,6 +228,29 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 								</Col>
 								<Col span={16} className="numbered-text">
 									{experience ? experience : '暂无'}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '60px' }}>
+									大纲
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.outlines}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
+								<Col span={16}>
+									{
+										!outlines.length && (<p>暂无</p>)
+									}
+									{
+										outlines.map((outline: OutlineGivenCharacter, index: number) => (
+											<Link key={outline.id} to={`/outline/${id}/${outline.id}`} className="custom-link">
+												{index + 1}.&nbsp;{outline.title}
+											</Link>
+										))
+									}
 								</Col>
 							</Row>
 						</Col>
