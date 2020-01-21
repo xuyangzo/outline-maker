@@ -1,5 +1,7 @@
 import CharacterModel from '../models/Character';
+import CharacterOutlineModel from '../models/CharacterOutlines';
 import { addTrash } from '../operations/trash-ops';
+import { invalid } from 'moment';
 const Op = require('sequelize').Op;
 
 interface CharacterTemplate {
@@ -87,17 +89,43 @@ export const getAllCharactersGivenOutline = (id: string): Promise<any> => {
 	return CharacterModel
 		.findAll({
 			where: {
-				outline_id: id,
 				deleted: {
 					[Op.ne]: 1
 				}
-			}
+			},
+			include: [{
+				model: CharacterOutlineModel,
+				required: true,
+				where: {
+					outline_id: id
+				}
+			}]
 		});
 };
 
 // get all valid characters for outline importing
-export const getAllValidCharacters = (novel_id: string, outline_id: string): Promise<any> => {
-	console.log(novel_id, outline_id);
+export const getAllValidCharacters = async (novel_id: string, outline_id: string): Promise<any> => {
+	// get all invalid characters
+	const invalidCharactersData = await CharacterModel
+		.findAll({
+			attributes: ['id'],
+			where: {
+				novel_id,
+				deleted: {
+					[Op.ne]: 1
+				}
+			},
+			include: [{
+				model: CharacterOutlineModel,
+				required: true,
+				where: {
+					outline_id
+				}
+			}]
+		});
+
+	// get all invalid characters
+	const invalidCharacters: number[] = invalidCharactersData.map((data: any) => data.dataValues.id);
 	return CharacterModel
 		.findAll({
 			where: {
@@ -105,19 +133,10 @@ export const getAllValidCharacters = (novel_id: string, outline_id: string): Pro
 				deleted: {
 					[Op.ne]: 1
 				},
-				[Op.or]: [
-					{
-						outline_id: {
-							[Op.ne]: outline_id
-						}
-					},
-					{
-						outline_id: {
-							[Op.eq]: null
-						}
-					}
-				]
-			},
+				character_id: {
+					[Op.notIn]: invalidCharacters
+				}
+			}
 		});
 };
 
@@ -127,9 +146,15 @@ export const getAllCharactersGivenOutlineShort = (id: string): Promise<any> => {
 		.findAll({
 			attributes: ['name', 'id'],
 			where: {
-				outline_id: id,
 				deleted: {
 					[Op.ne]: 1
+				}
+			},
+			include: {
+				model: CharacterOutlineModel,
+				required: true,
+				where: {
+					outline_id: id
 				}
 			}
 		});
