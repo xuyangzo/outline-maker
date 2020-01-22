@@ -64,6 +64,10 @@ const Character = sequelize.define(
 			field: 'experience',
 			type: Sequelize.STRING
 		},
+		note: {
+			field: 'note',
+			type: Sequelize.STRING
+		},
 		color: {
 			field: 'color',
 			type: Sequelize.STRING,

@@ -66,6 +66,7 @@ CREATE TABLE characters
   appearance TEXT,
   characteristics TEXT,
   experience TEXT,
+  note TEXT,
   deleted INTEGER,
   isMain INTEGER,
   n_order INTEGER,

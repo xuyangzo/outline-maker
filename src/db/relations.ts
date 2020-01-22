@@ -162,6 +162,7 @@ CharacterOutlineModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDele
 				3. jj还小`,
 				characteristics: '高傲',
 				experience: '啥都没有',
+				note: '没别的，就是个傻子',
 				deleted: 0,
 				isMain: 1,
 				novelPageOrder: 1

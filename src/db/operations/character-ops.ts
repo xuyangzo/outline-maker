@@ -1,12 +1,11 @@
 import CharacterModel from '../models/Character';
 import CharacterOutlineModel from '../models/CharacterOutlines';
 import { addTrash } from '../operations/trash-ops';
-import { invalid } from 'moment';
 const Op = require('sequelize').Op;
 
 interface CharacterTemplate {
-	outline_id?: number | string;
 	novel_id?: number | string;
+	outline_id?: number | string;
 	name?: string;
 	image?: string;
 	age?: string;
@@ -17,6 +16,7 @@ interface CharacterTemplate {
 	appearance?: string;
 	characteristics?: string;
 	experience?: string;
+	note?: string;
 	color?: string;
 	deleted?: number;
 	isMain?: number;
@@ -162,12 +162,17 @@ export const getAllCharactersGivenOutlineShort = (id: string): Promise<any> => {
 
 // create new character
 export const createCharacter = async (props: CharacterTemplate): Promise<any> => {
+	const { outline_id, ...characterProps } = props;
 	// get the max order
 	const maxOrder: number | null = await CharacterModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
-	return CharacterModel
+	const character = await CharacterModel.create({
+		...characterProps,
+		novelPageOrder: (maxOrder || 0) + 1
+	});
+	return CharacterOutlineModel
 		.create({
-			...props,
-			novelPageOrder: (maxOrder || 0) + 1
+			outline_id,
+			character_id: character.dataValues.id
 		});
 };
 

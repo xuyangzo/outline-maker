@@ -218,10 +218,8 @@ class Main extends React.Component<MainProps, MainState> {
 				const characters: number[] = [];
 				const timelines: number[] = [];
 				created.forEach(({ dataValues }: { dataValues: CharacterDataValue & TimelineDataValue }) => {
-					console.log(dataValues);
 					if (dataValues.name) characters.push(dataValues.id);
 					else if (dataValues.time) timelines.push(dataValues.id);
-					console.log(characters, timelines);
 				});
 
 				/**

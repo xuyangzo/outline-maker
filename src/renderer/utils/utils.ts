@@ -13,7 +13,6 @@ export const onTextAreaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 
 // filter update by id
 export function filterUpdateById(arr: any, id: number, value: string, isTime: boolean) {
-	console.log('val', value);
 	return arr.map((element: Character & Timeline) => {
 		if (element.id === id) {
 			if (isTime) element.time = value;

@@ -18,6 +18,7 @@ import { getAllOutlinesGivenCharacter } from '../../../db/operations/outline-ops
 
 // utils
 import { imageMapping, characterIllustrations } from '../../utils/constants';
+import { Property } from '../../utils/components';
 
 // sass
 import './character.scss';
@@ -39,6 +40,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			appearance: '',
 			characteristics: '',
 			experience: '',
+			note: '',
 			outlines: []
 		};
 	}
@@ -53,11 +55,11 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 		getCharacter(this.state.id)
 			.then(({ dataValues }: { dataValues: CharacterDec }) => {
 				const {
-					outline_id, name, image, age, nickname, gender,
+					outline_id, name, image, age, nickname, gender, note,
 					height, identity, appearance, characteristics, experience
 				} = dataValues;
 				this.setState({
-					outline_id, name, image, age, nickname, gender,
+					outline_id, name, image, age, nickname, gender, note,
 					height, identity, appearance, characteristics, experience
 				});
 			})
@@ -70,7 +72,6 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 	setOutlines = () => {
 		getAllOutlinesGivenCharacter(this.state.id)
 			.then((result: any) => {
-				console.log('result', result);
 				const outlines: OutlineGivenCharacter[] = result.map(
 					({ dataValues }: { dataValues: OutlineGivenCharacter }) => dataValues);
 				this.setState({ outlines });
@@ -84,7 +85,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 		const { expand } = this.props;
 		const {
 			name, image, age, nickname, gender, height, outlines,
-			identity, appearance, characteristics, experience, id
+			identity, appearance, characteristics, experience, note, id
 		} = this.state;
 
 		// mapping of image
@@ -142,94 +143,51 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 							<Row className="character-section">
 								<h2 className="character-name">{name}</h2>
 							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>
-									昵称
-									<Tooltip
-										placement="rightTop"
-										title={characterIllustrations.nickname}
-									>
-										<Icon type="question-circle" className="question-mark" />
-									</Tooltip>
-								</Col>
-								<Col span={16}>
-									{nickname ? nickname : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>性别：</Col>
-								<Col span={16}>
-									{genderText ? genderText : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>年龄：</Col>
-								<Col span={16}>
-									{age ? age : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>身高：</Col>
-								<Col span={16}>
-									{height ? height : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>
-									身份
-									<Tooltip
-										placement="rightTop"
-										title={characterIllustrations.identity}
-									>
-										<Icon type="question-circle" className="question-mark" />
-									</Tooltip>
-								</Col>
-								<Col span={16} className="numbered-text">
-									{identity ? identity : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>
-									外貌
-									<Tooltip
-										placement="rightTop"
-										title={characterIllustrations.appearance}
-									>
-										<Icon type="question-circle" className="question-mark" />
-									</Tooltip>
-								</Col>
-								<Col span={16} className="numbered-text">
-									{appearance ? appearance : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>
-									性格
-									<Tooltip
-										placement="rightTop"
-										title={characterIllustrations.characteristics}
-									>
-										<Icon type="question-circle" className="question-mark" />
-									</Tooltip>
-								</Col>
-								<Col span={16} className="numbered-text">
-									{characteristics ? characteristics : '暂无'}
-								</Col>
-							</Row>
-							<Row className="character-section">
-								<Col span={4} style={{ width: '60px' }}>
-									经历
-									<Tooltip
-										placement="rightTop"
-										title={characterIllustrations.experience}
-									>
-										<Icon type="question-circle" className="question-mark" />
-									</Tooltip>
-								</Col>
-								<Col span={16} className="numbered-text">
-									{experience ? experience : '暂无'}
-								</Col>
-							</Row>
+							<Property
+								tip={characterIllustrations.nickname}
+								fieldName="昵称"
+								text={nickname}
+							/>
+							<Property
+								tip=""
+								fieldName="性别"
+								text={genderText}
+							/>
+							<Property
+								tip=""
+								fieldName="年龄"
+								text={age}
+							/>
+							<Property
+								tip=""
+								fieldName="身高"
+								text={height}
+							/>
+							<Property
+								tip={characterIllustrations.identity}
+								fieldName="身份"
+								text={identity}
+							/>
+							<Property
+								tip={characterIllustrations.appearance}
+								fieldName="外貌"
+								text={appearance}
+							/>
+							<Property
+								tip={characterIllustrations.characteristics}
+								fieldName="性格"
+								text={characteristics}
+							/>
+							<Property
+								tip={characterIllustrations.experience}
+								fieldName="性格"
+								text={experience}
+							/>
+							<Property
+								tip=""
+								fieldName="备注"
+								text={note}
+							/>
 							<Row className="character-section">
 								<Col span={4} style={{ width: '60px' }}>
 									大纲

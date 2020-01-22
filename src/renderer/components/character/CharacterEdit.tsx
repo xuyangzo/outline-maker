@@ -40,7 +40,8 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			identity: '',
 			appearance: '',
 			characteristics: '',
-			experience: ''
+			experience: '',
+			note: ''
 		};
 	}
 
@@ -112,13 +113,13 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	// when save the event
 	onSave = () => {
 		const {
-			id, name, image, age, nickname, gender, height,
+			id, name, image, age, nickname, gender, height, note,
 			identity, appearance, characteristics, experience
 		} = this.state;
 
 		// filter invalid input
 		const props: { [key: string]: string | number } = {
-			name, image, age, nickname, gender, height,
+			name, image, age, nickname, gender, height, note,
 			identity, appearance, characteristics, experience
 		};
 
@@ -137,7 +138,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		getCharacter(this.state.id)
 			.then(({ dataValues }: { dataValues: CharacterDec }) => {
 				const {
-					outline_id, name, image, age, nickname, gender,
+					outline_id, name, image, age, nickname, gender, note,
 					height, identity, appearance, characteristics, experience
 				} = dataValues;
 				/**
@@ -156,7 +157,8 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 					identity: identity ? identity : '',
 					appearance: appearance ? appearance : '',
 					characteristics: characteristics ? characteristics : '',
-					experience: experience ? experience : ''
+					experience: experience ? experience : '',
+					note: note ? note : ''
 				});
 			})
 			.catch((err: DatabaseError) => {
@@ -167,7 +169,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	render() {
 		const { expand } = this.props;
 		const {
-			name, image, age, nickname, gender,
+			name, image, age, nickname, gender, note,
 			height, identity, appearance, characteristics, experience
 		} = this.state;
 
@@ -368,6 +370,26 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 										placeholder="经历"
 										value={experience}
 										name="experience"
+										onChange={this.onTextAreaChange}
+									/>
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '60px' }}>
+									备注
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.experience}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
+								<Col span={20} className="numbered-text">
+									<TextArea
+										rows={6}
+										placeholder="备注"
+										value={note}
+										name="note"
 										onChange={this.onTextAreaChange}
 									/>
 								</Col>

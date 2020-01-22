@@ -22,6 +22,7 @@ export interface Character {
   appearance?: string | undefined;
   characteristics?: string | undefined;
   experience?: string | undefined;
+  note?: string | undefined;
   deleted?: number;
   novelPageOrder?: number;
 }
@@ -64,6 +65,7 @@ export interface CharacterEditState {
   appearance: string;
   characteristics: string;
   experience: string;
+  note: string;
   [key: string]: any;
 }
 
