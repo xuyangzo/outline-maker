@@ -7,6 +7,7 @@ import NovelModel from './models/Novels';
 import OutlineDetailModel from './models/OutlineDetails';
 import OutlineModel from './models/Outlines';
 import TimelineModel from './models/Timeline';
+import InventoryModel from './models/Inventories';
 import TrashModel from './models/Trash';
 import CharacterOutlineModel from './models/CharacterOutlines';
 
@@ -32,6 +33,7 @@ BackgroundModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCA
 CharacterModel.hasMany(OutlineDetailModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.hasMany(TrashModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.hasMany(CharacterOutlineModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+CharacterModel.hasMany(InventoryModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for location model
@@ -59,6 +61,9 @@ TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCAD
 // foreign keys for character_outlines model
 CharacterOutlineModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterOutlineModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
+
+// foreign keys for inventories model
+InventoryModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 
 /**
  * enable the following only in development mode

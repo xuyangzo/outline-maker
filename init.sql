@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS characters;
 DROP TABLE IF EXISTS character_outlines;
 DROP TABLE IF EXISTS timelines;
 DROP TABLE IF EXISTS locations;
+DROP TABLE IF EXISTS inventories;
 DROP TABLE IF EXISTS outlines;
 DROP TABLE IF EXISTS backgrounds;
 DROP TABLE IF EXISTS novels;
@@ -124,6 +125,21 @@ CREATE TABLE outline_details
   FOREIGN KEY (character_id) REFERENCES characters (character_id),
   FOREIGN KEY (timeline_id) REFERENCES timelines (timeline_id)
 );
+
+CREATE TABLE inventories
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  novel_id INTEGER,
+  character_id INTEGER,
+  name TEXT,
+  description TEXT,
+  category TEXT,
+  image TEXT,
+  deleted INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (character_id) REFERENCES characters (character_id)
+)
 
 CREATE TABLE favorites
 (

@@ -4,6 +4,7 @@ const Op = require('sequelize').Op;
 
 // type declaration
 import { CreateNovelModalTemplate } from '../../renderer/components/sidebar/sidebarDec';
+import { Descriptions } from 'antd';
 
 interface NovelTemplate {
 	name?: string;
@@ -25,11 +26,28 @@ export const getAllNovels = (): Promise<any> => {
 };
 
 // get novel given id
-export const getNovel = (id: number | string): Promise<any> => {
-	return Novel
+export const getNovel = async (id: number | string): Promise<any> => {
+	const dataModel: DataResult = await Novel
 		.findOne({
-			where: { id }
+			attributes: ['name', 'description', 'categories'],
+			where: {
+				id,
+				deleted: {
+					[Op.ne]: 1
+				}
+			}
 		});
+
+	if (dataModel) {
+		const { name, description, categories } = dataModel.dataValues;
+		return { name, description, categories };
+	}
+
+	return {
+		name: '未知',
+		description: '未知',
+		categories: ''
+	};
 };
 
 // get novel id and name

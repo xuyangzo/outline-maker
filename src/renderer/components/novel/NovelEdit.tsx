@@ -88,10 +88,14 @@ const NovelEdit = (props: NovelProps) => {
 
 	// add new tag
 	function onAddTag(tag: string) {
+		// at most 4 tags can be added at the same time
 		if (categories.length === 4) {
 			Message.error('最多只能选择四个标签！');
 			return;
 		}
+
+		// avoid add duplicate tags
+		if (categories.indexOf(tag) !== -1) return;
 
 		setCategories(categories.concat(tag));
 	}
@@ -117,10 +121,8 @@ const NovelEdit = (props: NovelProps) => {
 	// get world view
 	function getWorldview() {
 		getWorldviewGivenNovel(id)
-			.then((result: any) => {
-				// datavalues might be null here
-				if (result) setWorldview(result.dataValues.content);
-				else setWorldview('暂时还没有世界观设定...');
+			.then((worldview: string) => {
+				setWorldview(worldview);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -130,10 +132,11 @@ const NovelEdit = (props: NovelProps) => {
 	// get novel content
 	function getNovelContent() {
 		getNovel(id)
-			.then(({ dataValues }: { dataValues: NovelDataValue }) => {
-				setName(dataValues.name);
-				setDescription(dataValues.description);
-				setCategories(dataValues.categories ? dataValues.categories.split(',') : []);
+			.then((content: NovelDataValue) => {
+				const { name, description, categories } = content;
+				setName(name);
+				setDescription(description);
+				setCategories(categories ? categories.split(',') : []);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

@@ -8,7 +8,6 @@ interface MatchParams {
 }
 
 export interface NovelDataValue {
-  id: number;
   name: string;
   description: string;
   categories: string;

@@ -24,11 +24,36 @@ export const tagColors = [
 	'#73d13d'  // medium green
 ];
 
+// map images for characters
 export const imageMapping: { [key: string]: string } = {
 	0: shadowMan,
 	1: shadowGirl,
 	2: shadowNone,
 	3: shadowBoth
+};
+
+// map gender text
+export const mapGenderText = (gender: number | undefined): string => {
+	if (!gender) return '男';
+
+	let genderText: string = '';
+	switch (gender) {
+		case 0:
+			genderText = '男';
+			break;
+		case 1:
+			genderText = '女';
+			break;
+		case 2:
+			genderText = '不明';
+			break;
+		case 3:
+			genderText = '大雕萌妹';
+			break;
+		default:
+			break;
+	}
+	return genderText;
 };
 
 export const tags = [
@@ -42,6 +67,10 @@ export const tags = [
 	'系统流', '洪荒流', '学院流', '位面', '铁血', '励志', '坚毅', '变身',
 	'强者回归', '赚钱', '争霸流', '种田文', '宅男', '无限流', '技术流',
 	'凡人流', '热血', '重生', '穿越'
+];
+
+export const inventoryCategories = [
+	'功法', '法宝', '丹药', '草药', '怪兽', '装备', '材料', '招式'
 ];
 
 interface BackgroundIllustrations {

@@ -7,6 +7,7 @@ interface PropertyProps {
 	text: string | undefined;
 }
 
+// single character page property display
 export const Property = (props: PropertyProps) => {
 	const { tip, text, fieldName } = props;
 
@@ -14,7 +15,7 @@ export const Property = (props: PropertyProps) => {
 		return (
 			<Row className="character-section">
 				<Col span={4} style={{ width: '60px' }}>
-					昵称
+					{fieldName}
 					<Tooltip
 						placement="rightTop"
 						title={tip}
@@ -22,7 +23,7 @@ export const Property = (props: PropertyProps) => {
 						<Icon type="question-circle" className="question-mark" />
 					</Tooltip>
 				</Col>
-				<Col span={16}>
+				<Col span={16} className="wrap">
 					{text ? text : '暂无'}
 				</Col>
 			</Row>
@@ -32,7 +33,7 @@ export const Property = (props: PropertyProps) => {
 	return (
 		<Row className="character-section">
 			<Col span={4} style={{ width: '60px' }}>{fieldName}：</Col>
-			<Col span={16}>
+			<Col span={16} className="wrap">
 				{text ? text : '暂无'}
 			</Col>
 		</Row>

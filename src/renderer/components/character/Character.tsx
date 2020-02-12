@@ -17,7 +17,7 @@ import { getCharacter } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenCharacter } from '../../../db/operations/outline-ops';
 
 // utils
-import { imageMapping, characterIllustrations } from '../../utils/constants';
+import { imageMapping, characterIllustrations, mapGenderText } from '../../utils/constants';
 import { Property } from '../../utils/components';
 
 // sass
@@ -90,24 +90,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 
 		// mapping of image
 		const imageURL = image ? image : imageMapping[gender ? gender : 0];
-
-		let genderText;
-		switch (gender) {
-			case 0:
-				genderText = '男';
-				break;
-			case 1:
-				genderText = '女';
-				break;
-			case 2:
-				genderText = '不明';
-				break;
-			case 3:
-				genderText = '大雕萌妹';
-				break;
-			default:
-				break;
-		}
+		const genderText: string = mapGenderText(gender);
 
 		return (
 			<Col
@@ -180,7 +163,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 							/>
 							<Property
 								tip={characterIllustrations.experience}
-								fieldName="性格"
+								fieldName="经历"
 								text={experience}
 							/>
 							<Property

@@ -4,14 +4,18 @@ import BackgroundModal from '../models/Background';
 import { Background as BackgroundTemplate } from '../../renderer/components/background/backgroundDec';
 
 // get only worldview given novel id
-export const getWorldviewGivenNovel = (id: string | number): Promise<any> => {
-	return BackgroundModal
+export const getWorldviewGivenNovel = async (id: string | number): Promise<string> => {
+	const dataModel: DataResult = await BackgroundModal
 		.findOne({
 			where: {
 				novel_id: id,
 				title: '世界观'
 			}
 		});
+
+	// dataModel might be null here
+	if (dataModel) return dataModel.dataValues.content;
+	return '暂时还没有世界观设定...';
 };
 
 // get all backgrounds given novel id

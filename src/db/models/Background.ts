@@ -37,7 +37,7 @@ const Background = sequelize.define(
 				},
 				len: {
 					args: [0, 500],
-					msg: '标内容应该在 500 个字之内！'
+					msg: '内容应该在 500 个字之内！'
 				}
 			}
 		},

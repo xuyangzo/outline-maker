@@ -159,3 +159,9 @@ ul {
 	color: rgb(209, 154, 223);
 	display: block;
 }
+
+// wrap text
+.wrap {
+	white-space: pre-line;
+	word-break: break-all;
+}
