@@ -5,11 +5,15 @@ interface MatchParams {
   id: string;
 }
 
-// complete background declaration
-export interface Background {
+// background declaration
+export interface BackgroundDec {
   id: number;
   title: string;
   content: string;
+}
+
+// background edit declaration
+export interface BackgroundEditDec extends BackgroundDec {
   created?: boolean;
   updated?: boolean;
   deleted?: boolean;
@@ -19,9 +23,10 @@ export interface Background {
  * background datavalues for database
  * additional atttributes are created time and updated time
  */
-export interface BackgroundDataValue extends Background {
-  createdAt: string;
-  updatedAt: string;
+export interface BackgroundDataValue {
+  id: number;
+  title: string;
+  content: string;
 }
 
 export interface BackgroundProps extends RouteComponentProps<MatchParams> {
@@ -30,9 +35,10 @@ export interface BackgroundProps extends RouteComponentProps<MatchParams> {
 
 export interface BackgroundState {
   novel_id: string;
-  backgrounds: Background[];
+  backgrounds: BackgroundDec[];
 }
 
-export interface BackgroundEditState extends BackgroundState {
-
+export interface BackgroundEditState {
+  novel_id: string;
+  backgrounds: BackgroundEditDec[];
 }

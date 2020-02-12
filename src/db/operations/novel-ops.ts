@@ -3,8 +3,8 @@ import { addTrash } from './trash-ops';
 const Op = require('sequelize').Op;
 
 // type declaration
+import { NovelDataValue } from '../../renderer/components/novel/novelDec';
 import { CreateNovelModalTemplate } from '../../renderer/components/sidebar/sidebarDec';
-import { Descriptions } from 'antd';
 
 interface NovelTemplate {
 	name?: string;
@@ -26,7 +26,7 @@ export const getAllNovels = (): Promise<any> => {
 };
 
 // get novel given id
-export const getNovel = async (id: number | string): Promise<any> => {
+export const getNovel = async (id: number | string): Promise<NovelDataValue> => {
 	const dataModel: DataResult = await Novel
 		.findOne({
 			attributes: ['name', 'description', 'categories'],

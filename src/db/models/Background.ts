@@ -23,8 +23,8 @@ const Background = sequelize.define(
 					msg: '标签名不能为空！'
 				},
 				len: {
-					args: [0, 20],
-					msg: '标签名应该在 20 个字之内！'
+					args: [0, 8],
+					msg: '标签名应该在 8 个字之内！'
 				}
 			}
 		},

@@ -1,7 +1,19 @@
 import BackgroundModal from '../models/Background';
 
 // type declaration
-import { Background as BackgroundTemplate } from '../../renderer/components/background/backgroundDec';
+import { BackgroundDataValue } from '../../renderer/components/background/backgroundDec';
+
+interface BackgroundCreateAndUpdateTemplate {
+	title?: string;
+	content?: string;
+}
+
+interface BackgroundTemplate extends BackgroundCreateAndUpdateTemplate {
+	id: string | number;
+	created?: boolean;
+	updated?: boolean;
+	deleted?: boolean;
+}
 
 // get only worldview given novel id
 export const getWorldviewGivenNovel = async (id: string | number): Promise<string> => {
@@ -19,22 +31,26 @@ export const getWorldviewGivenNovel = async (id: string | number): Promise<strin
 };
 
 // get all backgrounds given novel id
-export const getBackgroundsGivenNovel = (id: string | number): Promise<any> => {
-	return BackgroundModal
+export const getBackgroundsGivenNovel = async (id: string | number): Promise<BackgroundDataValue[]> => {
+	const dataResults: DataResults = await BackgroundModal
 		.findAll({
-			where: {
-				novel_id: id
-			}
+			attributes: ['id', 'title', 'content'],
+			where: { novel_id: id }
 		});
+
+	// check if output is empty
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => {
+			const { id, title, content } = result.dataValues;
+			return { id, title, content };
+		});
+	}
+
+	return [];
 };
 
-interface BackgroundCreateTemplate {
-	title: string;
-	content: string;
-}
-
 // update a background given novel id
-const updateBackground = (id: string | number, props: BackgroundCreateTemplate): Promise<any> => {
+const updateBackground = (id: string | number, props: BackgroundCreateAndUpdateTemplate): Promise<DataUpdateResult> => {
 	return BackgroundModal
 		.update(
 			props,
@@ -43,7 +59,7 @@ const updateBackground = (id: string | number, props: BackgroundCreateTemplate):
 };
 
 // create a new background
-const createBackground = (id: string | number, props: BackgroundCreateTemplate): Promise<any> => {
+const createBackground = (id: string | number, props: BackgroundCreateAndUpdateTemplate): Promise<DataUpdateResult> => {
 	return BackgroundModal
 		.create({
 			...props,
@@ -52,7 +68,7 @@ const createBackground = (id: string | number, props: BackgroundCreateTemplate):
 };
 
 // delete background
-const deleteBackground = (id: string | number): Promise<any> => {
+const deleteBackground = (id: string | number): Promise<DataUpdateResult> => {
 	return BackgroundModal
 		.destroy({
 			where: { id }
@@ -60,7 +76,9 @@ const deleteBackground = (id: string | number): Promise<any> => {
 };
 
 // do update and create at the same time
-export const createAndUpdateBackgrounds = (id: string | number, lists: BackgroundTemplate[]): Promise<any> => {
+export const createAndUpdateBackgrounds = (
+	id: string | number, lists: BackgroundTemplate[]
+): Promise<DataUpdateResults> => {
 	const promises: Promise<any>[] = [];
 	lists.forEach((background: BackgroundTemplate) => {
 		// delete

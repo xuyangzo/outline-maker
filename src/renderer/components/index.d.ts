@@ -13,3 +13,7 @@ interface DataModel {
 }
 
 type DataResult = DataModel | null;
+type DataResults = DataModel[];
+
+type DataUpdateResult = DataModel | number[];
+type DataUpdateResults = Array<DataModel | number[]>;

@@ -7,7 +7,10 @@ const { TextArea } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { BackgroundProps, BackgroundState, Background as BackgroundDec, BackgroundDataValue } from './backgroundDec';
+import {
+	BackgroundProps, BackgroundEditState as BackgroundState,
+	BackgroundEditDec, BackgroundDataValue
+} from './BackgroundDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -63,7 +66,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 		 * 2) if current element is not created element, need to mark it as deleted
 		 */
 		let curr = 0;
-		const backgrounds: BackgroundDec[] = this.state.backgrounds.filter((background: BackgroundDec) => {
+		const backgrounds: BackgroundEditDec[] = this.state.backgrounds.filter((background: BackgroundEditDec) => {
 			if (background.title !== '世界观' &&
 				background.title !== '等级体系' &&
 				background.title !== '货币体系'
@@ -95,7 +98,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 		 */
 		let curr = 0;
 		let contain = false;
-		const backgrounds: BackgroundDec[] = this.state.backgrounds.map((background: BackgroundDec) => {
+		const backgrounds: BackgroundEditDec[] = this.state.backgrounds.map((background: BackgroundEditDec) => {
 			if (background.title !== '世界观' &&
 				background.title !== '等级体系' &&
 				background.title !== '货币体系'
@@ -139,7 +142,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 		 */
 		let curr = 0;
 		let contain = false;
-		const backgrounds: BackgroundDec[] = this.state.backgrounds.map((background: BackgroundDec) => {
+		const backgrounds: BackgroundEditDec[] = this.state.backgrounds.map((background: BackgroundEditDec) => {
 			/**
 			 * this should only happen to per-defined properties
 			 * because only pre-defined properties have name
@@ -186,7 +189,8 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 	// save
 	onSave = () => {
 		createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
-			.then(() => {
+			.then((result: any) => {
+				console.log(result);
 				Message.success('更新成功！');
 				// refresh background
 				this.setBackground();
@@ -198,11 +202,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 
 	setBackground = () => {
 		getBackgroundsGivenNovel(this.state.novel_id)
-			.then((result: any) => {
-				const backgrounds: BackgroundDec[] = result.map(({ dataValues }: { dataValues: BackgroundDataValue }) => {
-					return { id: dataValues.id, title: dataValues.title, content: dataValues.content };
-				});
-
+			.then((backgrounds: BackgroundDataValue[]) => {
 				this.setState({ backgrounds });
 			})
 			.catch((err: DatabaseError) => {
@@ -218,7 +218,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 		let levelSystem = '';
 		let currencySystem = '';
 		// filter worldview, level system, currency system out of arrays
-		const leftBackgrounds: BackgroundDec[] = backgrounds.filter((background: BackgroundDec) => {
+		const leftBackgrounds: BackgroundEditDec[] = backgrounds.filter((background: BackgroundEditDec) => {
 			if (background.title === '世界观') {
 				wordview = background.content;
 				return false;
@@ -332,7 +332,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 						</Col>
 					</Row>
 					{
-						leftBackgrounds.map((background: BackgroundDec, index: number) => {
+						leftBackgrounds.map((background: BackgroundEditDec, index: number) => {
 							if (!background.deleted) {
 								return (
 									<Row className="background-section" key={index}>

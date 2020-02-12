@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { BackgroundProps, BackgroundState, Background as BackgroundDec, BackgroundDataValue } from './backgroundDec';
+import { BackgroundProps, BackgroundState, BackgroundDec, BackgroundDataValue } from './backgroundDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -33,11 +33,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 
 	setBackground = () => {
 		getBackgroundsGivenNovel(this.state.novel_id)
-			.then((result: any) => {
-				const backgrounds: BackgroundDec[] = result.map(({ dataValues }: { dataValues: BackgroundDataValue }) => {
-					return { id: dataValues.id, title: dataValues.title, content: dataValues.content };
-				});
-
+			.then((backgrounds: BackgroundDataValue[]) => {
 				this.setState({ backgrounds });
 			})
 			.catch((err: DatabaseError) => {
@@ -49,13 +45,13 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 		const { expand } = this.props;
 		const { backgrounds } = this.state;
 
-		let wordview = '还没有世界观...';
+		let worldview = '还没有世界观...';
 		let levelSystem = '还没有等级体系...';
 		let currencySystem = '还没有货币体系...';
 		// filter worldview, level system, currency system out of arrays
 		const leftBackgrounds: BackgroundDec[] = backgrounds.filter((background: BackgroundDec) => {
 			if (background.title === '世界观') {
-				wordview = background.content;
+				worldview = background.content;
 				return false;
 			}
 			if (background.title === '等级体系') {
@@ -109,7 +105,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
 							</Tooltip>
 						</Col>
 						<Col span={19}>
-							{wordview}
+							{worldview}
 						</Col>
 					</Row>
 					<Row className="background-section">
