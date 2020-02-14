@@ -117,7 +117,7 @@ export const createLocation = async (props: LocationTemplate): Promise<DataUpdat
 };
 
 // delete location temporarily
-export const deleteLocationTemp = (id: string | number): Promise<DataUpdateResult> => {
+export const deleteLocationTemp = (id: string | number): Promise<DataUpdateResults> => {
 	return Promise.all([
 		addTrash({ loc_id: id }),
 		updateLocation(id, { deleted: 1 })

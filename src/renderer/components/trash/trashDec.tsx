@@ -1,13 +1,10 @@
 import { RouteComponentProps } from 'react-router-dom';
 
 export interface TrashDataValue {
-	id: number;
-	novel_id?: number;
-	outline_id?: number;
-	character_id?: number;
-	loc_id?: number;
-	createdAt: string;
-	updatedAt: string;
+	novels: number[];
+	outlines: number[];
+	characters: number[];
+	locations: number[];
 }
 
 export interface TrashProps extends RouteComponentProps {

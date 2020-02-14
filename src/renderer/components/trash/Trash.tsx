@@ -46,23 +46,8 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	// get all trashes
 	getTrashes = () => {
 		getAllTrashes()
-			.then((result: any) => {
-				// filter novels, outlines, characters, locations
-				const novels: number[] = [];
-				const outlines: number[] = [];
-				const characters: number[] = [];
-				const locations: number[] = [];
-				result.forEach(({ dataValues }: { dataValues: TrashDataValue }) => {
-					const { novel_id, outline_id, character_id, loc_id } = dataValues;
-					/**
-					 * each array does not conflict with each other
-					 */
-					if (novel_id) novels.push(novel_id);
-					if (outline_id) outlines.push(outline_id);
-					if (character_id) characters.push(character_id);
-					if (loc_id) locations.push(loc_id);
-				});
-
+			.then((result: TrashDataValue) => {
+				const { novels, outlines, characters, locations } = result;
 				this.setState({ novels, outlines, characters, locations, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
