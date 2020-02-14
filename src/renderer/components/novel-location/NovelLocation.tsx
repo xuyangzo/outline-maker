@@ -7,8 +7,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelLocationProps } from './novelLocationDec';
-import { Location, LocationDataValue } from '../location/locationDec';
+import { NovelLocationProps, NovelLocationDataValue } from './novelLocationDec';
 import { DatabaseError } from 'sequelize';
 
 // custom components
@@ -20,7 +19,6 @@ import { deleteLocationTemp, getAllLocationsGivenNovel, searchLocation } from '.
 // image
 import empty from '../../../public/empty-character.png';
 import unknownArea from '../../../public/unknown_gray.jpg';
-import { Timeouts } from 'webdriverio';
 
 const NovelLocation = (props: NovelLocationProps) => {
 	const { novel_id } = props.match.params;
@@ -30,7 +28,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [locations, setLocations] = React.useState<Location[]>([]);
+	const [locations, setLocations] = React.useState<NovelLocationDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -79,12 +77,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 		const currTimer: any = setTimeout(
 			() => {
 				searchLocation(novel_id, key)
-					.then((result: any) => {
-						const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
-							const { id, image, intro, texture, location, controller, name } = dataValues;
-							return { id, image, intro, texture, location, controller, name };
-						});
-
+					.then((locations: NovelLocationDataValue[]) => {
 						// set locations
 						setLocations(locations);
 					})
@@ -101,12 +94,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 	// get all locations
 	function getLocations() {
 		getAllLocationsGivenNovel(novel_id)
-			.then((result: any) => {
-				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
-					const { id, image, intro, texture, location, controller, name } = dataValues;
-					return { id, image, intro, texture, location, controller, name };
-				});
-
+			.then((locations: NovelLocationDataValue[]) => {
 				// set locations
 				setLocations(locations);
 				// should render
@@ -165,7 +153,7 @@ const NovelLocation = (props: NovelLocationProps) => {
 					/>
 				</div>
 				{
-					locations.map((location: Location) => (
+					locations.map((location: NovelLocationDataValue) => (
 						<Col span={8} key={location.id} className="card-container">
 							<div
 								className="delete-icon"

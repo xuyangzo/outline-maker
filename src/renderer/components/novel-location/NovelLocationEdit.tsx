@@ -9,8 +9,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelLocationProps } from './novelLocationDec';
-import { Location, LocationDataValue } from '../location/locationDec';
+import { NovelLocationProps, NovelLocationDataValue } from './novelLocationDec';
 import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
@@ -31,7 +30,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
 	const [checkedList, setCheckedList] = React.useState<string[]>([]);
-	const [locations, setLocations] = React.useState<Location[]>([]);
+	const [locations, setLocations] = React.useState<NovelLocationDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -60,7 +59,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	React.useEffect(getLocations, [props.match.params.novel_id]);
 
 	// when use press control + s
-	function onSavePress(e: KeyboardEvent, locations: Location[]) {
+	function onSavePress(e: KeyboardEvent, locations: NovelLocationDataValue[]) {
 		const controlPress = e.ctrlKey || e.metaKey;
 		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
 		if (controlPress && sPress) {
@@ -78,12 +77,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 		const currTimer: any = setTimeout(
 			() => {
 				searchLocation(novel_id, key)
-					.then((result: any) => {
-						const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
-							const { id, image, intro, texture, location, controller, name } = dataValues;
-							return { id, image, intro, texture, location, controller, name };
-						});
-
+					.then((locations: NovelLocationDataValue[]) => {
 						// set locations
 						setLocations(locations);
 					})
@@ -111,7 +105,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	function onCheckAllChange(e: CheckboxChangeEvent) {
 		const checked: boolean = e.target.checked;
 		// check all checkbox
-		if (checked) setCheckedList(locations.map((location: Location) => location.id.toString()));
+		if (checked) setCheckedList(locations.map((location: NovelLocationDataValue) => location.id.toString()));
 		// uncheck all checkbox
 		else setCheckedList([]);
 	}
@@ -122,9 +116,9 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	}
 
 	// save changes
-	function onSaveChanges(locations: Location[]) {
+	function onSaveChanges(locations: NovelLocationDataValue[]) {
 		// update orders
-		const promises: Promise<any>[] = locations.map((location: Location, index: number) => {
+		const promises: Promise<any>[] = locations.map((location: NovelLocationDataValue, index: number) => {
 			return updateLocation(location.id, { novelPageOrder: index + 1 });
 		});
 
@@ -144,12 +138,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	// get all locations
 	function getLocations() {
 		getAllLocationsGivenNovel(novel_id)
-			.then((result: any) => {
-				const locations: Location[] = result.map(({ dataValues }: { dataValues: LocationDataValue }) => {
-					const { id, image, intro, texture, location, controller, name } = dataValues;
-					return { id, image, intro, texture, location, controller, name };
-				});
-
+			.then((locations: NovelLocationDataValue[]) => {
 				// set locations
 				setLocations(locations);
 				// should render
@@ -161,7 +150,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	}
 
 	// single item (card)
-	const SortableItem = SortableElement(({ value }: { value: Location }) => (
+	const SortableItem = SortableElement(({ value }: { value: NovelLocationDataValue }) => (
 		<li className="card-li card-li-location">
 			<div key={value.id} className="card-container">
 				<div className="card-edit-cover">
@@ -184,10 +173,10 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 	));
 
 	// list of cards
-	const SortableList = SortableContainer(({ items }: { items: Location[] }) => {
+	const SortableList = SortableContainer(({ items }: { items: NovelLocationDataValue[] }) => {
 		return (
 			<ul>
-				{items.map((value: Location, index: number) => (
+				{items.map((value: NovelLocationDataValue, index: number) => (
 					<SortableItem key={value.id} index={index} value={value} />
 				))}
 			</ul>

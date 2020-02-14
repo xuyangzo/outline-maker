@@ -27,11 +27,6 @@ export interface LocationDataValue extends Location {
   updatedAt: string;
 }
 
-export interface LocationShortDataValue {
-  id: number;
-  name: string;
-}
-
 export interface LocationProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }

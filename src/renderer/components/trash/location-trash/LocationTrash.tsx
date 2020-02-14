@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
-import { LocationTrashProps } from './locationTrashDec';
-import { LocationShortDataValue } from '../../location/locationDec';
+import { LocationTrashProps, TrashLocationDataValue } from './locationTrashDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getLocationShort, deleteLocationPermanently } from '../../../../db/operations/location-ops';
+import { getAllLocationsGivenIdList, deleteLocationPermanently } from '../../../../db/operations/location-ops';
 import { putbackLocation } from '../../../../db/operations/trash-ops';
 
 const LocationTrash = (props: LocationTrashProps) => {
@@ -17,7 +16,7 @@ const LocationTrash = (props: LocationTrashProps) => {
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
 	const [showDeleteModal, setDeleteModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [locationDetails, setLocationDetails] = React.useState<LocationShortDataValue[]>([]);
+	const [locationDetails, setLocationDetails] = React.useState<TrashLocationDataValue[]>([]);
 
 	// get locations when props.locations changes & didmount
 	React.useEffect(
@@ -44,14 +43,12 @@ const LocationTrash = (props: LocationTrashProps) => {
 
 	// get locations
 	function getLocations() {
-		const promises: Promise<any>[] = locations.map((loc_id: number) => {
-			return getLocationShort(loc_id);
-		});
-		Promise
-			.all(promises)
-			.then((result: any) => {
-				const locations = result.map(({ dataValues }: { dataValues: LocationShortDataValue }) => dataValues);
+		getAllLocationsGivenIdList(locations)
+			.then((locations: TrashLocationDataValue[]) => {
 				setLocationDetails(locations);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
@@ -130,7 +127,7 @@ const LocationTrash = (props: LocationTrashProps) => {
 	return (
 		<Row>
 			{
-				locationDetails.map((location: LocationShortDataValue) => (
+				locationDetails.map((location: TrashLocationDataValue) => (
 					<Col span={8} key={location.id}>
 						<Card
 							title={location.name}

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 const fs = require('fs');
 
 // type declaration
-import { LocationProps, LocationState, Location as LocationDec } from './locationDec';
+import { LocationProps, LocationState, Location as LocationDataValue } from './locationDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -119,20 +119,9 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 
 	setLocation = () => {
 		getLocation(this.state.id)
-			.then(({ dataValues }: { dataValues: LocationDec }) => {
-				const { name, image, intro, texture, location, controller } = dataValues;
-				/**
-				 * need to filter empty input
-				 * in order not to convert controlled components to uncontrolled components
-				 * uncontrolled input components = value is undefined/null
-				 */
-				this.setState({
-					name, image,
-					intro: intro ? intro : '',
-					texture: texture ? texture : '',
-					location: location ? location : '',
-					controller: controller ? controller : ''
-				});
+			.then((data: LocationDataValue) => {
+				const { name, image, intro, texture, location, controller } = data;
+				this.setState({ name, image, intro, texture, location, controller });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);
