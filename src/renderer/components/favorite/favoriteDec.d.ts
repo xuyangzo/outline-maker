@@ -5,9 +5,8 @@ import { Outline } from '../sidebar/sidebarDec';
 export interface FavoriteDataValue {
   id: number;
   novel_id: number;
-  outline_id: number;
-  createdAt: string;
-  updatedAt: string;
+  title: string;
+  description: string;
 }
 
 export interface FavoriteProps extends RouteComponentProps {
@@ -17,7 +16,7 @@ export interface FavoriteProps extends RouteComponentProps {
 }
 
 export interface FavoriteState {
-  outlines: Outline[];
+  outlines: FavoriteDataValue[];
   confirmVisible: boolean;
   selected: number;
   shouldRender: boolean;

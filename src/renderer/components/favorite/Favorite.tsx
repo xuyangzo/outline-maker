@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { DatabaseError } from 'sequelize';
-import { FavoriteProps, FavoriteState } from './favoriteDec';
+import { FavoriteProps, FavoriteState, FavoriteDataValue } from './favoriteDec';
 import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
@@ -32,9 +32,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 
 	componentDidMount = () => {
 		findAllFavDetail()
-			.then((result: any) => {
-				// all detailed outlines in favorite
-				const outlines = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => dataValues);
+			.then((outlines: FavoriteDataValue[]) => {
 				this.setState({ outlines, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
@@ -64,7 +62,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 				this.setState(
 					(prevState: FavoriteState) => ({
 						...prevState,
-						outlines: prevState.outlines.filter((outline: Outline) => outline.id !== this.state.selected),
+						outlines: prevState.outlines.filter((outline: FavoriteDataValue) => outline.id !== this.state.selected),
 						confirmVisible: false,
 						selected: 0
 					}));
@@ -101,7 +99,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 				}
 				<Row>
 					{
-						this.state.outlines.map((outline: Outline) => (
+						this.state.outlines.map((outline: FavoriteDataValue) => (
 							<Col span={8} key={outline.id}>
 								<Card
 									title={outline.title}

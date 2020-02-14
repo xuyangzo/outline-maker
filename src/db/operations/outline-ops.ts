@@ -5,6 +5,7 @@ const Op = require('sequelize').Op;
 
 // type declaration
 import { OutlineModalTemplate } from '../../renderer/components/novel-outline/outline-modal/outlineModalDec';
+import { FavoriteDataValue } from '../../renderer/components/favorite/favoriteDec';
 
 interface OutlineTemplate {
 	title?: string;
@@ -48,8 +49,8 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 };
 
 // get all outlines given id range
-export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<any> => {
-	return OutlineModel
+export const getOutlinesGivenIdRange = async (outlines: string[] | number[]): Promise<FavoriteDataValue[]> => {
+	const dataResults: DataResults = await OutlineModel
 		.findAll({
 			attributes: ['id', 'novel_id', 'title', 'description'],
 			where: {
@@ -60,6 +61,15 @@ export const getOutlinesGivenIdRange = (outlines: string[] | number[]): Promise<
 			},
 			order: [['updatedAt', 'DESC']]
 		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => {
+			const { id, novel_id, title, description } = result.dataValues;
+			return { id, novel_id, title, description };
+		});
+	}
+
+	return [];
 };
 
 // create new outline

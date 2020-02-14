@@ -1,19 +1,15 @@
-import Favorite from '../models/Favorite';
+import FavoriteModel from '../models/Favorite';
 import { getOutlinesGivenIdRange, updateOutlineFav, updateOutline } from '../operations/outline-ops';
-
-// antd
-import { message as Message } from 'antd';
 
 // type declaration
 import { FavoriteDataValue } from '../../renderer/components/favorite/favoriteDec';
-import { DatabaseError } from 'sequelize';
 
 /**
  * helper functions
  */
 // delete outline from favorite table
-export const deleteFavoriteHelper = (id: string | number): Promise<any> => {
-	return Favorite
+export const deleteFavoriteHelper = (id: string | number): Promise<DataUpdateResult> => {
+	return FavoriteModel
 		.destroy({
 			where: {
 				outline_id: id
@@ -22,8 +18,8 @@ export const deleteFavoriteHelper = (id: string | number): Promise<any> => {
 };
 
 // add current outline to favorite table
-const addFavoriteHelper = (id: string | number): Promise<any> => {
-	return Favorite
+const addFavoriteHelper = (id: string | number): Promise<DataUpdateResult> => {
+	return FavoriteModel
 		.create({
 			outline_id: id
 		});
@@ -33,33 +29,42 @@ const addFavoriteHelper = (id: string | number): Promise<any> => {
  * functions to use
  */
 // find outline id from favorite table
-export const findFavorite = (id: string): Promise<any> => {
-	return Favorite
+export const findFavorite = async (id: string): Promise<boolean> => {
+	const dataResult: DataResult = await FavoriteModel
 		.findOne({
 			where: {
 				outline_id: id
 			}
 		});
+
+	if (dataResult) return true;
+	return false;
 };
 
-// find all favorites
-export const findAllFav = (): Promise<any> => {
-	return Favorite.findAll();
+/**
+ * helper function
+ * find all favorites
+ */
+const getAllFavoritesIds = async (): Promise<number[]> => {
+	const dataResults: DataResults = await FavoriteModel.findAll();
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues.outline_id);
+	}
+
+	return [];
 };
 
 // get title and description for all outlines in favorites
-export const findAllFavDetail = async (): Promise<any> => {
-	const result: any = await Favorite.findAll();
-	const outlines: string[] = result.map(({ dataValues }: { dataValues: FavoriteDataValue }) => {
-		return dataValues.outline_id;
-	});
+export const findAllFavDetail = async (): Promise<FavoriteDataValue[]> => {
+	const outlineIds: number[] = await getAllFavoritesIds();
 
 	// grab title and description for those outlines
-	return getOutlinesGivenIdRange(outlines);
+	return getOutlinesGivenIdRange(outlineIds);
 };
 
 // cancel favorite and update outline table
-export const cancelFavorite = (id: string | number): Promise<any> => {
+export const cancelFavorite = (id: string | number): Promise<DataUpdateResults> => {
 	return Promise
 		.all([
 			deleteFavoriteHelper(id),
@@ -68,7 +73,7 @@ export const cancelFavorite = (id: string | number): Promise<any> => {
 };
 
 // add to favorite and update outline
-export const addFavorite = (id: string | number): Promise<any> => {
+export const addFavorite = (id: string | number): Promise<DataUpdateResults> => {
 	return Promise
 		.all([
 			updateOutline(id, { fav: 1 }),

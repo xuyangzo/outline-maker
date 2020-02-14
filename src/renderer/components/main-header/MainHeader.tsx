@@ -134,11 +134,8 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 	// set heart icon
 	setHeartIcon = (id: string) => {
 		findFavorite(id)
-			.then((result: any) => {
-				// set heart icon to be filled
-				if (result) this.setState({ isFav: true });
-				// set heart icon to be outlined
-				else this.setState({ isFav: false });
+			.then((isFav: boolean) => {
+				this.setState({ isFav });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
