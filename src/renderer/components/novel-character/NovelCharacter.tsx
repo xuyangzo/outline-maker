@@ -8,21 +8,14 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelCharacterProps } from './novelCharacterDec';
-import { Character, CharacterDataValue } from '../character/characterDec';
+import { NovelCharacterProps, NovelCharacterDataValues, NovelCharacterDataValue } from './novelCharacterDec';
 import { DatabaseError } from 'sequelize';
 
 // custom components
 import CharacterModal from './character-modal/CharacterModal';
 
 // database operations
-import {
-	deleteCharacterTemp, searchMainCharacter, searchSubCharacter,
-	getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
-} from '../../../db/operations/character-ops';
-
-// utils
-import { imageMapping } from '../../utils/constants';
+import { deleteCharacterTemp, getAllCharactersGivenNovel, searchCharacter } from '../../../db/operations/character-ops';
 
 // sass
 import './novel-character.scss';
@@ -38,8 +31,8 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
-	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
+	const [mainCharacters, setMainCharacters] = React.useState<NovelCharacterDataValue[]>([]);
+	const [subCharacters, setSubCharacters] = React.useState<NovelCharacterDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -87,31 +80,13 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 		const key: string = e.target.value;
 		const currTimer: any = setTimeout(
 			() => {
-				searchMainCharacter(novel_id, key)
-					.then((result: any) => {
-						// get all characters
-						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-							const { id, name, image, gender } = dataValues;
-							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-						});
-
+				searchCharacter(novel_id, key)
+					.then((result: NovelCharacterDataValues) => {
+						const { main, sub } = result;
 						// set main characters
-						setMainCharacters(characters);
-					})
-					.catch((err: DatabaseError) => {
-						Message.error(err.message);
-					});
-
-				searchSubCharacter(novel_id, key)
-					.then((result: any) => {
-						// get all characters
-						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-							const { id, name, image, gender } = dataValues;
-							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-						});
-
+						setMainCharacters(main);
 						// set sub characters
-						setSubCharacters(characters);
+						setSubCharacters(sub);
 					})
 					.catch((err: DatabaseError) => {
 						Message.error(err.message);
@@ -125,42 +100,13 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 
 	// get all characters
 	function getCharacters() {
-		getMainCharacters();
-		getSubCharacters();
-	}
-
-	// get all main characters
-	function getMainCharacters() {
-		getAllMainCharactersGivenNovel(novel_id)
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, image, gender } = dataValues;
-					return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-				});
-
+		getAllCharactersGivenNovel(novel_id)
+			.then((result: NovelCharacterDataValues) => {
+				const { main, sub } = result;
 				// set main characters
-				setMainCharacters(characters);
-				// should render
-				setShouldRender(true);
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-	}
-
-	// get all sub characters
-	function getSubCharacters() {
-		getAllSubCharactersGivenNovel(novel_id)
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, image, gender } = dataValues;
-					return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-				});
-
+				setMainCharacters(main);
 				// set sub characters
-				setSubCharacters(characters);
+				setSubCharacters(sub);
 				// should render
 				setShouldRender(true);
 			})
@@ -221,7 +167,7 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 						mainCharacters.length && (
 							<Panel header="主角" key="main">
 								{
-									mainCharacters.map((character: Character) => (
+									mainCharacters.map((character: NovelCharacterDataValue) => (
 										<Col span={6} key={character.id} className="card-container">
 											<div
 												className="delete-icon"
@@ -250,7 +196,7 @@ const NovelCharacter = (props: NovelCharacterProps) => {
 						subCharacters.length && (
 							<Panel header="配角" key="sub">
 								{
-									subCharacters.map((character: Character) => (
+									subCharacters.map((character: NovelCharacterDataValue) => (
 										<Col span={6} key={character.id} className="card-container">
 											<div
 												className="delete-icon"

@@ -1,5 +1,17 @@
 import { RouteComponentProps } from 'react-router-dom';
 
+export interface NovelCharacterDataValue {
+	id: number;
+	name: string;
+	image: string;
+	gender: number;
+}
+
+export interface NovelCharacterDataValues {
+	main: NovelCharacterDataValue[];
+	sub: NovelCharacterDataValue[];
+}
+
 interface MatchParams {
 	novel_id: string;
 }

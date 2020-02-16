@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
-import { CharacterTrashProps } from './characterTrashDec';
-import { CharacterShortDataValue } from '../../character/characterDec';
+import { CharacterTrashProps, CharacterTrashDataValue } from './characterTrashDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getCharacterShort, deleteCharacterPermanently } from '../../../../db/operations/character-ops';
+import { getAllCharactersGivenIdList, deleteCharacterPermanently } from '../../../../db/operations/character-ops';
 import { putbackCharacter } from '../../../../db/operations/trash-ops';
 
 const CharacterTrash = (props: CharacterTrashProps) => {
@@ -17,7 +16,7 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
 	const [showDeleteModal, setDeleteModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [characterDetails, setCharacterDetails] = React.useState<CharacterShortDataValue[]>([]);
+	const [characterDetails, setCharacterDetails] = React.useState<CharacterTrashDataValue[]>([]);
 
 	// get characters when props.characters changes & didmount
 	React.useEffect(
@@ -44,13 +43,8 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 
 	// get characters
 	function getCharacters() {
-		const promises: Promise<any>[] = characters.map((character_id: number) => {
-			return getCharacterShort(character_id);
-		});
-		Promise
-			.all(promises)
-			.then((result: any) => {
-				const characters = result.map(({ dataValues }: { dataValues: CharacterShortDataValue }) => dataValues);
+		getAllCharactersGivenIdList(characters)
+			.then((characters: CharacterTrashDataValue[]) => {
 				setCharacterDetails(characters);
 			})
 			.catch((err: DatabaseError) => {
@@ -133,7 +127,7 @@ const CharacterTrash = (props: CharacterTrashProps) => {
 	return (
 		<Row>
 			{
-				characterDetails.map((character: CharacterShortDataValue) => (
+				characterDetails.map((character: CharacterTrashDataValue) => (
 					<Col span={8} key={character.id}>
 						<Card
 							title={character.name}

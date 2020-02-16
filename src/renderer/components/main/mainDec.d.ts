@@ -6,15 +6,19 @@ interface MatchParams {
 	id: string;
 }
 
-export interface MainCharacter {
+export interface MainCharacterDataValue {
 	id: number;
 	name: string;
 	color: string;
+}
+
+export interface MainCharacter extends MainCharacterDataValue {
 	outline_id?: string;
 	image?: string;
 	gender?: string;
 	created?: boolean;
 	updated?: boolean;
+	existing?: boolean;
 }
 
 export interface Timeline {

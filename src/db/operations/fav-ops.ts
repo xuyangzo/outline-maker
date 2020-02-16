@@ -29,7 +29,7 @@ const addFavoriteHelper = (id: string | number): Promise<DataUpdateResult> => {
  * functions to use
  */
 // find outline id from favorite table
-export const findFavorite = async (id: string): Promise<boolean> => {
+export const isFavorite = async (id: string): Promise<boolean> => {
 	const dataResult: DataResult = await FavoriteModel
 		.findOne({
 			where: {

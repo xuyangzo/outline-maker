@@ -17,7 +17,7 @@ import { MainHeaderProps, MainHeaderState } from './mainHeaderDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { findFavorite, addFavorite, cancelFavorite } from '../../../db/operations/fav-ops';
+import { isFavorite, addFavorite, cancelFavorite } from '../../../db/operations/fav-ops';
 import { deleteOutlineTemp } from '../../../db/operations/outline-ops';
 
 // sass
@@ -133,7 +133,7 @@ class MainHeader extends React.Component<MainHeaderProps, MainHeaderState> {
 
 	// set heart icon
 	setHeartIcon = (id: string) => {
-		findFavorite(id)
+		isFavorite(id)
 			.then((isFav: boolean) => {
 				this.setState({ isFav });
 			})

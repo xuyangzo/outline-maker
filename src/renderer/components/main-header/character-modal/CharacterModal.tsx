@@ -3,8 +3,7 @@ import { Button, Modal, Form, Input, Icon, message as Message, Select } from 'an
 const { Option } = Select;
 
 // type declaration
-import { CharacterModalProps, CharacterModalState } from './characterModalDec';
-import { Character, CharacterDataValue } from '../../character/characterDec';
+import { CharacterModalProps, CharacterModalState, CharacterMainDataValue } from './characterModalDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -22,13 +21,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 
 	componentDidMount = () => {
 		getAllValidCharacters(this.props.novel_id, this.props.outline_id)
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { name, id } = dataValues;
-					return { name, id };
-				});
-
+			.then((characters: CharacterMainDataValue[]) => {
 				// set characters
 				this.setState({ characters });
 			})
@@ -126,7 +119,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 						<Select defaultValue="" style={{ width: 200 }} onChange={this.onSelectCharacter}>
 							<Option value="">无</Option>
 							{
-								characters.map((character: Character) => (
+								characters.map((character: CharacterMainDataValue) => (
 									<Option value={character.id} key={character.id}>{character.name}</Option>
 								))
 							}

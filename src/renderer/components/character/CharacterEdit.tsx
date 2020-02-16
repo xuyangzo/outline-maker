@@ -11,7 +11,7 @@ const fs = require('fs');
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { CharacterProps, CharacterEditState, Character as CharacterDec } from './characterDec';
+import { CharacterProps, CharacterEditState, CharacterDataValue } from './characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -136,30 +136,8 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	// set the character's info
 	setCharacter = () => {
 		getCharacter(this.state.id)
-			.then(({ dataValues }: { dataValues: CharacterDec }) => {
-				const {
-					outline_id, name, image, age, nickname, gender, note,
-					height, identity, appearance, characteristics, experience
-				} = dataValues;
-				/**
-				 * need to filter all the empty field (set to '')
-				 * in order not to convert controlled components to uncontrolled components
-				 * uncontrolled input components = value is undefined/null
-				 */
-				this.setState({
-					outline_id,
-					name,
-					image: image ? image : '',
-					age: age ? age : '',
-					nickname: nickname ? nickname : '',
-					height: height ? height : '',
-					gender: gender ? gender : 0,
-					identity: identity ? identity : '',
-					appearance: appearance ? appearance : '',
-					characteristics: characteristics ? characteristics : '',
-					experience: experience ? experience : '',
-					note: note ? note : ''
-				});
+			.then((character: CharacterDataValue) => {
+				this.setState({ ...character });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);

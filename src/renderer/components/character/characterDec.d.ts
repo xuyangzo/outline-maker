@@ -27,20 +27,20 @@ export interface Character {
   novelPageOrder?: number;
 }
 
-/**
- * character datavalues for database
- * additional atttributes are created time and updated time
- */
-export interface CharacterDataValue extends Character {
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CharacterShortDataValue {
-  id: number;
+// character datavalues for database
+export interface CharacterDataValue {
   name: string;
+  image: string;
+  age: string;
+  nickname: string;
+  gender: number;
+  height: string;
+  identity: string;
+  appearance: string;
+  characteristics: string;
+  experience: string;
+  note: string;
 }
-
 
 export interface CharacterProps extends RouteComponentProps<MatchParams> {
   expand: boolean;

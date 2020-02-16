@@ -1,4 +1,7 @@
-import { Character } from '../../character/characterDec';
+export interface CharacterMainDataValue {
+  id: number;
+  name: string;
+}
 
 export interface CharacterModalProps {
   showModal: boolean;
@@ -12,6 +15,6 @@ export interface CharacterModalProps {
 
 export interface CharacterModalState {
   name: string;
-  characters: Character[];
+  characters: CharacterMainDataValue[];
   selectedCharacter: string;
 }

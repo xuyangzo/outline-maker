@@ -6,10 +6,7 @@ import classnames from 'classnames';
 import { withRouter, Link } from 'react-router-dom';
 
 // type declaration
-import {
-	CharacterProps, CharacterState, Character as CharacterDec,
-	OutlineGivenCharacter
-} from './characterDec';
+import { CharacterProps, CharacterState, OutlineGivenCharacter, CharacterDataValue } from './characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -53,15 +50,8 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 	// set information about a single character
 	setCharacter = () => {
 		getCharacter(this.state.id)
-			.then(({ dataValues }: { dataValues: CharacterDec }) => {
-				const {
-					outline_id, name, image, age, nickname, gender, note,
-					height, identity, appearance, characteristics, experience
-				} = dataValues;
-				this.setState({
-					outline_id, name, image, age, nickname, gender, note,
-					height, identity, appearance, characteristics, experience
-				});
+			.then((character: CharacterDataValue) => {
+				this.setState({ ...character });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);

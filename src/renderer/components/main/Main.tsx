@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import { OutlineDataValue } from '../sidebar/sidebarDec';
 import {
-	MainProps, MainState, MainCharacter,
+	MainProps, MainState, MainCharacter, MainCharacterDataValue,
 	TimelineDataValue, Timeline, OutlineDetailDataValue, ContentCard
 } from './mainDec';
 import { CharacterDataValue } from '../character/characterDec';
@@ -24,7 +24,7 @@ import { DatabaseError } from 'sequelize';
 // database operations
 import { updateOutline, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
 import {
-	createCharacter, updateCharacter, getCharacter,
+	createCharacter, updateCharacter, getCharacter, getCharacterSimple,
 	deleteCharacterTemp, getAllCharactersGivenOutline
 } from '../../../db/operations/character-ops';
 import {
@@ -317,9 +317,9 @@ class Main extends React.Component<MainProps, MainState> {
 	// import existing character locally
 	importCharacterLocally = (id: string) => {
 		// get that character's information
-		getCharacter(id)
-			.then(({ dataValues }: { dataValues: CharacterDataValue }) => {
-				const { name, color, id } = dataValues;
+		getCharacterSimple(id)
+			.then((character: MainCharacterDataValue) => {
+				const { name, color, id } = character;
 				const colorIndex = this.state.characters.length % this.state.colors.length;
 
 				const newCharacter: MainCharacter = {
@@ -327,7 +327,7 @@ class Main extends React.Component<MainProps, MainState> {
 					color: color ? color : this.state.colors[colorIndex],
 					id: typeof id === 'string' ? parseInt(id, 10) : id,
 					outline_id: this.state.id,
-					updated: true
+					existing: true
 				};
 				this.setState((prevState: MainState) => ({
 					...prevState,
@@ -472,11 +472,7 @@ class Main extends React.Component<MainProps, MainState> {
 	// get all characters
 	getCharacters = (id: string) => {
 		getAllCharactersGivenOutline(id)
-			.then((result: any) => {
-				// get all characters
-				const characters: MainCharacter[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					return { id: dataValues.id, name: dataValues.name, color: dataValues.color };
-				});
+			.then((characters: MainCharacterDataValue[]) => {
 				// set characters
 				this.setState({ characters });
 			})

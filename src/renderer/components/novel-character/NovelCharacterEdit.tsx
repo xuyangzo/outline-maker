@@ -10,8 +10,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelCharacterProps } from './novelCharacterDec';
-import { Character, CharacterDataValue } from '../character/characterDec';
+import { NovelCharacterProps, NovelCharacterDataValues, NovelCharacterDataValue } from './novelCharacterDec';
 import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
@@ -19,10 +18,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import BatchDeleteModel from './batch-delete-modal/BatchDeleteModal';
 
 // database operations
-import {
-	updateCharacter, searchMainCharacter, searchSubCharacter,
-	getAllMainCharactersGivenNovel, getAllSubCharactersGivenNovel
-} from '../../../db/operations/character-ops';
+import { updateCharacter, getAllCharactersGivenNovel, searchCharacter } from '../../../db/operations/character-ops';
 
 // utils
 import { imageMapping } from '../../utils/constants';
@@ -41,8 +37,8 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
 	const [checkedListMain, setCheckedListMain] = React.useState<string[]>([]);
 	const [checkedListSub, setCheckedListSub] = React.useState<string[]>([]);
-	const [mainCharacters, setMainCharacters] = React.useState<Character[]>([]);
-	const [subCharacters, setSubCharacters] = React.useState<Character[]>([]);
+	const [mainCharacters, setMainCharacters] = React.useState<NovelCharacterDataValue[]>([]);
+	const [subCharacters, setSubCharacters] = React.useState<NovelCharacterDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -71,7 +67,11 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	React.useEffect(getCharacters, [props.match.params.novel_id]);
 
 	// when use press control + s
-	function onSavePress(e: KeyboardEvent, mainCharacters: Character[], subCharacters: Character[]) {
+	function onSavePress(
+		e: KeyboardEvent,
+		mainCharacters: NovelCharacterDataValue[],
+		subCharacters: NovelCharacterDataValue[]
+	) {
 		const controlPress = e.ctrlKey || e.metaKey;
 		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
 		if (controlPress && sPress) {
@@ -88,31 +88,13 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 		const key: string = e.target.value;
 		const currTimer: any = setTimeout(
 			() => {
-				searchMainCharacter(novel_id, key)
-					.then((result: any) => {
-						// get all characters
-						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-							const { id, name, image, gender } = dataValues;
-							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-						});
-
+				searchCharacter(novel_id, key)
+					.then((result: NovelCharacterDataValues) => {
+						const { main, sub } = result;
 						// set main characters
-						setMainCharacters(characters);
-					})
-					.catch((err: DatabaseError) => {
-						Message.error(err.message);
-					});
-
-				searchSubCharacter(novel_id, key)
-					.then((result: any) => {
-						// get all characters
-						const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-							const { id, name, image, gender } = dataValues;
-							return { id, name, image: image ? image : imageMapping[gender ? gender : 0] };
-						});
-
+						setMainCharacters(main);
 						// set sub characters
-						setSubCharacters(characters);
+						setSubCharacters(sub);
 					})
 					.catch((err: DatabaseError) => {
 						Message.error(err.message);
@@ -148,7 +130,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	function onCheckAllChangeMain(e: CheckboxChangeEvent) {
 		const checked: boolean = e.target.checked;
 		// check all checkbox
-		if (checked) setCheckedListMain(mainCharacters.map((character: Character) => character.id.toString()));
+		if (checked) setCheckedListMain(mainCharacters.map((character: NovelCharacterDataValue) => character.id.toString()));
 		// uncheck all checkbox
 		else setCheckedListMain([]);
 	}
@@ -157,7 +139,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	function onCheckAllChangeSub(e: CheckboxChangeEvent) {
 		const checked: boolean = e.target.checked;
 		// check all checkbox
-		if (checked) setCheckedListSub(subCharacters.map((character: Character) => character.id.toString()));
+		if (checked) setCheckedListSub(subCharacters.map((character: NovelCharacterDataValue) => character.id.toString()));
 		// uncheck all checkbox
 		else setCheckedListSub([]);
 	}
@@ -173,9 +155,9 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	}
 
 	// save changes
-	function onSaveChanges(characters: Character[]) {
+	function onSaveChanges(characters: NovelCharacterDataValue[]) {
 		// update orders
-		const promises: Promise<any>[] = characters.map((character: Character, index: number) => {
+		const promises: Promise<any>[] = characters.map((character: NovelCharacterDataValue, index: number) => {
 			return updateCharacter(character.id, { novelPageOrder: index + 1 });
 		});
 
@@ -200,42 +182,13 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 
 	// get all characters
 	function getCharacters() {
-		getMainCharacters();
-		getSubCharacters();
-	}
-
-	// get all main characters
-	function getMainCharacters() {
-		getAllMainCharactersGivenNovel(novel_id)
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, color, image, gender } = dataValues;
-					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
-				});
-
+		getAllCharactersGivenNovel(novel_id)
+			.then((result: NovelCharacterDataValues) => {
+				const { main, sub } = result;
 				// set main characters
-				setMainCharacters(characters);
-				// should render
-				setShouldRender(true);
-			})
-			.catch((err: DatabaseError) => {
-				Message.error(err.message);
-			});
-	}
-
-	// get all sub characters
-	function getSubCharacters() {
-		getAllSubCharactersGivenNovel(novel_id)
-			.then((result: any) => {
-				// get all characters
-				const characters: Character[] = result.map(({ dataValues }: { dataValues: CharacterDataValue }) => {
-					const { id, name, color, image, gender } = dataValues;
-					return { id, name, color, image: image ? image : imageMapping[gender ? gender : 0] };
-				});
-
+				setMainCharacters(main);
 				// set sub characters
-				setSubCharacters(characters);
+				setSubCharacters(sub);
 				// should render
 				setShouldRender(true);
 			})
@@ -245,7 +198,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	}
 
 	// single item (card) for main characters
-	const SortableItemMain = SortableElement(({ value }: { value: Character }) => (
+	const SortableItemMain = SortableElement(({ value }: { value: NovelCharacterDataValue }) => (
 		<li className="card-li">
 			<div key={value.id} className="card-container">
 				<div className="card-edit-cover">
@@ -268,7 +221,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	));
 
 	// single item (card) for sub characters
-	const SortableItemSub = SortableElement(({ value }: { value: Character }) => (
+	const SortableItemSub = SortableElement(({ value }: { value: NovelCharacterDataValue }) => (
 		<li className="card-li">
 			<div key={value.id} className="card-container">
 				<div className="card-edit-cover">
@@ -291,10 +244,10 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	));
 
 	// list of cards for main characters
-	const SortableListMain = SortableContainer(({ items }: { items: Character[] }) => {
+	const SortableListMain = SortableContainer(({ items }: { items: NovelCharacterDataValue[] }) => {
 		return (
 			<ul>
-				{items.map((value: Character, index: number) => (
+				{items.map((value: NovelCharacterDataValue, index: number) => (
 					<SortableItemMain key={value.id} index={index} value={value} />
 				))}
 			</ul>
@@ -302,10 +255,10 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 	});
 
 	// list of cards for sub characters
-	const SortableListSub = SortableContainer(({ items }: { items: Character[] }) => {
+	const SortableListSub = SortableContainer(({ items }: { items: NovelCharacterDataValue[] }) => {
 		return (
 			<ul>
-				{items.map((value: Character, index: number) => (
+				{items.map((value: NovelCharacterDataValue, index: number) => (
 					<SortableItemSub key={value.id} index={index} value={value} />
 				))}
 			</ul>
@@ -342,7 +295,7 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 								key="save"
 								ghost
 								className="green-button"
-							// onClick={() => onSaveChanges(characters)}
+								onClick={() => onSaveChanges(mainCharacters.concat(subCharacters))}
 							>
 								<Icon type="save" />保存编辑
 							</Button>
