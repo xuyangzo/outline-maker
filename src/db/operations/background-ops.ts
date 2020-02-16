@@ -19,6 +19,7 @@ interface BackgroundTemplate extends BackgroundCreateAndUpdateTemplate {
 export const getWorldviewGivenNovel = async (id: string | number): Promise<string> => {
 	const dataModel: DataResult = await BackgroundModal
 		.findOne({
+			attributes: ['content'],
 			where: {
 				novel_id: id,
 				title: '世界观'
@@ -40,10 +41,7 @@ export const getBackgroundsGivenNovel = async (id: string | number): Promise<Bac
 
 	// check if output is empty
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, title, content } = result.dataValues;
-			return { id, title, content };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];

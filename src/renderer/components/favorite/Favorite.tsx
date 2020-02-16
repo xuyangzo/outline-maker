@@ -8,7 +8,6 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import { DatabaseError } from 'sequelize';
 import { FavoriteProps, FavoriteState, FavoriteDataValue } from './favoriteDec';
-import { OutlineDataValue, Outline } from '../sidebar/sidebarDec';
 
 // database operations
 import { findAllFavDetail, cancelFavorite } from '../../../db/operations/fav-ops';

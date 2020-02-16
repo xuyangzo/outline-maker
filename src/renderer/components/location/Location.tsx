@@ -5,10 +5,8 @@ import classnames from 'classnames';
 // enable history
 import { withRouter } from 'react-router-dom';
 
-// custom components
-
 // type declaration
-import { LocationProps, LocationState, Location as LocationDataValue } from './locationDec';
+import { LocationProps, LocationState, LocationDataValue } from './locationDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -41,9 +39,8 @@ class Location extends React.Component<LocationProps, LocationState> {
 
 	setLocation = () => {
 		getLocation(this.state.id)
-			.then((data: LocationDataValue) => {
-				const { name, image, intro, texture, location, controller } = data;
-				this.setState({ name, image, intro, texture, location, controller });
+			.then((location: LocationDataValue) => {
+				this.setState({ ...location });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);

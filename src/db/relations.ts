@@ -145,11 +145,6 @@ InventoryModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete:
 			await LocationModel.create({
 				novel_id: 1,
 				name: '天之塔3',
-				intro: '三大世界的最高统治者，并且是所有种族的最高统治者',
-				texture: '一座纯白的塔',
-				location: '第一世界中央',
-				controller: '天尊',
-				deleted: 0,
 				novelPageOrder: 3
 			});
 

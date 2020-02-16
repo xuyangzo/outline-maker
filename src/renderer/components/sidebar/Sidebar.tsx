@@ -8,7 +8,7 @@ const { TextArea } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type decalaration
-import { SidebarProps, SidebarState, NovelDataValue, Novel, CreateNovelModalTemplate } from './sidebarDec';
+import { SidebarProps, SidebarState, NovelSidebarDataValue, CreateNovelModalTemplate } from './sidebarDec';
 import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
 
@@ -99,11 +99,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 	getNovels = () => {
 		// get all novels
 		getAllNovels()
-			.then((result: any) => {
-				const novels: Novel[] = result.map(({ dataValues }: { dataValues: NovelDataValue }) => {
-					const { id, name, description } = dataValues;
-					return { id, name, description };
-				});
+			.then((novels: NovelSidebarDataValue[]) => {
 				this.setState({ novels });
 			})
 			.catch((err: DatabaseError) => {
@@ -128,7 +124,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 		// create outline
 		createNovel(model)
-			.then(({ 'null': id }: { 'null': number }) => {
+			.then((id: number) => {
 				// alert success
 				Message.success('创建小说成功！');
 				// close modal
@@ -231,7 +227,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 							}
 						>
 							{
-								this.state.novels.map((novel: Novel) => (
+								this.state.novels.map((novel: NovelSidebarDataValue) => (
 									<SubMenu key={novel.id} title={novel.name}>
 										<Menu.Item key={`/novel/${novel.id}`} onClick={this.select}>小说介绍</Menu.Item>
 										<Menu.Item key={`/background/${novel.id}`} onClick={this.select}>背景设定</Menu.Item>

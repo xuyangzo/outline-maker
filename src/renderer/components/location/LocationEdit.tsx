@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 const fs = require('fs');
 
 // type declaration
-import { LocationProps, LocationState, Location as LocationDataValue } from './locationDec';
+import { LocationProps, LocationState, LocationDataValue } from './locationDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -120,8 +120,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 	setLocation = () => {
 		getLocation(this.state.id)
 			.then((data: LocationDataValue) => {
-				const { name, image, intro, texture, location, controller } = data;
-				this.setState({ name, image, intro, texture, location, controller });
+				this.setState({ ...data });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err);

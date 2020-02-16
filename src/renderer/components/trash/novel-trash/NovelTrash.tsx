@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
-import { NovelTrashProps } from './novelTrashDec';
-import { NovelShortDataValue } from '../../novel/novelDec';
+import { NovelTrashProps, NovelTrashDataValue } from './novelTrashDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getNovelShort, deleteNovelPermanently } from '../../../../db/operations/novel-ops';
+import { getAllNovelsGivenIdList, deleteNovelPermanently } from '../../../../db/operations/novel-ops';
 import { putbackNovel } from '../../../../db/operations/trash-ops';
 
 const NovelTrash = (props: NovelTrashProps) => {
@@ -17,7 +16,7 @@ const NovelTrash = (props: NovelTrashProps) => {
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
 	const [showDeleteModal, setDeleteModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [novelDetails, setNovelDetails] = React.useState<NovelShortDataValue[]>([]);
+	const [novelDetails, setNovelDetails] = React.useState<NovelTrashDataValue[]>([]);
 
 	// get novels when props.novels changes & didmount
 	React.useEffect(
@@ -45,14 +44,12 @@ const NovelTrash = (props: NovelTrashProps) => {
 
 	// get novels
 	function getNovels() {
-		const promises: Promise<any>[] = novels.map((novel_id: number) => {
-			return getNovelShort(novel_id);
-		});
-		Promise
-			.all(promises)
-			.then((result: any) => {
-				const novels = result.map(({ dataValues }: { dataValues: NovelShortDataValue }) => dataValues);
+		getAllNovelsGivenIdList(novels)
+			.then((novels: NovelTrashDataValue[]) => {
 				setNovelDetails(novels);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
@@ -133,7 +130,7 @@ const NovelTrash = (props: NovelTrashProps) => {
 	return (
 		<Row>
 			{
-				novelDetails.map((novel: NovelShortDataValue) => (
+				novelDetails.map((novel: NovelTrashDataValue) => (
 					<Col span={8} key={novel.id}>
 						<Card
 							title={novel.name}

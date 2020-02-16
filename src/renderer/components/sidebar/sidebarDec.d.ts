@@ -18,18 +18,9 @@ export interface OutlineDataValue {
 	deleted: number;
 }
 
-export interface NovelDataValue {
+export interface NovelSidebarDataValue {
 	id: number;
 	name: string;
-	description: string;
-	categories: string;
-}
-
-export interface Novel {
-	id: number;
-	name: string;
-	description: string;
-	categories: string;
 }
 
 export interface CreateNovelModalTemplate {
@@ -52,7 +43,7 @@ export interface SidebarProps extends RouteComponentProps<MatchParams> {
 }
 
 export interface SidebarState {
-	novels: Array<Novel>;
+	novels: NovelSidebarDataValue[];
 	selected: string[];
 	showModal: boolean;
 	createdName: string;

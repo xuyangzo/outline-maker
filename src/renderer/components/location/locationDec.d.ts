@@ -6,25 +6,14 @@ interface MatchParams {
   novel_id: string;
 }
 
-// complete location declaration
-export interface Location {
-  id: number;
-  novel_id: number;
+// location datavalues for database
+export interface LocationDataValue {
   name: string;
   image: string;
   intro: string;
   texture: string;
   location: string;
   controller: string;
-}
-
-/**
- * location datavalues for database
- * additional atttributes are created time and updated time
- */
-export interface LocationDataValue extends Location {
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface LocationProps extends RouteComponentProps<MatchParams> {

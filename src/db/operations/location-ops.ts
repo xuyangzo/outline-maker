@@ -5,7 +5,7 @@ import { addTrash } from './trash-ops';
 // type declaration
 import { NovelLocationDataValue } from '../../renderer/components/novel-location/novelLocationDec';
 import { TrashLocationDataValue } from '../../renderer/components/trash/location-trash/locationTrashDec';
-import { Location as LocationDataValue } from '../../renderer/components/location/locationDec';
+import { LocationDataValue } from '../../renderer/components/location/locationDec';
 
 interface LocationTemplate {
 	novel_id?: string;
@@ -34,10 +34,7 @@ export const getAllLocationsGivenNovel = async (novel_id: string | number): Prom
 		});
 
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name, image } = result.dataValues;
-			return { id, name, image };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];
@@ -47,17 +44,11 @@ export const getAllLocationsGivenNovel = async (novel_id: string | number): Prom
 export const getLocation = async (id: string | number): Promise<LocationDataValue> => {
 	const dataResult: DataResult = await LocationModel
 		.findOne({
+			attributes: ['name', 'image', 'intro', 'texture', 'location', 'controller'],
 			where: { id }
 		});
 
-	if (dataResult) {
-		const { id, novel_id, name, image, intro, texture, location, controller } = dataResult.dataValues;
-		return { id, novel_id, name, image, intro, texture, location, controller };
-	}
-
-	return {
-		id: -1,
-		novel_id: -1,
+	const data: LocationDataValue = {
 		name: '找不到该势力！',
 		image: '',
 		intro: '',
@@ -65,6 +56,22 @@ export const getLocation = async (id: string | number): Promise<LocationDataValu
 		location: '',
 		controller: ''
 	};
+	if (dataResult) {
+		const { name, image, intro, texture, location, controller } = dataResult.dataValues;
+
+		/**
+		 * filter null properties
+		 * in order for edit page
+		 */
+		if (name) data.name = name;
+		if (image) data.image = image;
+		if (intro) data.intro = intro;
+		if (texture) data.texture = texture;
+		if (location) data.location = location;
+		if (controller) data.controller = controller;
+	}
+
+	return data;
 };
 
 /**
@@ -87,10 +94,7 @@ export const getAllLocationsGivenIdList = async (idList: (string | number)[]): P
 
 	const dataResults: DataResults = await Promise.all(promises);
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name } = result.dataValues;
-			return { id, name };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];
@@ -153,10 +157,7 @@ export const searchLocation = async (novel_id: string | number, key: string): Pr
 		});
 
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name, image } = result.dataValues;
-			return { id, name, image };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];

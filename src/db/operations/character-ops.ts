@@ -63,7 +63,10 @@ export const getCharacter = async (id: string | number): Promise<CharacterDataVa
 			identity, appearance, characteristics, experience
 		} = dataResult.dataValues;
 
-		// filter null properties
+		/**
+		 * filter null properties
+		 * in order for edit page
+		 */
 		if (name) data.name = name;
 		if (image) data.image = image;
 		if (age) data.age = age;
@@ -94,7 +97,9 @@ export const getCharacterSimple = async (id: string | number): Promise<MainChara
 	};
 	if (dataResult) {
 		const { id, name, color } = dataResult.dataValues;
-		return { id, name, color };
+		if (id) data.id = id;
+		if (name) data.name = name;
+		if (color) data.color = color;
 	}
 
 	return data;
@@ -120,10 +125,7 @@ export const getAllCharactersGivenIdList = async (idList: (string | number)[]): 
 
 	const dataResults: DataResults = await Promise.all(promises);
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name } = result.dataValues;
-			return { id, name };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];
@@ -178,10 +180,7 @@ export const getAllCharactersGivenOutline = async (id: string): Promise<MainChar
 		});
 
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name, color } = result.dataValues;
-			return { id, name, color };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];
@@ -228,10 +227,7 @@ export const getAllValidCharacters = async (
 		});
 
 	if (dataResults && dataResults.length) {
-		return dataResults.map((result: DataModel) => {
-			const { id, name } = result.dataValues;
-			return { id, name };
-		});
+		return dataResults.map((result: DataModel) => result.dataValues);
 	}
 
 	return [];

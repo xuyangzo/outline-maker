@@ -1,7 +1,6 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { Character } from '../character/characterDec';
 import { Outline } from '../sidebar/sidebarDec';
-import { Location } from '../location/locationDec';
 
 interface MatchParams {
   id: string;
