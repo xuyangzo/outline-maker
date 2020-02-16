@@ -48,10 +48,7 @@ export interface OutlineDataValue {
 	id: number;
 	title: string;
 	description: string;
-	novel_id: number;
 	scaling: string;
-	fav: number;
-	deleted: number;
 }
 
 export interface OutlineDetailDataValue {
@@ -62,12 +59,6 @@ export interface OutlineDetailDataValue {
 	content: string;
 	createdAt: string;
 	updatedAt: string;
-}
-
-export interface OutlineShortDataValue {
-	id: number;
-	title: string;
-	description: string;
 }
 
 export type ContentCard = {

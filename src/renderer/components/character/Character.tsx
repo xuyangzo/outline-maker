@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { withRouter, Link } from 'react-router-dom';
 
 // type declaration
-import { CharacterProps, CharacterState, OutlineGivenCharacter, CharacterDataValue } from './characterDec';
+import { CharacterProps, CharacterState, OutlineCharacterDataValue, CharacterDataValue } from './characterDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
@@ -25,7 +25,6 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 		super(props);
 		this.state = {
 			id: this.props.match.params.id,
-			outline_id: -1,
 			novel_id: this.props.match.params.novel_id,
 			name: '',
 			image: '',
@@ -61,9 +60,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 	// set outline information about a character
 	setOutlines = () => {
 		getAllOutlinesGivenCharacter(this.state.id)
-			.then((result: any) => {
-				const outlines: OutlineGivenCharacter[] = result.map(
-					({ dataValues }: { dataValues: OutlineGivenCharacter }) => dataValues);
+			.then((outlines: OutlineCharacterDataValue[]) => {
 				this.setState({ outlines });
 			})
 			.catch((err: DatabaseError) => {
@@ -176,7 +173,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 										!outlines.length && (<p>暂无</p>)
 									}
 									{
-										outlines.map((outline: OutlineGivenCharacter, index: number) => (
+										outlines.map((outline: OutlineCharacterDataValue, index: number) => (
 											<Link key={outline.id} to={`/outline/${id}/${outline.id}`} className="custom-link">
 												{index + 1}.&nbsp;{outline.title}
 											</Link>

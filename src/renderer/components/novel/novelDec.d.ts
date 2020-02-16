@@ -1,6 +1,4 @@
 import { RouteComponentProps } from 'react-router-dom';
-import { Character } from '../character/characterDec';
-import { Outline } from '../sidebar/sidebarDec';
 
 interface MatchParams {
   id: string;
@@ -10,11 +8,6 @@ export interface NovelDataValue {
   name: string;
   description: string;
   categories: string;
-}
-
-export interface NovelShortDataValue {
-  id: number;
-  name: string;
 }
 
 export interface NovelProps extends RouteComponentProps<MatchParams> {

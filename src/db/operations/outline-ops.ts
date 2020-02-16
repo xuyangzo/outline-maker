@@ -6,6 +6,10 @@ const Op = require('sequelize').Op;
 // type declaration
 import { OutlineModalTemplate } from '../../renderer/components/novel-outline/outline-modal/outlineModalDec';
 import { FavoriteDataValue } from '../../renderer/components/favorite/favoriteDec';
+import { OutlineDataValue } from '../../renderer/components/main/mainDec';
+import { OutlineTrashDataValue } from '../../renderer/components/trash/outline-trash/outlineTrashDec';
+import { NovelOutlineDataValue } from '../../renderer/components/novel-outline/novelOutlineDec';
+import { OutlineCharacterDataValue } from '../../renderer/components/character/characterDec';
 
 interface OutlineTemplate {
 	title?: string;
@@ -18,15 +22,35 @@ interface OutlineTemplate {
 }
 
 // get outline given id
-export const getOutline = (id: string | number): Promise<any> => {
-	return OutlineModel
+export const getOutline = async (id: string | number): Promise<OutlineDataValue> => {
+	const dataResult: DataResult = await OutlineModel
 		.findOne({
+			attibutes: ['id', 'title', 'description', 'scaling'],
 			where: { id }
 		});
+
+	const data: OutlineDataValue = {
+		id: -1,
+		title: '找不到该大纲！',
+		description: '',
+		scaling: '1'
+	};
+	if (dataResult) {
+		const { id, title, description, scaling } = dataResult.dataValues;
+		if (id) data.id = id;
+		if (title) data.title = title;
+		if (description) data.description = description;
+		if (scaling) data.scaling = scaling;
+	}
+
+	return data;
 };
 
-// get outline's id, title and description
-export const getOutlineShort = (id: string | number): Promise<any> => {
+/**
+ * helper function
+ * get outline's id, title and description
+ */
+const getOutlineHelper = (id: string | number): Promise<DataModel> => {
 	return OutlineModel
 		.findOne({
 			attributes: ['id', 'title', 'description'],
@@ -34,10 +58,26 @@ export const getOutlineShort = (id: string | number): Promise<any> => {
 		});
 };
 
+// get all outlines given id list
+export const getAllOutlinesGivenIdList = async (idList: (string | number)[]): Promise<OutlineTrashDataValue[]> => {
+	const promises: Promise<any>[] = idList.map((outlineId: string | number) => {
+		return getOutlineHelper(outlineId);
+	});
+
+	const dataResults: DataResults = await Promise.all(promises);
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
+};
+
 // get all outlines given novel
-export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
-	return OutlineModel
+export const getAllOutlinesGivenNovel = async (id: string | number): Promise<NovelOutlineDataValue[]> => {
+	const dataResults: DataResults = await OutlineModel
 		.findAll({
+			attributes: ['id', 'title', 'description'],
 			where: {
 				novel_id: id,
 				deleted: {
@@ -46,6 +86,12 @@ export const getAllOutlinesGivenNovel = (id: string | number): Promise<any> => {
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
 };
 
 // get all outlines given id range
@@ -73,7 +119,7 @@ export const getOutlinesGivenIdRange = async (outlines: string[] | number[]): Pr
 };
 
 // create new outline
-export const createOutline = async (props: OutlineModalTemplate) => {
+export const createOutline = async (props: OutlineModalTemplate): Promise<DataUpdateResult> => {
 	const maxOrder: number | null = await OutlineModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
 	return OutlineModel
 		.create({
@@ -83,7 +129,7 @@ export const createOutline = async (props: OutlineModalTemplate) => {
 };
 
 // update outline
-export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<any> => {
+export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<DataUpdateResult> => {
 	return OutlineModel
 		.update(
 			props,
@@ -92,7 +138,7 @@ export const updateOutline = (id: string | number, props: OutlineTemplate): Prom
 };
 
 // update outline's fav property
-export const updateOutlineFav = (id: string | number, fav: number): Promise<any> => {
+export const updateOutlineFav = (id: string | number, fav: number): Promise<DataUpdateResult> => {
 	return OutlineModel
 		.update(
 			{ fav },
@@ -101,7 +147,7 @@ export const updateOutlineFav = (id: string | number, fav: number): Promise<any>
 };
 
 // update outline's deleted property
-export const updateDeleted = (id: string | number, deleted: number): Promise<any> => {
+export const updateDeleted = (id: string | number, deleted: number): Promise<DataUpdateResult> => {
 	return OutlineModel
 		.update(
 			{ deleted },
@@ -110,7 +156,7 @@ export const updateDeleted = (id: string | number, deleted: number): Promise<any
 };
 
 // permanent deletion
-export const deleteOutlinePermanently = (id: string | number): Promise<any> => {
+export const deleteOutlinePermanently = (id: string | number): Promise<DataUpdateResult> => {
 	return OutlineModel
 		.destroy({
 			where: { id }
@@ -122,7 +168,7 @@ export const deleteOutlinePermanently = (id: string | number): Promise<any> => {
  * 1) update outline's deleted property to be 1
  * 2) add deleted outline to trash
  */
-export const deleteOutlineTemp = (id: string | number): Promise<any> => {
+export const deleteOutlineTemp = (id: string | number): Promise<DataUpdateResults> => {
 	return Promise.all([
 		updateOutline(id, { deleted: 1 }),
 		addTrash({ outline_id: id })
@@ -130,11 +176,12 @@ export const deleteOutlineTemp = (id: string | number): Promise<any> => {
 };
 
 // search outlines
-export const searchOutline = (novel_id: string | number, key: string): Promise<any> => {
+export const searchOutline = async (novel_id: string | number, key: string): Promise<NovelOutlineDataValue[]> => {
 	if (key === '') return getAllOutlinesGivenNovel(novel_id);
 
-	return OutlineModel
+	const dataResults: DataResults = await OutlineModel
 		.findAll({
+			attributes: ['id', 'title', 'description'],
 			where: {
 				novel_id,
 				[Op.or]: [
@@ -155,11 +202,19 @@ export const searchOutline = (novel_id: string | number, key: string): Promise<a
 			},
 			order: [['novelPageOrder', 'ASC']]
 		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
 };
 
 // get all outlines that target character belongs to
-export const getAllOutlinesGivenCharacter = (character_id: string | number): Promise<any> => {
-	return OutlineModel
+export const getAllOutlinesGivenCharacter = async (
+	character_id: string | number
+): Promise<OutlineCharacterDataValue[]> => {
+	const dataResults: DataResults = await OutlineModel
 		.findAll({
 			attributes: ['id', 'title'],
 			include: [{
@@ -168,4 +223,10 @@ export const getAllOutlinesGivenCharacter = (character_id: string | number): Pro
 				required: true,
 			}]
 		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
 };

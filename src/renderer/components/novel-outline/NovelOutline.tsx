@@ -7,8 +7,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelOutlineProps } from './novelOutlineDec';
-import { Outline, OutlineDataValue } from '../main/mainDec';
+import { NovelOutlineProps, NovelOutlineDataValue } from './novelOutlineDec';
 import { DatabaseError } from 'sequelize';
 
 // custom components
@@ -28,7 +27,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 	const [showModal, setShowModal] = React.useState<boolean>(false);
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [outlines, setOutlines] = React.useState<Outline[]>([]);
+	const [outlines, setOutlines] = React.useState<NovelOutlineDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -77,12 +76,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 		const currTimer: any = setTimeout(
 			() => {
 				searchOutline(novel_id, key)
-					.then((result: any) => {
-						const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-							const { id, title, description } = dataValues;
-							return { id, title, description };
-						});
-
+					.then((outlines: NovelOutlineDataValue[]) => {
 						// set outlines
 						setOutlines(outlines);
 					})
@@ -99,12 +93,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 	// get all outlines
 	function getOutlines() {
 		getAllOutlinesGivenNovel(novel_id)
-			.then((result: any) => {
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, description } = dataValues;
-					return { id, title, description };
-				});
-
+			.then((outlines: NovelOutlineDataValue[]) => {
 				// set outlines
 				setOutlines(outlines);
 				// should render
@@ -163,7 +152,7 @@ const NovelOutline = (props: NovelOutlineProps) => {
 					/>
 				</div>
 				{
-					outlines.map((outline: Outline) => (
+					outlines.map((outline: NovelOutlineDataValue) => (
 						<Col span={6} key={outline.id} className="card-container">
 							<div
 								className="delete-icon"

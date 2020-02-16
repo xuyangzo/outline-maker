@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
-import { OutlineTrashProps } from './outlineTrashDec';
-import { OutlineShortDataValue } from '../../main/mainDec';
+import { OutlineTrashProps, OutlineTrashDataValue } from './outlineTrashDec';
 import { DatabaseError } from 'sequelize';
 
 // database operations
-import { getOutlineShort, deleteOutlinePermanently } from '../../../../db/operations/outline-ops';
+import { getAllOutlinesGivenIdList, deleteOutlinePermanently } from '../../../../db/operations/outline-ops';
 import { putbackOutline } from '../../../../db/operations/trash-ops';
 
 const OutlineTrash = (props: OutlineTrashProps) => {
@@ -17,7 +16,7 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 	const [showBackModal, setBackModal] = React.useState<boolean>(false);
 	const [showDeleteModal, setDeleteModal] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
-	const [outlineDetails, setOutlineDetails] = React.useState<OutlineShortDataValue[]>([]);
+	const [outlineDetails, setOutlineDetails] = React.useState<OutlineTrashDataValue[]>([]);
 
 	// get outlines when props.outlines changes & didmount
 	React.useEffect(
@@ -44,14 +43,12 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 
 	// get outlines
 	function getOutlines() {
-		const promises: Promise<any>[] = outlines.map((outline_id: number) => {
-			return getOutlineShort(outline_id);
-		});
-		Promise
-			.all(promises)
-			.then((result: any) => {
-				const outlines = result.map(({ dataValues }: { dataValues: OutlineShortDataValue }) => dataValues);
+		getAllOutlinesGivenIdList(outlines)
+			.then((outlines: OutlineTrashDataValue[]) => {
 				setOutlineDetails(outlines);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
 			});
 	}
 
@@ -124,7 +121,7 @@ const OutlineTrash = (props: OutlineTrashProps) => {
 	return (
 		<Row>
 			{
-				outlineDetails.map((outline: OutlineShortDataValue) => (
+				outlineDetails.map((outline: OutlineTrashDataValue) => (
 					<Col span={8} key={outline.id}>
 						<Card
 							title={outline.title}

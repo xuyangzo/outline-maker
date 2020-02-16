@@ -13,9 +13,8 @@ import DetailCard from './content-card/ContentCard';
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { OutlineDataValue } from '../sidebar/sidebarDec';
 import {
-	MainProps, MainState, MainCharacter, MainCharacterDataValue,
+	MainProps, MainState, MainCharacter, MainCharacterDataValue, OutlineDataValue,
 	TimelineDataValue, Timeline, OutlineDetailDataValue, ContentCard
 } from './mainDec';
 import { CharacterDataValue } from '../character/characterDec';
@@ -24,7 +23,7 @@ import { DatabaseError } from 'sequelize';
 // database operations
 import { updateOutline, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
 import {
-	createCharacter, updateCharacter, getCharacter, getCharacterSimple,
+	createCharacter, updateCharacter, getCharacterSimple,
 	deleteCharacterTemp, getAllCharactersGivenOutline
 } from '../../../db/operations/character-ops';
 import {
@@ -443,8 +442,8 @@ class Main extends React.Component<MainProps, MainState> {
 	// get outline intro
 	getOutline = (id: string) => {
 		getOutlineOp(id)
-			.then(({ dataValues }: { dataValues: OutlineDataValue }) => {
-				const { id, title, description, scaling } = dataValues;
+			.then((outline: OutlineDataValue) => {
+				const { id, title, description, scaling } = outline;
 				this.setState({ title, description, scaling, id: id.toString() });
 			})
 			.catch((err: DatabaseError) => {

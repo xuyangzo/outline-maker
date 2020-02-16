@@ -1,23 +1,5 @@
 import { RouteComponentProps } from 'react-router-dom';
 
-export interface Outline {
-	id: number;
-	novel_id: number;
-	title: string;
-	deleted?: number;
-	description?: string;
-}
-
-export interface OutlineDataValue {
-	id: number;
-	title: string;
-	description: string;
-	novel_id: number;
-	scaling: string;
-	fav: number;
-	deleted: number;
-}
-
 export interface NovelSidebarDataValue {
 	id: number;
 	name: string;

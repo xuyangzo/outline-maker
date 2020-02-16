@@ -6,27 +6,6 @@ interface MatchParams {
   novel_id: string;
 }
 
-// complete character declaration
-export interface Character {
-  id: string | number;
-  novel_id: string | number;
-  outline_id?: string | number | undefined;
-  name: string;
-  image?: string | undefined;
-  color?: string | undefined;
-  age?: string | undefined;
-  nickname?: string | undefined;
-  gender?: number | undefined;
-  height?: string | undefined;
-  identity?: string | undefined;
-  appearance?: string | undefined;
-  characteristics?: string | undefined;
-  experience?: string | undefined;
-  note?: string | undefined;
-  deleted?: number;
-  novelPageOrder?: number;
-}
-
 // character datavalues for database
 export interface CharacterDataValue {
   name: string;
@@ -46,14 +25,15 @@ export interface CharacterProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
 
-export interface CharacterState extends Character {
-  outlines: OutlineGivenCharacter[];
-  [key: string]: string | number | undefined | OutlineGivenCharacter[];
+export interface CharacterState extends CharacterDataValue {
+  outlines: OutlineCharacterDataValue[];
+  id: number | string;
+  novel_id: number | string;
+  [key: string]: string | number | OutlineCharacterDataValue[];
 }
 
 export interface CharacterEditState {
   id: number | string;
-  outline_id: number | string | undefined;
   novel_id: number | string;
   name: string;
   image: string;
@@ -69,7 +49,8 @@ export interface CharacterEditState {
   [key: string]: any;
 }
 
-export interface OutlineGivenCharacter {
+// outlines that belong to one character
+export interface OutlineCharacterDataValue {
   id: number;
   title: string;
 }

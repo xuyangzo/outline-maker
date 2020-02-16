@@ -1,5 +1,4 @@
-import { Timeline } from '../components/main/mainDec';
-import { Character } from '../components/character/characterDec';
+import { MainCharacter, Timeline } from '../components/main/mainDec';
 
 // textarea height auto grow
 export const onTextAreaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -13,7 +12,7 @@ export const onTextAreaResize = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 
 // filter update by id
 export function filterUpdateById(arr: any, id: number, value: string, isTime: boolean) {
-	return arr.map((element: Character & Timeline) => {
+	return arr.map((element: MainCharacter & Timeline) => {
 		if (element.id === id) {
 			if (isTime) element.time = value;
 			else element.name = value;
