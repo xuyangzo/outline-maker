@@ -2,17 +2,24 @@ import TimelineModal from '../models/Timeline';
 import { deleteOutlineDetailsGivenTime } from './detail-ops';
 
 // get all timelines givend outline id
-export const getAllTimelines = (id: string): Promise<any> => {
-	return TimelineModal
+export const getAllTimelines = async (id: string | number): Promise<any> => {
+	const dataResults: DataResults = await TimelineModal
 		.findAll({
+			attributes: ['id', 'time'],
 			where: {
 				outline_id: id
 			}
 		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
 };
 
 // create new timeline
-export const createTimeline = (id: string, time: string): Promise<any> => {
+export const createTimeline = (id: string | number, time: string): Promise<DataUpdateResult> => {
 	return TimelineModal
 		.create({
 			time,
@@ -21,7 +28,7 @@ export const createTimeline = (id: string, time: string): Promise<any> => {
 };
 
 // update timeline
-export const updateTimeline = (id: string | number, time: string): Promise<any> => {
+export const updateTimeline = (id: string | number, time: string): Promise<DataUpdateResult> => {
 	return TimelineModal
 		.update(
 			{ time },
@@ -30,7 +37,7 @@ export const updateTimeline = (id: string | number, time: string): Promise<any> 
 };
 
 // delete timeline
-export const deleteTimeline = async (id: string | number): Promise<any> => {
+export const deleteTimeline = async (id: string | number): Promise<DataUpdateResult> => {
 	await deleteOutlineDetailsGivenTime(id);
 	return TimelineModal
 		.destroy({

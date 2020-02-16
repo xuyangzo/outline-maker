@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import {
 	MainProps, MainState, MainCharacter, MainCharacterDataValue, OutlineDataValue,
-	TimelineDataValue, Timeline, OutlineDetailDataValue, ContentCard
+	TimelineDataValue, MainTimeline, OutlineDetailDataValue, ContentCard
 } from './mainDec';
 import { CharacterDataValue } from '../character/characterDec';
 import { DatabaseError } from 'sequelize';
@@ -188,7 +188,7 @@ class Main extends React.Component<MainProps, MainState> {
 		});
 
 		// save all created/updated timelines
-		this.state.timelines.forEach((timeline: Timeline) => {
+		this.state.timelines.forEach((timeline: MainTimeline) => {
 			// create that timeline
 			if (timeline.created) promises.push(createTimeline(id, timeline.time));
 			// update that timeline
@@ -238,7 +238,7 @@ class Main extends React.Component<MainProps, MainState> {
 					}
 				});
 				// create mapping for timeline id
-				this.state.timelines.forEach((timeline: Timeline) => {
+				this.state.timelines.forEach((timeline: MainTimeline) => {
 					if (timeline.id <= 0) {
 						timelineMapping.set(timeline.id, timelines[timelineIndex]);
 						timelineIndex += 1;
@@ -368,7 +368,7 @@ class Main extends React.Component<MainProps, MainState> {
 		this.setState((prevState: MainState) => ({
 			...prevState,
 			contents,
-			timelines: prevState.timelines.filter((timeline: Timeline) => timeline.id !== id),
+			timelines: prevState.timelines.filter((timeline: MainTimeline) => timeline.id !== id),
 			deletedTimelines: prevState.deletedTimelines.concat(id),
 			changed: true,
 			shouldScroll: false
@@ -378,7 +378,7 @@ class Main extends React.Component<MainProps, MainState> {
 	// create timeline locally (not publish to database yet)
 	createTimelineLocally = (time: string) => {
 		// create a local timeline
-		const newTimeline: Timeline = {
+		const newTimeline: MainTimeline = {
 			time,
 			id: -this.state.timelines.length,
 			created: true
@@ -455,11 +455,7 @@ class Main extends React.Component<MainProps, MainState> {
 	getTimelines = (id: string) => {
 		// get all timelines
 		getAllTimelines(id)
-			.then((result: any) => {
-				// grab all timelines
-				const timelines: Timeline[] = result.map(({ dataValues }: { dataValues: TimelineDataValue }) => {
-					return { id: dataValues.id, time: dataValues.time };
-				});
+			.then((timelines: TimelineDataValue[]) => {
 				// set timelines
 				this.setState({ timelines });
 			})
@@ -580,7 +576,7 @@ class Main extends React.Component<MainProps, MainState> {
 						</thead>
 						<tbody>
 							{
-								timelines.map((timeline: Timeline, index: number) => (
+								timelines.map((timeline: MainTimeline, index: number) => (
 									<tr key={timeline.id}>
 										<TimelineCard
 											id={timeline.id}

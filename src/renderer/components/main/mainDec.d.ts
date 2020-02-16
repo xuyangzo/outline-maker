@@ -21,19 +21,14 @@ export interface MainCharacter extends MainCharacterDataValue {
 	existing?: boolean;
 }
 
-export interface Timeline {
-	id: number;
-	time: string;
-	created?: boolean;
-	updated?: boolean;
-}
-
 export interface TimelineDataValue {
 	id: number;
-	outline_id: number;
 	time: string;
-	createdAt: string;
-	updatedAt: string;
+}
+
+export interface MainTimeline extends TimelineDataValue {
+	created?: boolean;
+	updated?: boolean;
 }
 
 export interface Outline {
@@ -84,7 +79,7 @@ export interface MainState {
 	title: string;
 	description: string;
 	characters: MainCharacter[];
-	timelines: Timeline[];
+	timelines: MainTimeline[];
 	contents: OutlineContent;
 	changed: boolean;
 	shouldScroll: boolean;
