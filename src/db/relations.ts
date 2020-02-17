@@ -231,23 +231,9 @@ InventoryModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete:
 
 			await OutlineDetailModel.create({
 				outline_id: 1,
-				timeline_id: 1,
-				character_id: 2,
-				content: '我出轨了'
-			});
-
-			await OutlineDetailModel.create({
-				outline_id: 1,
 				timeline_id: 2,
 				character_id: 1,
 				content: '我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了我又杀人了'
-			});
-
-			await OutlineDetailModel.create({
-				outline_id: 1,
-				timeline_id: 3,
-				character_id: 2,
-				content: '我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了我又出轨了'
 			});
 		});
 }());

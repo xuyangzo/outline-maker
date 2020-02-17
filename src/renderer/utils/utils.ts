@@ -32,15 +32,6 @@ export const ctrlsPress = (e: KeyboardEvent, callback: Function) => {
 	}
 };
 
-// filter result of save
-export const filterSaveResult = (result: any[]): any[] => {
-	return result.filter((r: any) => {
-		return typeof r !== 'number' &&
-			typeof r !== 'undefined' &&
-			!Array.isArray(r);
-	});
-};
-
 // get selected key
 export const getSelectedKey = (pathname: string): string => {
 	// single novel page and background page

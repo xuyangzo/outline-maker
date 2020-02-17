@@ -15,26 +15,19 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import {
 	MainProps, MainState, MainCharacter, MainCharacterDataValue, OutlineDataValue,
-	TimelineDataValue, MainTimeline, OutlineDetailDataValue, ContentCard, OutlineContent
+	TimelineDataValue, MainTimeline, ContentCard, OutlineContent
 } from './mainDec';
-import { CharacterDataValue } from '../character/characterDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { updateOutline, getOutline as getOutlineOp } from '../../../db/operations/outline-ops';
-import {
-	createCharacter, updateCharacter, getCharacterSimple,
-	deleteCharacterTemp, getAllCharactersGivenOutline
-} from '../../../db/operations/character-ops';
-import {
-	getAllTimelines, createTimeline,
-	updateTimeline, deleteTimeline
-} from '../../../db/operations/timeline-ops';
-import { getAllOutlineDetails, createOutlineDetail, updateOutlineDetail } from '../../../db/operations/detail-ops';
+import { getCharacterSimple, getAllCharactersGivenOutline } from '../../../db/operations/character-ops';
+import { getAllTimelines } from '../../../db/operations/timeline-ops';
+import { getAllOutlineDetails } from '../../../db/operations/detail-ops';
+import { saveAllChanges } from '../../../db/operations/main-ops';
 
 // utils
 import { colors } from '../../utils/constants';
-import { onTextAreaResize, filterUpdateById, ctrlsPress, filterSaveResult } from '../../utils/utils';
+import { onTextAreaResize, filterUpdateById, ctrlsPress } from '../../utils/utils';
 
 // sass
 import './main.scss';
@@ -151,115 +144,13 @@ class Main extends React.Component<MainProps, MainState> {
 		if (!this.state.changed) return;
 
 		const { novel_id, id } = this.props.match.params;
-		const promises: Promise<any>[] = [];
+		const { deletedCharacters, deletedTimelines, characters, timelines, contents } = this.state;
 
-		// delete all previous characters
-		this.state.deletedCharacters.forEach((id: number) => {
-			if (id >= 0) promises.push(deleteCharacterTemp(id));
-		});
-
-		// delete all previous timelines
-		this.state.deletedTimelines.forEach((id: number) => {
-			if (id >= 0) promises.push(deleteTimeline(id));
-		});
-
-		// save all created/updated characters
-		this.state.characters.forEach((character: MainCharacter) => {
-			// create that character
-			if (character.created) {
-				promises.push(
-					createCharacter({
-						novel_id,
-						name: character.name,
-						color: character.color
-					})
-				);
-			} else if (character.updated) {
-				// update that character
-				const props: any = {
-					name: character.name,
-					color: character.color
-				};
-				// update outline_id if the character is imported
-				if (character.outline_id) props.outline_id = character.outline_id;
-				promises.push(updateCharacter(character.id, props));
-			}
-		});
-
-		// save all created/updated timelines
-		this.state.timelines.forEach((timeline: MainTimeline) => {
-			// create that timeline
-			if (timeline.created) promises.push(createTimeline(id, timeline.time));
-			// update that timeline
-			else if (timeline.updated) promises.push(updateTimeline(timeline.id, timeline.time));
-		});
-
-		/**
-		 * all changes of timelines and characters are saved
-		 * but for created timelines and characters
-		 * their corresponding ids are incorrect right now
-		 * so need to get correct id before dealing with content card
-		 */
-		return Promise
-			.all(promises)
-			.then((result: any) => {
-				/**
-				 * filter all records that are created
-				 * for update operation, the record is an array, otherwise object
-				 */
-				const created = filterSaveResult(result);
-				/**
-				 * filter character or timeline based on property
-				 * character has 'name' and timeline has 'time'
-				 * and separate them
-				 */
-				const characters: number[] = [];
-				const timelines: number[] = [];
-				created.forEach(({ dataValues }: { dataValues: CharacterDataValue & TimelineDataValue }) => {
-					if (dataValues.name) characters.push(dataValues.id);
-					else if (dataValues.time) timelines.push(dataValues.id);
-				});
-
-				/**
-				 * create id mapping for both characters and timelines
-				 * because use Promise.all, the order is fixed, which means
-				 * first negative id in this.state.characters => characters[0]
-				 */
-				const characterMapping = new Map<number, number>();
-				const timelineMapping = new Map<number, number>();
-				let characterIndex: number = 0;
-				let timelineIndex: number = 0;
-				// create mapping for character id
-				this.state.characters.forEach((character: MainCharacter) => {
-					if (character.id <= 0) {
-						characterMapping.set(character.id, characters[characterIndex]);
-						characterIndex += 1;
-					}
-				});
-				// create mapping for timeline id
-				this.state.timelines.forEach((timeline: MainTimeline) => {
-					if (timeline.id <= 0) {
-						timelineMapping.set(timeline.id, timelines[timelineIndex]);
-						timelineIndex += 1;
-					}
-				});
-
-				const promises: Promise<any>[] = [];
-				// save all content cards to database
-				this.state.contents.forEach((timelineMap: Map<number, ContentCard>, character_id: number) => {
-					timelineMap.forEach((content: ContentCard, timeline_id: number) => {
-						const contentText: string = content.content;
-						const c_id = character_id > 0 ? character_id : (characterMapping.get(character_id) || -1);
-						const t_id = timeline_id > 0 ? timeline_id : (timelineMapping.get(timeline_id) || -1);
-
-						// create new content card
-						if (content.created) promises.push(createOutlineDetail(id, c_id, t_id, contentText));
-						// update new content card
-						else if (content.updated) promises.push(updateOutlineDetail(content.id, contentText));
-					});
-				});
-				return Promise.all(promises);
-			})
+		// save all changes
+		saveAllChanges(
+			novel_id, id, deletedCharacters, deletedTimelines,
+			characters, timelines, contents
+		)
 			.then(() => {
 				// alert success
 				Message.success('保存成功！');

@@ -41,7 +41,7 @@ export const getAllOutlineDetails = async (id: string, contents: OutlineContent)
 
 // create new outline detail
 export const createOutlineDetail = async (
-	id: string, c_id: number, t_id: number, contentText: string
+	id: string | number, c_id: string | number, t_id: string | number, contentText: string
 ): Promise<WriteDataModel> => {
 	const outline: DataModel = await OutlineDetails
 		.create({
