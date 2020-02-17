@@ -88,7 +88,7 @@ const LocationTrash = (props: LocationTrashProps) => {
 	function onDeleteLocation() {
 		// delete location permanently from db
 		deleteLocationPermanently(selected)
-			.then(() => {
+			.then((result: any) => {
 				// alert success
 				Message.success('永久删除势力成功！');
 				// close modal

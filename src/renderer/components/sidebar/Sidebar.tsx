@@ -124,7 +124,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
 		// create outline
 		createNovel(model)
-			.then((id: number) => {
+			.then((result: WriteDataModel) => {
 				// alert success
 				Message.success('创建小说成功！');
 				// close modal
@@ -132,7 +132,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 				// refresh sidebar
 				this.getNovels();
 				// redirect to created novel page
-				this.props.history.push(`/novel/${id}`);
+				if (result.id) this.props.history.push(`/novel/${result.id}`);
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

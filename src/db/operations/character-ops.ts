@@ -1,6 +1,7 @@
 import CharacterModel from '../models/Character';
 import CharacterOutlineModel from '../models/CharacterOutlines';
-import { addTrash } from '../operations/trash-ops';
+import { addCharacterToOutline } from './character-outline-ops';
+import { addTrash } from './trash-ops';
 const Op = require('sequelize').Op;
 
 // type declaration
@@ -15,7 +16,6 @@ import { imageMapping } from '../../renderer/utils/constants';
 
 interface CharacterTemplate {
 	novel_id?: number | string;
-	outline_id?: number | string;
 	name?: string;
 	image?: string;
 	age?: string;
@@ -234,57 +234,120 @@ export const getAllValidCharacters = async (
 };
 
 // create new character
-export const createCharacter = async (props: CharacterTemplate): Promise<DataUpdateResult> => {
-	const { outline_id, ...characterProps } = props;
+export const createCharacter = async (props: CharacterTemplate): Promise<WriteDataModel> => {
 	// get the max order
 	const maxOrder: number | null = await CharacterModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
-	const character = await CharacterModel.create({
-		...characterProps,
+	const character: DataModel = await CharacterModel.create({
+		...props,
 		novelPageOrder: (maxOrder || 0) + 1
 	});
-	return CharacterOutlineModel
-		.create({
-			outline_id,
-			character_id: character.dataValues.id
-		});
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['character'],
+		success: false
+	};
+	if (character) {
+		result.id = character.dataValues.id;
+		result.success = true;
+	}
+
+	return result;
+};
+
+// create new character and add it to character outline table
+export const createAndAddCharacterToOutline = async (
+	props: CharacterTemplate, outline_id: string | number
+): Promise<WriteDataModel> => {
+	const dataResult: WriteDataModel = await createCharacter(props);
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['character', 'character-outline'],
+		success: false,
+		id: dataResult.id
+	};
+	if (dataResult.success) {
+		const { id } = dataResult;
+		if (id) {
+			const dataResult2: WriteDataModel = await addCharacterToOutline(id, outline_id);
+			if (dataResult2.success) result.success = true;
+		}
+	}
+	return result;
 };
 
 // update character with given props
-export const updateCharacter = (id: string | number, props: CharacterTemplate): Promise<DataUpdateResult> => {
-	return CharacterModel
+export const updateCharacter = async (id: string | number, props: CharacterTemplate): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await CharacterModel
 		.update(
 			props,
 			{ where: { id } }
 		);
+
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['character'],
+		success: false
+	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
+
+	return result;
 };
 
 // update charater given outline_id
-export const updateCharacterGivenOutline =
-	(outline_id: string | number, props: CharacterTemplate): Promise<DataUpdateResult> => {
-		return CharacterModel
-			.update(
-				props,
-				{ where: { outline_id } }
-			);
+export const updateCharacterGivenOutline = async (
+	outline_id: string | number, props: CharacterTemplate
+): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await CharacterModel
+		.update(
+			props,
+			{ where: { outline_id } }
+		);
+
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['character'],
+		success: false
 	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
+
+	return result;
+};
 
 // delete character temporarily
-export const deleteCharacterTemp = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const deleteCharacterTemp = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		addTrash({ character_id: id }),
 		updateCharacter(id, { deleted: 1 })
 	]);
+
+	return {
+		type: 'deleteT',
+		tables: ['character', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 /**
  * delete character permanently
  * already set CASCADE in relations, so just need to directly destroy
  */
-export const deleteCharacterPermanently = async (id: string | number): Promise<DataUpdateResult> => {
-	return CharacterModel
+export const deleteCharacterPermanently = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await CharacterModel
 		.destroy({
 			where: { id }
 		});
+
+	return {
+		type: 'deleteP',
+		tables: ['character'],
+		success: dataResult === 1
+	};
 };
 
 // search characters

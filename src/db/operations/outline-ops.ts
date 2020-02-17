@@ -119,48 +119,59 @@ export const getOutlinesGivenIdRange = async (outlines: string[] | number[]): Pr
 };
 
 // create new outline
-export const createOutline = async (props: OutlineModalTemplate): Promise<DataUpdateResult> => {
+export const createOutline = async (props: OutlineModalTemplate): Promise<WriteDataModel> => {
 	const maxOrder: number | null = await OutlineModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
-	return OutlineModel
+	const outline: DataModel = await OutlineModel
 		.create({
 			...props,
 			novelPageOrder: (maxOrder || 0) + 1
 		});
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['outline'],
+		success: false
+	};
+	if (outline) {
+		result.id = outline.dataValues.id;
+		result.success = true;
+	}
+
+	return result;
 };
 
 // update outline
-export const updateOutline = (id: string | number, props: OutlineTemplate): Promise<DataUpdateResult> => {
-	return OutlineModel
+export const updateOutline = async (id: string | number, props: OutlineTemplate): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await OutlineModel
 		.update(
 			props,
 			{ where: { id } }
 		);
-};
 
-// update outline's fav property
-export const updateOutlineFav = (id: string | number, fav: number): Promise<DataUpdateResult> => {
-	return OutlineModel
-		.update(
-			{ fav },
-			{ where: { id } }
-		);
-};
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['outline'],
+		success: false
+	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
 
-// update outline's deleted property
-export const updateDeleted = (id: string | number, deleted: number): Promise<DataUpdateResult> => {
-	return OutlineModel
-		.update(
-			{ deleted },
-			{ where: { id } }
-		);
+	return result;
 };
 
 // permanent deletion
-export const deleteOutlinePermanently = (id: string | number): Promise<DataUpdateResult> => {
-	return OutlineModel
+export const deleteOutlinePermanently = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await OutlineModel
 		.destroy({
 			where: { id }
 		});
+
+	return {
+		type: 'deleteP',
+		tables: ['outline'],
+		success: dataResult === 1
+	};
 };
 
 /**
@@ -168,11 +179,17 @@ export const deleteOutlinePermanently = (id: string | number): Promise<DataUpdat
  * 1) update outline's deleted property to be 1
  * 2) add deleted outline to trash
  */
-export const deleteOutlineTemp = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const deleteOutlineTemp = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		updateOutline(id, { deleted: 1 }),
 		addTrash({ outline_id: id })
 	]);
+
+	return {
+		type: 'deleteT',
+		tables: ['outline', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 // search outlines

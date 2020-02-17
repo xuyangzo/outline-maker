@@ -89,19 +89,40 @@ export const getAllNovelsGivenIdList = async (idList: (number | string)[]): Prom
 };
 
 // create new novel
-export const createNovel = async (props: CreateNovelModalTemplate): Promise<number> => {
-	const dataResult: DataModel = await NovelModel.create(props);
-	if (dataResult) return dataResult.dataValues.id;
-	return -1;
+export const createNovel = async (props: CreateNovelModalTemplate): Promise<WriteDataModel> => {
+	const novel: DataModel = await NovelModel.create(props);
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['novel'],
+		success: false
+	};
+	if (novel) {
+		result.id = novel.dataValues.id;
+		result.success = true;
+	}
+
+	return result;
 };
 
 // update novel
-export const updateNovel = (id: string | number, props: NovelTemplate): Promise<DataUpdateResult> => {
-	return NovelModel
+export const updateNovel = async (id: string | number, props: NovelTemplate): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await NovelModel
 		.update(
 			props,
 			{ where: { id } }
 		);
+
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['novel'],
+		success: false
+	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
+
+	return result;
 };
 
 /**
@@ -109,17 +130,29 @@ export const updateNovel = (id: string | number, props: NovelTemplate): Promise<
  * 1) update novel's deleted field to be 1
  * 2) add novel to trash
  */
-export const deleteNovelTemp = (id: number | string): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const deleteNovelTemp = async (id: number | string): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		addTrash({ novel_id: id }),
 		updateNovel(id, { deleted: 1 })
 	]);
+
+	return {
+		type: 'deleteT',
+		tables: ['novel', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 // delete novel permanently
-export const deleteNovelPermanently = (id: number | string): Promise<DataUpdateResult> => {
-	return NovelModel
+export const deleteNovelPermanently = async (id: number | string): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await NovelModel
 		.destroy({
 			where: { id }
 		});
+
+	return {
+		type: 'deleteP',
+		tables: ['novel'],
+		success: dataResult === 1
+	};
 };

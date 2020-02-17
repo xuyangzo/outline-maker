@@ -40,55 +40,48 @@ export const getAllOutlineDetails = async (id: string, contents: OutlineContent)
 };
 
 // create new outline detail
-export const createOutlineDetail = (
+export const createOutlineDetail = async (
 	id: string, c_id: number, t_id: number, contentText: string
-): Promise<DataUpdateResult> => {
-	return OutlineDetails
+): Promise<WriteDataModel> => {
+	const outline: DataModel = await OutlineDetails
 		.create({
 			outline_id: id,
 			character_id: c_id,
 			timeline_id: t_id,
 			content: contentText
 		});
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['outline-detail'],
+		success: false
+	};
+	if (outline) {
+		result.id = outline.dataValues.id;
+		result.success = true;
+	}
+
+	return result;
 };
 
 // update outline detail
-export const updateOutlineDetail = (
+export const updateOutlineDetail = async (
 	id: string | number | undefined, contentText: string
-): Promise<DataUpdateResult> => {
-	return OutlineDetails
+): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await OutlineDetails
 		.update(
 			{ content: contentText },
 			{ where: { id } }
 		);
-};
 
-// delete all outline details related to a outline
-export const deleteOutlineDetailsGivenOutline = (outline_id: number | string): Promise<DataUpdateResult> => {
-	return OutlineDetails
-		.destroy({
-			where: {
-				outline_id
-			}
-		});
-};
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['outline-detail'],
+		success: false
+	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
 
-// delete all outline details related to a character
-export const deleteOutlineDetailsGivenChar = (character_id: number | string): Promise<DataUpdateResult> => {
-	return OutlineDetails
-		.destroy({
-			where: {
-				character_id
-			}
-		});
-};
-
-// delete all outline details related to a timeline
-export const deleteOutlineDetailsGivenTime = (timeline_id: number | string): Promise<DataUpdateResult> => {
-	return OutlineDetails
-		.destroy({
-			where: {
-				timeline_id
-			}
-		});
+	return result;
 };

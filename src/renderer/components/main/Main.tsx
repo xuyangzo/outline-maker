@@ -171,8 +171,7 @@ class Main extends React.Component<MainProps, MainState> {
 					createCharacter({
 						novel_id,
 						name: character.name,
-						color: character.color,
-						outline_id: id,
+						color: character.color
 					})
 				);
 			} else if (character.updated) {
@@ -415,12 +414,11 @@ class Main extends React.Component<MainProps, MainState> {
 		}
 
 		// update contents
-		this.setState((prevState: MainState) => ({
-			...prevState,
+		this.setState({
 			contents,
 			changed: true,
 			shouldScroll: false
-		}));
+		});
 	}
 
 	// set color of a character locally
@@ -456,7 +454,6 @@ class Main extends React.Component<MainProps, MainState> {
 		// get all timelines
 		getAllTimelines(id)
 			.then((timelines: TimelineDataValue[]) => {
-				// set timelines
 				this.setState({ timelines });
 			})
 			.catch((err: DatabaseError) => {
@@ -468,7 +465,6 @@ class Main extends React.Component<MainProps, MainState> {
 	getCharacters = (id: string) => {
 		getAllCharactersGivenOutline(id)
 			.then((characters: MainCharacterDataValue[]) => {
-				// set characters
 				this.setState({ characters });
 			})
 			.catch((err: DatabaseError) => {
@@ -480,8 +476,6 @@ class Main extends React.Component<MainProps, MainState> {
 	getContents = (id: string) => {
 		getAllOutlineDetails(id, this.state.contents)
 			.then((contents: OutlineContent) => {
-
-				// update contents
 				this.setState({
 					contents,
 					shouldScroll: true,

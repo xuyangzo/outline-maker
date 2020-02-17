@@ -101,39 +101,74 @@ export const getAllLocationsGivenIdList = async (idList: (string | number)[]): P
 };
 
 // update location
-export const updateLocation = (id: string | number, props: LocationTemplate): Promise<DataUpdateResult> => {
-	return LocationModel
+export const updateLocation = async (id: string | number, props: LocationTemplate): Promise<WriteDataModel> => {
+	const dataResults: DataUpdateResult = await LocationModel
 		.update(
 			props,
 			{ where: { id } }
 		);
+
+	const result: WriteDataModel = {
+		type: 'update',
+		tables: ['location'],
+		success: false
+	};
+	if (dataResults && dataResults.length && dataResults[0] === 1) {
+		result.success = true;
+	}
+
+	return result;
 };
 
 // create location
-export const createLocation = async (props: LocationTemplate): Promise<DataUpdateResult> => {
+export const createLocation = async (props: LocationTemplate): Promise<WriteDataModel> => {
 	// get the max order
 	const maxOrder: number | null = await LocationModel.max('novelPageOrder', { where: { novel_id: props.novel_id } });
-	return LocationModel
+	const location: DataModel = await LocationModel
 		.create({
 			...props,
 			novelPageOrder: (maxOrder || 0) + 1
 		});
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['location'],
+		success: false
+	};
+	if (location) {
+		result.id = location.dataValues.id;
+		result.success = true;
+	}
+
+	return result;
 };
 
 // delete location temporarily
-export const deleteLocationTemp = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const deleteLocationTemp = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		addTrash({ loc_id: id }),
 		updateLocation(id, { deleted: 1 })
 	]);
+
+	return {
+		type: 'deleteT',
+		tables: ['location', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 // delete location
-export const deleteLocationPermanently = (id: string | number): Promise<DataUpdateResult> => {
-	return LocationModel
+export const deleteLocationPermanently = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await LocationModel
 		.destroy({
 			where: { id }
 		});
+
+	return {
+		type: 'deleteP',
+		tables: ['location'],
+		success: dataResult === 1
+	};
 };
 
 // search location

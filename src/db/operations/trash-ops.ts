@@ -19,13 +19,19 @@ interface TrashTemplate {
  * helper functions
  */
 // delete novel from trash table
-const deleteTrashHelper = (id: string | number, type: string): Promise<DataUpdateResult> => {
-	return Trash
+const deleteTrashHelper = async (id: string | number, type: string): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await Trash
 		.destroy({
 			where: {
 				[type]: id
 			}
 		});
+
+	return {
+		type: 'helper',
+		tables: ['trash'],
+		success: dataResult === 1
+	};
 };
 
 /**
@@ -59,8 +65,16 @@ export const getAllTrashes = async (): Promise<TrashDataValue> => {
 };
 
 // add current novel/outline/character/location to trash table
-export const addTrash = (props: TrashTemplate): Promise<DataUpdateResult> => {
-	return Trash.create(props);
+export const addTrash = async (props: TrashTemplate): Promise<WriteDataModel> => {
+	const dataResult: DataModel = await Trash.create(props);
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['trash'],
+		success: false
+	};
+	if (dataResult) result.success = true;
+
+	return result;
 };
 
 /**
@@ -68,11 +82,17 @@ export const addTrash = (props: TrashTemplate): Promise<DataUpdateResult> => {
  * 1) update novel's deleted field to be 0
  * 2) delete novel from trash
  */
-export const putbackNovel = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const putbackNovel = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		deleteTrashHelper(id, 'novel_id'),
 		updateNovel(id, { deleted: 0 })
 	]);
+
+	return {
+		type: 'back',
+		tables: ['novel', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 /**
@@ -80,11 +100,17 @@ export const putbackNovel = (id: string | number): Promise<DataUpdateResults> =>
  * 1) update outline's deleted field to be 0
  * 2) delete outline from trash
  */
-export const putbackOutline = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const putbackOutline = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		deleteTrashHelper(id, 'outline_id'),
 		updateOutline(id, { deleted: 0 })
 	]);
+
+	return {
+		type: 'back',
+		tables: ['outline', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 /**
@@ -92,11 +118,17 @@ export const putbackOutline = (id: string | number): Promise<DataUpdateResults> 
  * 1) update character's deleted field to be 0
  * 2) delete character from trash
  */
-export const putbackCharacter = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const putbackCharacter = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		deleteTrashHelper(id, 'character_id'),
 		updateCharacter(id, { deleted: 0 })
 	]);
+
+	return {
+		type: 'back',
+		tables: ['character', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 /**
@@ -104,9 +136,15 @@ export const putbackCharacter = (id: string | number): Promise<DataUpdateResults
  * 1) update location's deleted field to be 0
  * 2) delete location from trash
  */
-export const putbackLocation = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise.all([
+export const putbackLocation = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
 		deleteTrashHelper(id, 'loc_id'),
 		updateLocation(id, { deleted: 0 })
 	]);
+
+	return {
+		type: 'back',
+		tables: ['location', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };

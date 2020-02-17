@@ -2,6 +2,9 @@
 declare module '*.png';
 declare module '*.jpg';
 
+// declare DatabaseError to be global
+declare type DatabaseError = import('sequelize').DatabaseError;
+
 // general template for result retrieved from database with sequelize
 interface DataModel {
   dataValues: any;
@@ -15,5 +18,15 @@ interface DataModel {
 type DataResult = DataModel | null;
 type DataResults = DataModel[];
 
-type DataUpdateResult = DataModel | number[];
-type DataUpdateResults = Array<DataModel | number[]>;
+interface WriteDataModel {
+  type: 'update' | 'create' | 'deleteT' | 'deleteP' | 'back' | 'helper' | 'mixed';
+  tables: string[];
+  success: boolean;
+  id?: number;
+}
+
+type DataUpdateResult = number[];
+type DataUpdateResults = DataUpdateResult[];
+
+type DataDeleteResult = number;
+type DataDeleteResults = number[];

@@ -9,8 +9,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelOutlineProps } from './novelOutlineDec';
-import { Outline, OutlineDataValue } from '../main/mainDec';
+import { NovelOutlineProps, NovelOutlineDataValue } from './novelOutlineDec';
 import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
@@ -30,7 +29,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
 	const [checkedList, setCheckedList] = React.useState<string[]>([]);
-	const [outlines, setOutlines] = React.useState<Outline[]>([]);
+	const [outlines, setOutlines] = React.useState<NovelOutlineDataValue[]>([]);
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -59,7 +58,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	React.useEffect(getOutlines, [props.match.params.novel_id]);
 
 	// when use press control + s
-	function onSavePress(e: KeyboardEvent, outlines: Outline[]) {
+	function onSavePress(e: KeyboardEvent, outlines: NovelOutlineDataValue[]) {
 		const controlPress = e.ctrlKey || e.metaKey;
 		const sPress = String.fromCharCode(e.which).toLowerCase() === 's';
 		if (controlPress && sPress) {
@@ -77,12 +76,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 		const currTimer: any = setTimeout(
 			() => {
 				searchOutline(novel_id, key)
-					.then((result: any) => {
-						const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-							const { id, title, description } = dataValues;
-							return { id, title, description };
-						});
-
+					.then((outlines: NovelOutlineDataValue[]) => {
 						// set outlines
 						setOutlines(outlines);
 					})
@@ -110,7 +104,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	function onCheckAllChange(e: CheckboxChangeEvent) {
 		const checked: boolean = e.target.checked;
 		// check all checkbox
-		if (checked) setCheckedList(outlines.map((outline: Outline) => outline.id.toString()));
+		if (checked) setCheckedList(outlines.map((outline: NovelOutlineDataValue) => outline.id.toString()));
 		// uncheck all checkbox
 		else setCheckedList([]);
 	}
@@ -121,9 +115,9 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	}
 
 	// save changes
-	function onSaveChanges(outlines: Outline[]) {
+	function onSaveChanges(outlines: NovelOutlineDataValue[]) {
 		// update orders
-		const promises: Promise<any>[] = outlines.map((outline: Outline, index: number) => {
+		const promises: Promise<any>[] = outlines.map((outline: NovelOutlineDataValue, index: number) => {
 			return updateOutline(outline.id, { novelPageOrder: index + 1 });
 		});
 
@@ -143,12 +137,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	// get all outlines
 	function getOutlines() {
 		getAllOutlinesGivenNovel(novel_id)
-			.then((result: any) => {
-				const outlines: Outline[] = result.map(({ dataValues }: { dataValues: OutlineDataValue }) => {
-					const { id, title, description } = dataValues;
-					return { id, title, description };
-				});
-
+			.then((outlines: NovelOutlineDataValue[]) => {
 				// set outlines
 				setOutlines(outlines);
 				// should render
@@ -160,7 +149,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	}
 
 	// single item (card)
-	const SortableItem = SortableElement(({ value }: { value: Outline }) => (
+	const SortableItem = SortableElement(({ value }: { value: NovelOutlineDataValue }) => (
 		<li className="card-li">
 			<div key={value.id} className="card-container">
 				<div className="card-edit-cover">
@@ -187,10 +176,10 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 	));
 
 	// list of cards
-	const SortableList = SortableContainer(({ items }: { items: Outline[] }) => {
+	const SortableList = SortableContainer(({ items }: { items: NovelOutlineDataValue[] }) => {
 		return (
 			<ul>
-				{items.map((value: Outline, index: number) => (
+				{items.map((value: NovelOutlineDataValue, index: number) => (
 					<SortableItem key={value.id} index={index} value={value} />
 				))}
 			</ul>

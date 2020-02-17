@@ -1,5 +1,5 @@
 import FavoriteModel from '../models/Favorite';
-import { getOutlinesGivenIdRange, updateOutlineFav, updateOutline } from '../operations/outline-ops';
+import { getOutlinesGivenIdRange, updateOutline } from '../operations/outline-ops';
 
 // type declaration
 import { FavoriteDataValue } from '../../renderer/components/favorite/favoriteDec';
@@ -8,21 +8,37 @@ import { FavoriteDataValue } from '../../renderer/components/favorite/favoriteDe
  * helper functions
  */
 // delete outline from favorite table
-export const deleteFavoriteHelper = (id: string | number): Promise<DataUpdateResult> => {
-	return FavoriteModel
+export const deleteFavoriteHelper = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await FavoriteModel
 		.destroy({
 			where: {
 				outline_id: id
 			}
 		});
+
+	return {
+		type: 'helper',
+		tables: ['favorite'],
+		success: dataResult === 1
+	};
 };
 
 // add current outline to favorite table
-const addFavoriteHelper = (id: string | number): Promise<DataUpdateResult> => {
-	return FavoriteModel
+const addFavoriteHelper = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataModel = await FavoriteModel
 		.create({
 			outline_id: id
 		});
+
+	const result: WriteDataModel = {
+		type: 'create',
+		tables: ['favorite'],
+		success: false
+	};
+
+	if (dataResult) result.success = true;
+
+	return result;
 };
 
 /**
@@ -64,19 +80,31 @@ export const findAllFavDetail = async (): Promise<FavoriteDataValue[]> => {
 };
 
 // cancel favorite and update outline table
-export const cancelFavorite = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise
+export const cancelFavorite = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise
 		.all([
 			deleteFavoriteHelper(id),
-			updateOutlineFav(id, 0)
+			updateOutline(id, { fav: 0 })
 		]);
+
+	return {
+		type: 'update',
+		tables: ['outline', 'favorite'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };
 
 // add to favorite and update outline
-export const addFavorite = (id: string | number): Promise<DataUpdateResults> => {
-	return Promise
+export const addFavorite = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise
 		.all([
 			updateOutline(id, { fav: 1 }),
 			addFavoriteHelper(id)
 		]);
+
+	return {
+		type: 'update',
+		tables: ['outline', 'favorite'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
 };

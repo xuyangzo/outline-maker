@@ -12,7 +12,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { CharacterProps, CharacterEditState, CharacterDataValue } from './characterDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getCharacter, updateCharacter } from '../../../db/operations/character-ops';

@@ -189,8 +189,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 	// save
 	onSave = () => {
 		createAndUpdateBackgrounds(this.state.novel_id, this.state.backgrounds)
-			.then((result: any) => {
-				console.log(result);
+			.then(() => {
 				Message.success('更新成功！');
 				// refresh background
 				this.setBackground();
