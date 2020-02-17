@@ -11,7 +11,6 @@ const fs = require('fs');
 
 // type declaration
 import { LocationProps, LocationState, LocationDataValue } from './locationDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getLocation, updateLocation } from '../../../db/operations/location-ops';

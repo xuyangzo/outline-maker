@@ -3,7 +3,6 @@ import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
 import { LocationTrashProps, TrashLocationDataValue } from './locationTrashDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getAllLocationsGivenIdList, deleteLocationPermanently } from '../../../../db/operations/location-ops';

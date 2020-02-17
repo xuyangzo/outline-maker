@@ -9,7 +9,6 @@ import { withRouter } from 'react-router-dom';
 
 // type decalaration
 import { SidebarProps, SidebarState, NovelSidebarDataValue, CreateNovelModalTemplate } from './sidebarDec';
-import { DatabaseError } from 'sequelize';
 import { ClickParam } from 'antd/lib/menu';
 
 // database operation

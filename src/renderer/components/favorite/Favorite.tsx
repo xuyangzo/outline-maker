@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { DatabaseError } from 'sequelize';
 import { FavoriteProps, FavoriteState, FavoriteDataValue } from './favoriteDec';
 
 // database operations

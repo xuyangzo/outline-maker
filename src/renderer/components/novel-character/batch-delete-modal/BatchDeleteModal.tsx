@@ -6,7 +6,6 @@ import { deleteCharacterTemp } from '../../../../db/operations/character-ops';
 
 // type declaration
 import { BatchDeleteModalProps } from './batchDeleteModalDec';
-import { DatabaseError } from 'sequelize';
 
 const BatchDeleteModal = (props: BatchDeleteModalProps) => {
 	const { showModel, checkedList, closeModel, refreshCharacter, clearCheckedList } = props;

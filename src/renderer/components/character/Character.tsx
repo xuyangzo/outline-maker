@@ -7,7 +7,6 @@ import { withRouter, Link } from 'react-router-dom';
 
 // type declaration
 import { CharacterProps, CharacterState, OutlineCharacterDataValue, CharacterDataValue } from './characterDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getCharacter } from '../../../db/operations/character-ops';

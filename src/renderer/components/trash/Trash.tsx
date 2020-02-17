@@ -13,7 +13,6 @@ import OutlineTrash from './outline-trash/OutlineTrash';
 import LocationTrash from './location-trash/LocationTrash';
 
 // type declaration
-import { DatabaseError } from 'sequelize';
 import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
 
 // database operations

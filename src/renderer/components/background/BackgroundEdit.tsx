@@ -11,7 +11,6 @@ import {
 	BackgroundProps, BackgroundEditState as BackgroundState,
 	BackgroundEditDec, BackgroundDataValue
 } from './BackgroundDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getBackgroundsGivenNovel, createAndUpdateBackgrounds } from '../../../db/operations/background-ops';

@@ -8,7 +8,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { NovelLocationProps, NovelLocationDataValue } from './novelLocationDec';
-import { DatabaseError } from 'sequelize';
 
 // custom components
 import LocationModal from './location-modal/LocationModal';

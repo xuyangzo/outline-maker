@@ -7,7 +7,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { LocationProps, LocationState, LocationDataValue } from './locationDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getLocation } from '../../../db/operations/location-ops';

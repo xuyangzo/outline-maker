@@ -9,7 +9,6 @@
 // // type declaration
 // import { NovelInventoryProps } from './NovelInventoryDec';
 // import { Outline, OutlineDataValue } from '../main/mainDec';
-// import { DatabaseError } from 'sequelize';
 
 // // custom components
 // import InventoryModal from './inventory-modal/InventoryModal';

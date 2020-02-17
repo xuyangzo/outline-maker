@@ -4,7 +4,6 @@ const { Option } = Select;
 
 // type declaration
 import { CharacterModalProps, CharacterModalState, CharacterMainDataValue } from './characterModalDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getAllValidCharacters } from '../../../../db/operations/character-ops';

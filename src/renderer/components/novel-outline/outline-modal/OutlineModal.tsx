@@ -4,7 +4,6 @@ const { TextArea } = Input;
 
 // type declaration
 import { OutlineModalProps, OutlineModalTemplate } from './outlineModalDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { createOutline } from '../../../../db/operations/outline-ops';

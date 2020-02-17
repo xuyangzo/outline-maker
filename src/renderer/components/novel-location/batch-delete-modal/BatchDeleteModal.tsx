@@ -6,7 +6,6 @@ import { deleteLocationTemp } from '../../../../db/operations/location-ops';
 
 // type declaration
 import { BatchDeleteModalProps } from './batchDeleteModalDec';
-import { DatabaseError } from 'sequelize';
 
 const BatchDeleteModal = (props: BatchDeleteModalProps) => {
 	const { showModel, checkedList, closeModel, refreshLocation, clearCheckedList } = props;

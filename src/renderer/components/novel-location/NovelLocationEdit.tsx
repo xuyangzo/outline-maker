@@ -10,7 +10,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { NovelLocationProps, NovelLocationDataValue } from './novelLocationDec';
-import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components

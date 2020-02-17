@@ -9,7 +9,6 @@ import { deleteNovelTemp } from '../../../../db/operations/novel-ops';
 
 // type declaration
 import { NovelModalProps } from './novelModalDec';
-import { DatabaseError } from 'sequelize';
 
 const NovelModal = (props: NovelModalProps) => {
 	const { showModal, id, closeModal, refreshSidebar } = props;

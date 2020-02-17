@@ -6,7 +6,6 @@ import { createLocation } from '../../../../db/operations/location-ops';
 
 // type declaration
 import { LocationModalProps } from './locationModalDec';
-import { DatabaseError } from 'sequelize';
 
 const LocationModal = (props: LocationModalProps) => {
 	const { showModal, novel_id, closeModal, refreshLocation } = props;

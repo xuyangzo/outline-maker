@@ -6,7 +6,6 @@ import { deleteOutlineTemp } from '../../../../db/operations/outline-ops';
 
 // type declaration
 import { BatchDeleteModalProps } from './batchDeleteModalDec';
-import { DatabaseError } from 'sequelize';
 
 const BatchDeleteModal = (props: BatchDeleteModalProps) => {
 	const { showModel, checkedList, closeModel, refreshOutline, clearCheckedList } = props;

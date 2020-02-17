@@ -3,7 +3,6 @@ import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
 import { OutlineTrashProps, OutlineTrashDataValue } from './outlineTrashDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getAllOutlinesGivenIdList, deleteOutlinePermanently } from '../../../../db/operations/outline-ops';

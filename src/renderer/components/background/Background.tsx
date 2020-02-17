@@ -7,7 +7,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { BackgroundProps, BackgroundState, BackgroundDec, BackgroundDataValue } from './backgroundDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getBackgroundsGivenNovel } from '../../../db/operations/background-ops';

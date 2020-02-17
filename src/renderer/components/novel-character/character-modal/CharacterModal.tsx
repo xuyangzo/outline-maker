@@ -7,7 +7,6 @@ import { createCharacter } from '../../../../db/operations/character-ops';
 
 // type declaration
 import { CharacterModelProps } from './characterModalDec';
-import { DatabaseError } from 'sequelize';
 
 const CharacterModal = (props: CharacterModelProps) => {
 	const { showModal, novel_id, closeModal, refreshCharacter } = props;

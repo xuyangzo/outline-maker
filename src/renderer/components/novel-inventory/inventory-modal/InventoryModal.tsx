@@ -8,7 +8,6 @@ import { createInventory } from '../../../../db/operations/inventory-ops';
 
 // type declaration
 import { InventoryModalProps } from './inventoryModalDec';
-import { DatabaseError } from 'sequelize';
 
 // utils
 import { inventoryCategories } from '../../../utils/constants';

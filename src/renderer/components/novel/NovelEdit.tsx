@@ -12,7 +12,6 @@ import NovelModal from './novel-modal/NovelModal';
 
 // type declaration
 import { NovelProps, NovelDataValue } from './novelDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getNovel, updateNovel } from '../../../db/operations/novel-ops';

@@ -14,7 +14,6 @@ import { withRouter } from 'react-router-dom';
 
 // type decalration
 import { MainHeaderProps, MainHeaderState } from './mainHeaderDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { isFavorite, addFavorite, cancelFavorite } from '../../../db/operations/fav-ops';

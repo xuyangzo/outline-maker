@@ -9,7 +9,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { NovelCharacterProps, NovelCharacterDataValues, NovelCharacterDataValue } from './novelCharacterDec';
-import { DatabaseError } from 'sequelize';
 
 // custom components
 import CharacterModal from './character-modal/CharacterModal';

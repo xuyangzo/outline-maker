@@ -10,7 +10,6 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import { NovelOutlineProps, NovelOutlineDataValue } from './novelOutlineDec';
-import { DatabaseError } from 'sequelize';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components

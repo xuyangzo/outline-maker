@@ -3,7 +3,6 @@ import { Col, message as Message, Card, Row, Modal, Button } from 'antd';
 
 // type declaration
 import { CharacterTrashProps, CharacterTrashDataValue } from './characterTrashDec';
-import { DatabaseError } from 'sequelize';
 
 // database operations
 import { getAllCharactersGivenIdList, deleteCharacterPermanently } from '../../../../db/operations/character-ops';
