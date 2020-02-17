@@ -24,12 +24,12 @@ export const getAllInventoriesGivenNovel = (id: number | string): Promise<any> =
 };
 
 // create new inventory
-export const createInventory = (props: InventoryTemplate): Promise<any> => {
+export const createInventory = (props: InventoryTemplate): Promise<DataUpdateResult> => {
 	return InventoryModel.create(props);
 };
 
 // update inventory
-export const updateInventory = (id: string | number, props: InventoryTemplate): Promise<any> => {
+export const updateInventory = (id: string | number, props: InventoryTemplate): Promise<DataUpdateResult> => {
 	return InventoryModel
 		.update(
 			props,
@@ -38,7 +38,7 @@ export const updateInventory = (id: string | number, props: InventoryTemplate): 
 };
 
 // temporarily delete inventory
-export const deleteInventoryTemp = (id: string | number): Promise<any> => {
+export const deleteInventoryTemp = (id: string | number): Promise<DataUpdateResults> => {
 	return Promise.all([
 		updateInventory(id, { deleted: 1 })
 	]);

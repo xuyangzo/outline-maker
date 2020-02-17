@@ -15,7 +15,7 @@ import { withRouter } from 'react-router-dom';
 // type declaration
 import {
 	MainProps, MainState, MainCharacter, MainCharacterDataValue, OutlineDataValue,
-	TimelineDataValue, MainTimeline, OutlineDetailDataValue, ContentCard
+	TimelineDataValue, MainTimeline, OutlineDetailDataValue, ContentCard, OutlineContent
 } from './mainDec';
 import { CharacterDataValue } from '../character/characterDec';
 import { DatabaseError } from 'sequelize';
@@ -478,37 +478,15 @@ class Main extends React.Component<MainProps, MainState> {
 
 	// get all content cards
 	getContents = (id: string) => {
-		getAllOutlineDetails(id)
-			.then((result: any) => {
-				const { contents } = this.state;
-				result.forEach(({ dataValues }: { dataValues: OutlineDetailDataValue }) => {
-					const { id, character_id, timeline_id, content } = dataValues;
-					const card: ContentCard = { id, content };
-
-					/**
-					 * if current map does not have corresponding character_id
-					 * create a new map for <timeline_id, content>
-					 * and insert it into contents
-					 */
-					if (!contents.has(character_id)) {
-						const timelineMap = new Map<number, ContentCard>([[timeline_id, card]]);
-						contents.set(character_id, timelineMap);
-					} else {
-						/**
-						 * otherwise, add content to existing timelineMap
-						 */
-						const timelineMap: Map<number, ContentCard> = contents.get(character_id) || new Map();
-						timelineMap.set(timeline_id, card);
-					}
-				});
+		getAllOutlineDetails(id, this.state.contents)
+			.then((contents: OutlineContent) => {
 
 				// update contents
-				this.setState((prevState: MainState) => ({
-					...prevState,
+				this.setState({
 					contents,
 					shouldScroll: true,
 					shouldRender: true
-				}));
+				});
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);

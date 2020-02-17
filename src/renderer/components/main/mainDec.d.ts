@@ -52,8 +52,6 @@ export interface OutlineDetailDataValue {
 	character_id: number;
 	timeline_id: number;
 	content: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export type ContentCard = {
