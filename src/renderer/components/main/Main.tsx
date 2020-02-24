@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, message as Message, Icon } from 'antd';
+import { Col, message as Message } from 'antd';
 import classnames from 'classnames';
 
 // custom components

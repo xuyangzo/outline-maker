@@ -186,7 +186,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 		<Col
 			span={19}
 			className={
-				classnames('novel-character', {
+				classnames('novel-character right-container', {
 					'main-grow': !expand
 				})
 			}

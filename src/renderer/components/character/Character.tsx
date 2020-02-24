@@ -82,7 +82,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			<Col
 				span={19}
 				className={
-					classnames('character', {
+					classnames('character right-container', {
 						'main-grow': !expand
 					})
 				}

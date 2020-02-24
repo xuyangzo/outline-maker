@@ -134,7 +134,7 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			<Col
 				span={19}
 				className={
-					classnames('location', {
+					classnames('location right-container', {
 						'main-grow': !expand
 					})
 				}

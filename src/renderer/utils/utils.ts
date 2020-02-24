@@ -38,11 +38,12 @@ export const getSelectedKey = (pathname: string): string => {
 	if (pathname.indexOf('novel') !== -1) return pathname.replace('/edit', '');
 	if (pathname.indexOf('background') !== -1) return pathname.replace('/edit', '');
 
-	// all the characters/locations/outlines page
+	// all the characters/locations/outlines/inventory page
 	if (
 		pathname.indexOf('characters') !== -1 ||
 		pathname.indexOf('locations') !== -1 ||
-		pathname.indexOf('outlines') !== -1
+		pathname.indexOf('outlines') !== -1 ||
+		pathname.indexOf('inventories') !== -1
 	) {
 		return pathname.replace('/edit', '');
 	}

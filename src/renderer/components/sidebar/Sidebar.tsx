@@ -233,6 +233,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 										<Menu.Item key={`/characters/${novel.id}`} onClick={this.select}>人物列表</Menu.Item>
 										<Menu.Item key={`/locations/${novel.id}`} onClick={this.select}>势力列表</Menu.Item>
 										<Menu.Item key={`/outlines/${novel.id}`} onClick={this.select}>大纲列表</Menu.Item>
+										<Menu.Item key={`/inventories/${novel.id}`} onClick={this.select}>道具列表</Menu.Item>
 									</SubMenu>
 								))
 							}

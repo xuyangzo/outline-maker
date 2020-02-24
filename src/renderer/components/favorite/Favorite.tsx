@@ -81,7 +81,7 @@ class Favorite extends React.Component<FavoriteProps, FavoriteState> {
 			<Col
 				span={19}
 				className={
-					classnames('favorite', {
+					classnames('favorite right-container', {
 						'main-grow': !expand
 					})
 				}

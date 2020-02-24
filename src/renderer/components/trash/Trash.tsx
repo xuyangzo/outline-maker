@@ -77,7 +77,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			<Col
 				span={19}
 				className={
-					classnames('trash', {
+					classnames('trash right-container', {
 						'main-grow': !expand
 					})
 				}

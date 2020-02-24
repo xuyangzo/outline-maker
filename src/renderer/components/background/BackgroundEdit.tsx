@@ -236,7 +236,7 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			<Col
 				span={19}
 				className={
-					classnames('background-page', {
+					classnames('background-page right-container', {
 						'main-grow': !expand
 					})
 				}

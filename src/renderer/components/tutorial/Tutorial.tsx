@@ -20,7 +20,7 @@ export default class Tutorial extends React.Component<TutorialProps, TutorialSta
 			<Col
 				span={19}
 				className={
-					classnames('tutorial', {
+					classnames('tutorial right-container', {
 						'main-grow': !expand
 					})
 				}

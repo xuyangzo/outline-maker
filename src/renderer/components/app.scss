@@ -37,6 +37,14 @@
   }
 }
 
+.right-container {
+  transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
+  float: right;
+  height: 100vh;
+  overflow-y: scroll;
+  width: calc(100% - 300px);
+}
+
 @keyframes openDisappear {
   0% {
     opacity: 1;

@@ -1,10 +1,4 @@
 .novel-character {
-  transition: width 0.7s cubic-bezier(0.075, 0.82, 0.165, 1);
-  float: right;
-  height: 100vh;
-  overflow-y: scroll;
-  width: calc(100% - 300px);
-
   .novel-character-container {
     padding-left: 40px;
     padding-top: 10px;
