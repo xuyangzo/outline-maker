@@ -10,6 +10,7 @@ import TimelineModel from './models/Timeline';
 import InventoryModel from './models/Inventories';
 import TrashModel from './models/Trash';
 import CharacterOutlineModel from './models/CharacterOutlines';
+import CharacterInventoryModel from './models/CharacterInventories';
 
 // foreign keys for novel model
 NovelModel.hasMany(OutlineModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
@@ -34,7 +35,7 @@ BackgroundModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCA
 CharacterModel.hasMany(OutlineDetailModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.hasMany(TrashModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.hasMany(CharacterOutlineModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
-CharacterModel.hasMany(InventoryModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+CharacterModel.hasMany(CharacterInventoryModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
 CharacterModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for location model
@@ -66,8 +67,14 @@ CharacterOutlineModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDele
 
 // foreign keys for inventories model
 InventoryModel.hasMany(TrashModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
-InventoryModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+InventoryModel.hasMany(CharacterInventoryModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
 InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
+
+// foreign keys for character_inventory model
+CharacterInventoryModel
+	.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+CharacterInventoryModel
+	.belongsTo(InventoryModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
 
 /**
  * enable the following only in development mode
@@ -88,6 +95,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		categories: '豪门,孤儿,盗贼,特种兵'
 	});
 
+	// create outlines
 	await OutlineModel.create({
 		title: '第一卷 刘姥姥初试云雨情',
 		description: `书中自有颜如玉，书中自有黄金屋。
@@ -109,6 +117,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		novelPageOrder: 2
 	});
 
+	// create background
 	await BackgroundModel.create({
 		novel_id: 1,
 		title: '世界观',
@@ -117,7 +126,6 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 	3. 在这个世界里，所有主角身边的人智商都为20，包括女主
 	4. 不是现实世界，不要对号入座`
 	});
-
 	await BackgroundModel.create({
 		novel_id: 1,
 		title: '圣者',
@@ -127,6 +135,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 	圣者诞生的目的就是为了对抗破灭天魔，虽然也顺便处理过一些别的魂兽（如玛丽雷基）`
 	});
 
+	// create locations
 	await LocationModel.create({
 		novel_id: 1,
 		name: '天之塔',
@@ -153,6 +162,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		novelPageOrder: 3
 	});
 
+	// create characters
 	await CharacterModel.create({
 		novel_id: 1,
 		name: '大佬',
@@ -195,15 +205,23 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		novelPageOrder: 4
 	});
 
+	// create inventories
 	await InventoryModel.create({
 		novel_id: 1,
-		character_id: 1,
 		name: '波纹疾走',
 		description: '最强的欧巴多啦A梦！',
 		category: '技能',
 		deleted: 0
 	});
+	await InventoryModel.create({
+		novel_id: 1,
+		name: '人生重来枪',
+		description: '一枪就能重来人生！',
+		category: '法宝',
+		deleted: 0
+	});
 
+	// set relations for character-outline
 	await CharacterOutlineModel.create({
 		character_id: 1,
 		outline_id: 1
@@ -221,6 +239,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		outline_id: 2
 	});
 
+	// create timelines
 	await TimelineModel.create({
 		outline_id: 1,
 		time: '1990年'
@@ -234,6 +253,7 @@ InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCAD
 		time: '1992年'
 	});
 
+	// create outline details
 	await OutlineDetailModel.create({
 		outline_id: 1,
 		timeline_id: 1,

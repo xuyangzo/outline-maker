@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS character_outlines;
 DROP TABLE IF EXISTS timelines;
 DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS inventories;
+DROP TABLE IF EXISTS character_inventories;
 DROP TABLE IF EXISTS outlines;
 DROP TABLE IF EXISTS backgrounds;
 DROP TABLE IF EXISTS novels;
@@ -130,7 +131,6 @@ CREATE TABLE inventories
 (
   inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
   novel_id INTEGER,
-  character_id INTEGER,
   name TEXT,
   description TEXT,
   category TEXT,
@@ -141,6 +141,15 @@ CREATE TABLE inventories
   FOREIGN KEY (novel_id) REFERENCES novels (id),
   FOREIGN KEY (character_id) REFERENCES characters (character_id)
 )
+
+create table character_inventories
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  inventory_id INTEGER,
+  character_id INTEGER,
+  FOREIGN KEY (inventory_id) REFERENCES inventories (inventory_id),
+  FOREIGN KEY (character_id) REFERENCES characters (character_id)
+);
 
 CREATE TABLE favorites
 (
