@@ -6,7 +6,7 @@ const Inventories = sequelize.define(
 	'inventories',
 	{
 		id: {
-			field: 'id',
+			field: 'inventory_id',
 			type: Sequelize.INTEGER,
 			primaryKey: true,
 			autoIncrement: true

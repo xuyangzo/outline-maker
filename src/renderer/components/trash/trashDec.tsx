@@ -5,6 +5,7 @@ export interface TrashDataValue {
 	outlines: number[];
 	characters: number[];
 	locations: number[];
+	inventories: number[];
 }
 
 export interface TrashProps extends RouteComponentProps {
@@ -18,6 +19,7 @@ export interface TrashState {
 	outlines: number[];
 	characters: number[];
 	locations: number[];
+	inventories: number[];
 	shouldRender: boolean;
 	batchDelete: boolean;
 	showClearModal: boolean;

@@ -4,6 +4,7 @@ import { addTrash } from './trash-ops';
 
 // type declaration
 import { NovelInventoryDataValue } from '../../renderer/components/novel-inventory/novelInventoryDec';
+import { TrashInventoryDataValue } from '../../renderer/components/trash/inventory-trash/inventoryTrashDec';
 
 interface InventoryTemplate {
 	novel_id?: string;
@@ -25,6 +26,32 @@ export const getAllInventoriesGivenNovel = async (id: number | string): Promise<
 			}
 		});
 
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
+};
+
+/**
+ * helper function
+ * get inventory id and name given id
+ */
+const getInventoryHelper = (id: string | number): Promise<DataModel> => {
+	return InventoryModel
+		.findOne({
+			attributes: ['id', 'name'],
+			where: { id }
+		});
+};
+
+// get all inventories by their id
+export const getAllInventoriesGivenIdList = async (idList: (string | number)[]): Promise<TrashInventoryDataValue[]> => {
+	const promises: Promise<DataModel>[] = idList.map((invId: number | string) => {
+		return getInventoryHelper(invId);
+	});
+
+	const dataResults: DataResults = await Promise.all(promises);
 	if (dataResults && dataResults.length) {
 		return dataResults.map((result: DataModel) => result.dataValues);
 	}
@@ -73,13 +100,27 @@ export const updateInventory = async (id: string | number, props: InventoryTempl
 export const deleteInventoryTemp = async (id: string | number): Promise<WriteDataModel> => {
 	const dataResults: WriteDataModel[] = await Promise.all([
 		updateInventory(id, { deleted: 1 }),
-		// addTrash({ inventory_id: id })
+		addTrash({ inventory_id: id })
 	]);
 
 	return {
 		type: 'deleteT',
 		tables: ['inventory', 'trash'],
 		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
+};
+
+// permanently delete inventory
+export const deleteInventoryPermanently = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResult: DataDeleteResult = await InventoryModel
+		.destroy({
+			where: { id }
+		});
+
+	return {
+		type: 'deleteP',
+		tables: ['inventory'],
+		success: dataResult === 1
 	};
 };
 

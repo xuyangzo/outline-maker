@@ -16,6 +16,7 @@ NovelModel.hasMany(OutlineModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', 
 NovelModel.hasMany(BackgroundModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 NovelModel.hasMany(CharacterModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 NovelModel.hasMany(LocationModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
+NovelModel.hasMany(InventoryModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 NovelModel.hasMany(TrashModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for outline model
@@ -57,13 +58,16 @@ TrashModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CA
 TrashModel.belongsTo(LocationModel, { foreignKey: 'loc_id', onDelete: 'CASCADE', constraints: true });
 TrashModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 TrashModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
+TrashModel.belongsTo(InventoryModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for character_outlines model
 CharacterOutlineModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
 CharacterOutlineModel.belongsTo(OutlineModel, { foreignKey: 'outline_id', onDelete: 'CASCADE', constraints: true });
 
 // foreign keys for inventories model
+InventoryModel.hasMany(TrashModel, { foreignKey: 'inventory_id', onDelete: 'CASCADE', constraints: true });
 InventoryModel.belongsTo(CharacterModel, { foreignKey: 'character_id', onDelete: 'CASCADE', constraints: true });
+InventoryModel.belongsTo(NovelModel, { foreignKey: 'novel_id', onDelete: 'CASCADE', constraints: true });
 
 /**
  * enable the following only in development mode

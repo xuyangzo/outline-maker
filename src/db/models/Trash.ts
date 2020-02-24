@@ -27,6 +27,10 @@ const Trash = sequelize.define(
 			field: 'loc_id',
 			type: Sequelize.INTEGER
 		},
+		inventory_id: {
+			field: 'inventory_id',
+			type: Sequelize.INTEGER
+		},
 		createdAt: {
 			field: 'created_at',
 			type: Sequelize.DATE,

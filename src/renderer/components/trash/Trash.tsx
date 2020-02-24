@@ -11,6 +11,7 @@ import NovelTrash from './novel-trash/NovelTrash';
 import CharacterTrash from './character-trash/CharacterTrash';
 import OutlineTrash from './outline-trash/OutlineTrash';
 import LocationTrash from './location-trash/LocationTrash';
+import InventoryTrash from './inventory-trash/InventoryTrash';
 
 // type declaration
 import { TrashProps, TrashState, TrashDataValue } from './TrashDec';
@@ -32,6 +33,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 			outlines: [],
 			characters: [],
 			locations: [],
+			inventories: [],
 			shouldRender: false,
 			batchDelete: false,
 			showClearModal: false
@@ -46,8 +48,8 @@ class Trash extends React.Component<TrashProps, TrashState> {
 	getTrashes = () => {
 		getAllTrashes()
 			.then((result: TrashDataValue) => {
-				const { novels, outlines, characters, locations } = result;
-				this.setState({ novels, outlines, characters, locations, shouldRender: true });
+				const { novels, outlines, characters, locations, inventories } = result;
+				this.setState({ novels, outlines, characters, locations, inventories, shouldRender: true });
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -71,7 +73,10 @@ class Trash extends React.Component<TrashProps, TrashState> {
 
 	render() {
 		const { expand, refreshSidebar } = this.props;
-		const { shouldRender, novels, outlines, characters, locations, batchDelete, showClearModal } = this.state;
+		const {
+			shouldRender, novels, outlines, characters, locations,
+			inventories, batchDelete, showClearModal
+		} = this.state;
 
 		return (
 			<Col
@@ -95,7 +100,13 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						) : ''
 				}
 				{
-					!novels.length && !outlines.length && !characters.length && !locations.length && shouldRender && (
+					!novels.length &&
+					!outlines.length &&
+					!characters.length &&
+					!locations.length &&
+					!inventories.length &&
+					shouldRender &&
+					(
 						<div className="empty-trash">
 							<h2>垃圾箱是空的哟...</h2>
 							<br />
@@ -103,7 +114,7 @@ class Trash extends React.Component<TrashProps, TrashState> {
 						</div>
 					)
 				}
-				<Collapse defaultActiveKey={['novels', 'characters', 'locations', 'outlines']}>
+				<Collapse defaultActiveKey={['novels', 'characters', 'locations', 'outlines', 'inventories']}>
 					{
 						novels.length && shouldRender && (
 							<Panel header="小说列表" key="novels">
@@ -143,6 +154,17 @@ class Trash extends React.Component<TrashProps, TrashState> {
 							<Panel header="大纲列表" key="outlines">
 								<OutlineTrash
 									outlines={outlines}
+									refresh={this.getTrashes}
+									batchDelete={batchDelete}
+								/>
+							</Panel>
+						)
+					}
+					{
+						inventories.length && shouldRender && (
+							<Panel header="道具列表" key="inventories">
+								<InventoryTrash
+									inventories={inventories}
 									refresh={this.getTrashes}
 									batchDelete={batchDelete}
 								/>

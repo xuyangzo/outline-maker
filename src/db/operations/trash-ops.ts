@@ -3,6 +3,7 @@ import { updateNovel } from './novel-ops';
 import { updateOutline } from './outline-ops';
 import { updateCharacter } from './character-ops';
 import { updateLocation } from './location-ops';
+import { updateInventory } from './inventory-ops';
 
 // type declaration
 import { TrashDataValue } from '../../renderer/components/trash/trashDec';
@@ -13,6 +14,7 @@ interface TrashTemplate {
 	outline_id?: string | number;
 	character_id?: string | number;
 	loc_id?: string | number;
+	inventory_id?: string | number;
 }
 
 /**
@@ -45,11 +47,12 @@ export const getAllTrashes = async (): Promise<TrashDataValue> => {
 	const outlines: number[] = [];
 	const characters: number[] = [];
 	const locations: number[] = [];
+	const inventories: number[] = [];
 
 	if (dataResults && dataResults.length) {
 		// filter novels, outlines, characters, locations
 		dataResults.forEach((result: DataModel) => {
-			const { novel_id, outline_id, character_id, loc_id } = result.dataValues;
+			const { novel_id, outline_id, character_id, loc_id, inventory_id } = result.dataValues;
 			/**
 			 * each array does not conflict with each other
 			 * which is based on the database structure
@@ -58,10 +61,11 @@ export const getAllTrashes = async (): Promise<TrashDataValue> => {
 			if (outline_id) outlines.push(outline_id);
 			if (character_id) characters.push(character_id);
 			if (loc_id) locations.push(loc_id);
+			if (inventory_id) inventories.push(inventory_id);
 		});
 	}
 
-	return { novels, outlines, characters, locations };
+	return { novels, outlines, characters, locations, inventories };
 };
 
 // add current novel/outline/character/location to trash table
@@ -145,6 +149,24 @@ export const putbackLocation = async (id: string | number): Promise<WriteDataMod
 	return {
 		type: 'back',
 		tables: ['location', 'trash'],
+		success: dataResults.every((result: WriteDataModel) => result.success)
+	};
+};
+
+/**
+ * put back inventory
+ * 1) update inventory's deleted field to be 0
+ * 2) delete inventory from trash
+ */
+export const putbackInventory = async (id: string | number): Promise<WriteDataModel> => {
+	const dataResults: WriteDataModel[] = await Promise.all([
+		deleteTrashHelper(id, 'inventory_id'),
+		updateInventory(id, { deleted: 0 })
+	]);
+
+	return {
+		type: 'back',
+		tables: ['inventory', 'trash'],
 		success: dataResults.every((result: WriteDataModel) => result.success)
 	};
 };

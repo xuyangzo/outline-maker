@@ -128,7 +128,7 @@ CREATE TABLE outline_details
 
 CREATE TABLE inventories
 (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
   novel_id INTEGER,
   character_id INTEGER,
   name TEXT,
@@ -138,6 +138,7 @@ CREATE TABLE inventories
   deleted INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (novel_id) REFERENCES novels (id),
   FOREIGN KEY (character_id) REFERENCES characters (character_id)
 )
 
@@ -157,10 +158,12 @@ CREATE TABLE trashes
   outline_id INTEGER,
   character_id INTEGER,
   loc_id INTEGER,
+  inventory_id INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (novel_id) REFERENCES novels (id),
   FOREIGN KEY (outline_id) REFERENCES outlines (id),
   FOREIGN KEY (character_id) REFERENCES characters (character_id),
-  FOREIGN KEY (loc_id) REFERENCES locations (loc_id)
+  FOREIGN KEY (loc_id) REFERENCES locations (loc_id),
+  FOREIGN KEY (inventory_id) REFERENCES inventories (inventory_id)
 );
