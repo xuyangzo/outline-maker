@@ -216,9 +216,22 @@ CharacterInventoryModel
 	await InventoryModel.create({
 		novel_id: 1,
 		name: '人生重来枪',
-		description: '一枪就能重来人生！',
+		description: `1. 一枪就能重来人生！
+		2. 任何人都能用！
+		3. 只有傻逼才会100%地发挥作用！
+		4. 无论如何，我们都可以保证，这段话一定是用来凑数的，而且我们要保证，这段话一定要特别长长长长长长长长长长18cm`,
 		category: '法宝',
 		deleted: 0
+	});
+
+	// set relations for character-inventory
+	await CharacterInventoryModel.create({
+		character_id: 1,
+		inventory_id: 1
+	});
+	await CharacterInventoryModel.create({
+		character_id: 2,
+		inventory_id: 2
 	});
 
 	// set relations for character-outline

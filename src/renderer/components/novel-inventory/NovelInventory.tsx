@@ -18,6 +18,9 @@ import {
 	searchInventory
 } from '../../../db/operations/inventory-ops';
 
+// sass
+import './novel-inventory.scss';
+
 // image
 import empty from '../../../public/empty-character.png';
 
@@ -112,7 +115,7 @@ const NovelInventory = (props: NovelInventoryProps) => {
 		<Col
 			span={19}
 			className={
-				classnames('novel-character right-container', {
+				classnames('novel-character right-container novel-inventory', {
 					'main-grow': !expand
 				})
 			}
@@ -171,8 +174,12 @@ const NovelInventory = (props: NovelInventoryProps) => {
 								className="novel-custom-card outline-card"
 							// onClick={onOpenDetailModel}
 							>
-								<img src={inventory.image} alt="暂时没有图片..." />
-								<p>{inventory.description}</p>
+								{
+									inventory.image && (
+										<img src={inventory.image} className="inventory-image" alt="暂时没有图片..." />
+									)
+								}
+								<p className="overflow-ellipsis">{inventory.description}</p>
 							</Card>
 						</Col>
 					))

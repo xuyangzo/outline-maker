@@ -6,7 +6,7 @@ const { Option } = Select;
 import { CharacterModalProps, CharacterModalState, CharacterMainDataValue } from './characterModalDec';
 
 // database operations
-import { getAllValidCharacters } from '../../../../db/operations/character-ops';
+import { getAllValidCharactersForOutline } from '../../../../db/operations/character-ops';
 
 class CharacterModal extends React.Component<CharacterModalProps, CharacterModalState> {
 	constructor(props: CharacterModalProps) {
@@ -19,7 +19,7 @@ class CharacterModal extends React.Component<CharacterModalProps, CharacterModal
 	}
 
 	componentDidMount = () => {
-		getAllValidCharacters(this.props.novel_id, this.props.outline_id)
+		getAllValidCharactersForOutline(this.props.novel_id, this.props.outline_id)
 			.then((characters: CharacterMainDataValue[]) => {
 				// set characters
 				this.setState({ characters });

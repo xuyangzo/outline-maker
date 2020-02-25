@@ -70,7 +70,7 @@ export const tags = [
 ];
 
 export const inventoryCategories = [
-	'功法', '法宝', '丹药', '草药', '怪兽', '装备', '材料', '招式'
+	'功法', '法宝', '丹药', '草药', '魔兽', '装备', '材料', '招式'
 ];
 
 interface BackgroundIllustrations {

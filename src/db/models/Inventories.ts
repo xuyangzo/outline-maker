@@ -34,7 +34,14 @@ const Inventories = sequelize.define(
 		},
 		description: {
 			field: 'description',
-			type: Sequelize.INTEGER
+			type: Sequelize.STRING,
+			defaultValue: '描述被吃了...',
+			validate: {
+				len: {
+					args: [0, 300],
+					msg: '道具描述应该在 200 个字之内！'
+				}
+			}
 		},
 		image: {
 			field: 'image',
@@ -47,7 +54,7 @@ const Inventories = sequelize.define(
 		deleted: {
 			field: 'deleted',
 			type: Sequelize.INTEGER,
-			default: 0
+			defaultValue: 0
 		},
 		createdAt: {
 			field: 'created_at',

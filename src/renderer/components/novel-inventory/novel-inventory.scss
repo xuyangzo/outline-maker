@@ -1,0 +1,23 @@
+.novel-inventory {
+  .inventory-image {
+    text-align: center;
+    height: 80px;
+    min-width: initial;
+    transition: none;
+    position: static;
+    display: inline-block;
+    margin-bottom: 15px;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  .overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 8;
+  }
+}

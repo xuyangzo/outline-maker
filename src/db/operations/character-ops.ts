@@ -1,5 +1,6 @@
 import CharacterModel from '../models/Character';
 import CharacterOutlineModel from '../models/CharacterOutlines';
+import CharacterInventoryModel from '../models/CharacterInventories';
 import { addCharacterToOutline } from './character-outline-ops';
 import { addTrash } from './trash-ops';
 const Op = require('sequelize').Op;
@@ -10,6 +11,9 @@ import { NovelCharacterDataValues } from '../../renderer/components/novel-charac
 import { CharacterMainDataValue } from '../../renderer/components/main-header/character-modal/characterModalDec';
 import { MainCharacterDataValue } from '../../renderer/components/main/mainDec';
 import { CharacterDataValue } from '../../renderer/components/character/characterDec';
+import {
+	CharacterInventoryDataValue
+} from '../../renderer/components/novel-inventory/inventory-modal/inventoryModalDec';
 
 // utils
 import { imageMapping } from '../../renderer/utils/constants';
@@ -187,9 +191,9 @@ export const getAllCharactersGivenOutline = async (id: string): Promise<MainChar
 };
 
 // get all valid characters for outline importing
-export const getAllValidCharacters = async (
-	novel_id: string,
-	outline_id: string
+export const getAllValidCharactersForOutline = async (
+	novel_id: string | number,
+	outline_id: string | number
 ): Promise<CharacterMainDataValue[]> => {
 	// get all invalid characters id
 	const invalidCharactersData: DataResults = await CharacterModel
@@ -197,9 +201,7 @@ export const getAllValidCharacters = async (
 			attributes: ['id'],
 			where: {
 				novel_id,
-				deleted: {
-					[Op.ne]: 1
-				}
+				deleted: 0
 			},
 			include: [{
 				model: CharacterOutlineModel,
@@ -217,9 +219,50 @@ export const getAllValidCharacters = async (
 			attributes: ['id', 'name'],
 			where: {
 				novel_id,
-				deleted: {
-					[Op.ne]: 1
-				},
+				deleted: 0,
+				character_id: {
+					[Op.notIn]: invalidCharacters
+				}
+			}
+		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
+};
+
+// get all valid characters for inventory
+export const getAllValidCharactersForInventory = async (
+	novel_id: string | number,
+	inventory_id: string | number
+): Promise<CharacterInventoryDataValue[]> => {
+	// get all invalid characters id
+	const invalidInventoriesData: DataResults = await CharacterModel
+		.findAll({
+			attributes: ['id'],
+			where: {
+				novel_id,
+				deleted: 0
+			},
+			include: [{
+				model: CharacterInventoryModel,
+				required: true,
+				where: {
+					inventory_id
+				}
+			}]
+		});
+
+	// get all valid inventories by exclude all invalid inventories
+	const invalidCharacters: number[] = invalidInventoriesData.map((data: DataModel) => data.dataValues.id);
+	const dataResults: DataResults = await CharacterModel
+		.findAll({
+			attributes: ['id', 'name'],
+			where: {
+				novel_id,
+				deleted: 0,
 				character_id: {
 					[Op.notIn]: invalidCharacters
 				}

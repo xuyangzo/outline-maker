@@ -1,18 +1,20 @@
 import InventoryModel from '../models/Inventories';
 const Op = require('sequelize').Op;
 import { addTrash } from './trash-ops';
+import { addInventoryToCharacter } from './character-inventory-ops';
 
 // type declaration
 import { NovelInventoryDataValue } from '../../renderer/components/novel-inventory/novelInventoryDec';
 import { TrashInventoryDataValue } from '../../renderer/components/trash/inventory-trash/inventoryTrashDec';
 
-interface InventoryTemplate {
+export interface InventoryTemplate {
 	novel_id?: string;
 	name?: string;
 	image?: string;
 	description?: string;
 	category?: string;
 	deleted?: number;
+	masters?: string[];
 }
 
 // get all inventories
@@ -61,16 +63,29 @@ export const getAllInventoriesGivenIdList = async (idList: (string | number)[]):
 
 // create new inventory
 export const createInventory = async (props: InventoryTemplate): Promise<WriteDataModel> => {
-	const inventory: DataModel = await InventoryModel.create(props);
+	const { masters, ...nextProps } = props;
+	// create inventory
+	const inventory: DataModel = await InventoryModel.create(nextProps);
+	// add relations to character-inventory table
+	const promises: Promise<WriteDataModel>[] = [];
+	if (masters && masters.length) {
+		masters.forEach((character_id: string) => {
+			promises.push(
+				addInventoryToCharacter(character_id, inventory.dataValues.id)
+			);
+		});
+	}
+
+	const newResults: WriteDataModel[] = await Promise.all(promises);
 
 	const result: WriteDataModel = {
 		type: 'create',
 		tables: ['inventory'],
-		success: false
+		success: newResults.every((result: WriteDataModel) => result.success)
 	};
 	if (inventory) {
 		result.id = inventory.dataValues.id;
-		result.success = true;
+		result.success = result.success && true;
 	}
 
 	return result;
