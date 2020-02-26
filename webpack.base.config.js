@@ -8,6 +8,10 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js'
     },
+    /**
+     * enable __dirname and __filename under development mode
+     * in order to enable node-notifier under dev mode
+     */
     node: {
         __dirname: false,
         __filename: false

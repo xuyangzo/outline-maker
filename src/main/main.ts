@@ -3,6 +3,14 @@ const contextMenu = require('electron-context-menu');
 
 import * as path from 'path';
 import * as url from 'url';
+import { resetDatabase } from './utils/db';
+import { redirectToLanding } from './utils/redirect';
+import menuTemplate from './menu';
+
+// modals
+// const openNotification = require('./modals/notification').openNotification;
+import * as notification from './modals/notifications';
+const { notifyResetDB } = notification;
 
 let win: BrowserWindow | null;
 
@@ -61,18 +69,8 @@ const createWindow = async () => {
 		icon: 'src/public/icons/mac/icon-512@2x.icns'
 	});
 
-	if (process.env.NODE_ENV !== 'production') {
-		process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
-		win.loadURL('http://localhost:2003');
-	} else {
-		win.loadURL(
-			url.format({
-				pathname: path.join(__dirname, 'index.html'),
-				protocol: 'file:',
-				slashes: true
-			})
-		);
-	}
+	// redirect to landing page
+	redirectToLanding(win);
 
 	if (process.env.NODE_ENV !== 'production') {
 		// Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
@@ -81,6 +79,10 @@ const createWindow = async () => {
 		});
 	}
 
+	// set menu
+	const template: Electron.MenuItemConstructorOptions[] = menuTemplate(win);
+	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+
 	win.on('closed', () => {
 		win = null;
 	});
@@ -88,10 +90,10 @@ const createWindow = async () => {
 
 app.on('ready', createWindow);
 
-const image = nativeImage.createFromPath(
-	app.getAppPath().concat('/src/public/icons/mac/icon-512@2x.icns')
-);
-app.dock.setIcon(image);
+// const image = nativeImage.createFromPath(
+// 	app.getAppPath().concat('/src/public/icons/mac/icon-512@2x.icns')
+// );
+// app.dock.setIcon(image);
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
@@ -104,29 +106,3 @@ app.on('activate', () => {
 		createWindow();
 	}
 });
-
-// custom menu
-const template: Electron.MenuItemConstructorOptions[] = [
-	{
-		label: ''
-	},
-	{
-		label: 'Edit',
-		submenu: [
-			{ role: 'undo' },
-			{ role: 'redo' },
-			{ role: 'cut' },
-			{ role: 'copy' },
-			{ role: 'paste' },
-			{ role: 'delete' },
-			{
-				label: 'Refresh Page',
-				accelerator: 'CmdOrCtrl+R',
-				click() {
-					(win || { reload: () => { } }).reload();
-				}
-			}
-		]
-	}
-];
-Menu.setApplicationMenu(Menu.buildFromTemplate(template));

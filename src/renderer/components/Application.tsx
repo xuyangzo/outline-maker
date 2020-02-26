@@ -28,6 +28,11 @@ import { BackgroundContainer, BackgroundEditContainer } from '../containers/Back
 import { NovelOutlineContainer, NovelOutlineEditContainer } from '../containers/OutlineContainer';
 import { NovelInventoryContainer } from '../containers/InventoryContainer';
 
+/**
+ * communication from main process to browser process
+ */
+import NotificationContainer from '../containers/NotificationContainer';
+
 // set database model relations
 require('../../db/relations');
 
@@ -61,6 +66,7 @@ const Application = () => {
 			<Row>
 				<Router>
 					<SidebarContainer />
+					<NotificationContainer />
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
 						<Route path="/novel/:id" exact><NovelContainer /></Route>
