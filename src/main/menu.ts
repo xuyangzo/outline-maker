@@ -1,12 +1,7 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 
-import { resetDatabase } from './utils/db';
-// import { redirectToLanding } from './utils/redirect';
-
-// modals
-// const openNotification = require('./modals/notification').openNotification;
-// import * as notification from './modals/notifications';
-// const { notifyResetDB } = notification;
+// distinguish dev mode from prod mode
+const isDev = process.env.NODE_ENV !== 'production';
 
 // custom menu
 const template: (win: BrowserWindow | null) => Electron.MenuItemConstructorOptions[] = (win: BrowserWindow | null) => {
@@ -25,7 +20,7 @@ const template: (win: BrowserWindow | null) => Electron.MenuItemConstructorOptio
 				{ role: 'delete' },
 				{
 					label: '刷新页面',
-					accelerator: 'CmdOrCtrl+R',
+					accelerator: isDev ? 'CmdOrCtrl+R' : '',
 					click() {
 						(win || { reload: () => { } }).reload();
 					}

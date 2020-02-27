@@ -1,62 +1,24 @@
 import { app, BrowserWindow, nativeImage, shell, Menu, ipcMain } from 'electron';
 const contextMenu = require('electron-context-menu');
-
-import * as path from 'path';
-import * as url from 'url';
 import { resetDatabase } from './utils/db';
-import { redirectToLanding } from './utils/redirect';
-import menuTemplate from './menu';
+import { redirectToLanding, installExtensions } from './utils/installations';
 
-// modals
-// const openNotification = require('./modals/notification').openNotification;
-import * as notification from './modals/notifications';
-const { notifyResetDB } = notification;
+// templates
+import menuTemplate from './menu';
+import contextTemplate from './context';
 
 let win: BrowserWindow | null;
 
 // add right click property
-contextMenu({
-	prepend: (defaultActions: any, params: any, browserWindow: any) => [
-		{
-			label: 'Rainbow',
-			// Only show it when right-clicking images
-			visible: params.mediaType === 'image'
-		},
-		{
-			label: '添加到收藏',
-			visible: params.selectionText.trim().length > 0,
-			click: () => { console.log(params); }
-		}
-	],
-	labels: {
-		cut: '剪切',
-		copy: '复制',
-		paste: '粘贴',
-		save: 'Custom Save Image Text',
-		saveImageAs: 'Custom Save Image As… Text',
-		copyLink: 'Custom Copy Link Text',
-		copyImageAddress: 'Custom Copy Image Address Text',
-		inspect: 'inspect！！！'
-	},
-	// TODO should disable this in production mode
-	showInspectElement: true
-});
-
-const installExtensions = async () => {
-	const installer = require('electron-devtools-installer');
-	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-	const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
-
-	return Promise.all(
-		extensions.map(name => installer.default(installer[name], forceDownload))
-	).catch(console.log);
-};
+contextMenu(contextTemplate);
 
 const createWindow = async () => {
+	// install extensions
 	if (process.env.NODE_ENV !== 'production') {
 		await installExtensions();
 	}
 
+	// create new window
 	win = new BrowserWindow({
 		width: 1200,
 		height: 800,
@@ -72,8 +34,8 @@ const createWindow = async () => {
 	// redirect to landing page
 	redirectToLanding(win);
 
+	// if dev mode, open dev tools
 	if (process.env.NODE_ENV !== 'production') {
-		// Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
 		win.webContents.once('dom-ready', () => {
 			win!.webContents.openDevTools();
 		});

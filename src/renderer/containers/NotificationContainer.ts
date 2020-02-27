@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
-import Notification from '../main/Notification';
+import Notification from '../main/notification/Notification';
 import { RootState } from '../reducers';
 import { SidebarAction, refresh } from '../actions/sidebarActions';
 
