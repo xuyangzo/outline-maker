@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 
 import { resetDatabase } from './utils/db';
 // import { redirectToLanding } from './utils/redirect';
@@ -33,15 +33,10 @@ const template: (win: BrowserWindow | null) => Electron.MenuItemConstructorOptio
 				{
 					label: '重置数据',
 					click() {
-						resetDatabase()
-							.then(() => {
-								if (win) {
-									win.webContents.send('resetDB', 'success!');
-								}
-							})
-							.catch((err: Error) => {
-								console.error(err.message);
-							});
+						// send request to confirm reset DB
+						if (win) {
+							win.webContents.send('askResetDB', '');
+						}
 					}
 				}
 			]

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage, shell, Menu } from 'electron';
+import { app, BrowserWindow, nativeImage, shell, Menu, ipcMain } from 'electron';
 const contextMenu = require('electron-context-menu');
 
 import * as path from 'path';
@@ -105,4 +105,17 @@ app.on('activate', () => {
 	if (win === null) {
 		createWindow();
 	}
+});
+
+// should reset DB
+ipcMain.on('shouldResetDB', () => {
+	resetDatabase()
+		.then(() => {
+			if (win) {
+				win.webContents.send('resetDB', 'success!');
+			}
+		})
+		.catch((err: Error) => {
+			console.error(err.message);
+		});
 });

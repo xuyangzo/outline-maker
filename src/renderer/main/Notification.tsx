@@ -10,22 +10,32 @@ import { withRouter } from 'react-router-dom';
 
 const Notification = (props: NotificationProps) => {
 	const { refreshSidebar } = props;
-
 	const [showResetModal, setResetModal] = React.useState<boolean>(false);
 
 	React.useEffect(() => {
 		// listen to message from main process
-		ipcRenderer.on('resetDB', onResetDB);
+		ipcRenderer.on('askResetDB', onResetDB);
+		// reset database
+		ipcRenderer.on('resetDB', resetDB);
 
 		// cleanup
 		return function cleanup() {
-			ipcRenderer.removeListener('resetDB', onResetDB);
+			ipcRenderer.removeListener('askResetDB', onResetDB);
+			ipcRenderer.removeListener('resetDB', resetDB);
 		};
 	});
 
 	// open reset modal
 	function onResetDB() {
 		setResetModal(true);
+	}
+
+	// confirm reset db
+	function onConfirmResetDB() {
+		// send message to main process
+		ipcRenderer.send('shouldResetDB', 'should resetDB');
+		// close modal
+		setResetModal(false);
 	}
 
 	// when reset database
@@ -35,8 +45,6 @@ const Notification = (props: NotificationProps) => {
 			message: '重置数据成功！',
 			description: '您现在已经一无所有了~'
 		});
-		// close modal
-		setResetModal(false);
 		// refresh sidebar
 		refreshSidebar();
 		// redirect to tutorial page
@@ -48,14 +56,14 @@ const Notification = (props: NotificationProps) => {
 			<Modal
 				title="重置数据"
 				visible={showResetModal}
-				onOk={resetDB}
+				onOk={onConfirmResetDB}
 				onCancel={() => setResetModal(false)}
 				footer={[
 					<Button type="danger" key="back" onClick={() => setResetModal(false)} ghost>取消</Button>,
 					<Button
 						type="primary"
 						key="submit"
-						onClick={resetDB}
+						onClick={onConfirmResetDB}
 						ghost
 					>确认
 					</Button>
