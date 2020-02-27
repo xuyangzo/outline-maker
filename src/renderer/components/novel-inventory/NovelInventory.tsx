@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Input } from 'antd';
+import { Col, message as Message, Card, Icon, Modal, Button, PageHeader, Input, Select } from 'antd';
 import classnames from 'classnames';
 const { Search } = Input;
+const { Option } = Select;
 
 // enable history
 import { withRouter } from 'react-router-dom';
@@ -18,6 +19,9 @@ import {
 	searchInventory
 } from '../../../db/operations/inventory-ops';
 
+// utils
+import { inventoryCategories } from '../../utils/constants';
+
 // sass
 import './novel-inventory.scss';
 
@@ -33,6 +37,8 @@ const NovelInventory = (props: NovelInventoryProps) => {
 	const [showCreateModel, setCreateModel] = React.useState<boolean>(false);
 	const [selected, setSelected] = React.useState<string | number>('');
 	const [inventories, setInventories] = React.useState<NovelInventoryDataValue[]>([]);
+	const [searchCategories, setSearchCategories] = React.useState<string[]>([]);
+	const [searchKey, setSearchKey] = React.useState<string>('');
 	const [shouldRender, setShouldRender] = React.useState<boolean>(false);
 	const [timer, setTimer] = React.useState<any>(null);
 
@@ -71,6 +77,19 @@ const NovelInventory = (props: NovelInventoryProps) => {
 			});
 	}
 
+	// on checkbox change
+	function onCategoryChange(value: string[]) {
+		setSearchCategories(value);
+		// search inventories
+		searchInventory(novel_id, searchKey, value)
+			.then((inventories: NovelInventoryDataValue[]) => {
+				setInventories(inventories);
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err.message);
+			});
+	}
+
 	/**
 	 * when input field changes
 	 * need to apply debounce for 500ms
@@ -80,12 +99,12 @@ const NovelInventory = (props: NovelInventoryProps) => {
 		const key: string = e.target.value;
 		const currTimer: any = setTimeout(
 			() => {
-				searchInventory(novel_id, key)
+				// set search key
+				setSearchKey(key);
+				// search inventory
+				searchInventory(novel_id, key, searchCategories)
 					.then((inventories: NovelInventoryDataValue[]) => {
-						// set locations
 						setInventories(inventories);
-						// should render
-						setShouldRender(true);
 					})
 					.catch((err: DatabaseError) => {
 						Message.error(err.message);
@@ -150,13 +169,26 @@ const NovelInventory = (props: NovelInventoryProps) => {
 				className="novel-character-header"
 			/>
 			<div className="novel-character-container">
-				<div className="search-bar">
+				<div className="search-bar inventory-search-bar">
 					<Search
-						placeholder="搜索道具..."
+						placeholder="关键词..."
 						onChange={onSearchChange}
 						style={{ width: 200, float: 'right' }}
 						allowClear
 					/>
+					<Select
+						mode="multiple"
+						style={{ width: 340, float: 'right', marginRight: 15 }}
+						placeholder="道具类别"
+						defaultValue={[]}
+						onChange={onCategoryChange}
+					>
+						{
+							inventoryCategories.map((category: string) => (
+								<Option key={category}>{category}</Option>
+							))
+						}
+					</Select>
 				</div>
 				{
 					inventories.map((inventory: NovelInventoryDataValue) => (

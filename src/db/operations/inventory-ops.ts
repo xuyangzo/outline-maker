@@ -3,6 +3,9 @@ const Op = require('sequelize').Op;
 import { addTrash } from './trash-ops';
 import { addInventoryToCharacter } from './character-inventory-ops';
 
+// utils
+import { inventoryCategories } from '../../renderer/utils/constants';
+
 // type declaration
 import { NovelInventoryDataValue } from '../../renderer/components/novel-inventory/novelInventoryDec';
 import { TrashInventoryDataValue } from '../../renderer/components/trash/inventory-trash/inventoryTrashDec';
@@ -139,8 +142,10 @@ export const deleteInventoryPermanently = async (id: string | number): Promise<W
 	};
 };
 
-export const searchInventory = async (novel_id: string | number, key: string): Promise<NovelInventoryDataValue[]> => {
-	if (key === '') return getAllInventoriesGivenNovel(novel_id);
+export const searchInventory = async (
+	novel_id: string | number, key: string, categories: string[]
+): Promise<NovelInventoryDataValue[]> => {
+	if (key === '' && categories.length === 0) return getAllInventoriesGivenNovel(novel_id);
 
 	const dataResults: DataResults = await InventoryModel
 		.findAll({
@@ -159,9 +164,10 @@ export const searchInventory = async (novel_id: string | number, key: string): P
 						}
 					}
 				],
-				deleted: {
-					[Op.ne]: 1
-				}
+				category: {
+					[Op.in]: categories.length ? categories : inventoryCategories
+				},
+				deleted: 0
 			}
 		});
 
