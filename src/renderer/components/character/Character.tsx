@@ -6,11 +6,15 @@ import classnames from 'classnames';
 import { withRouter, Link } from 'react-router-dom';
 
 // type declaration
-import { CharacterProps, CharacterState, OutlineCharacterDataValue, CharacterDataValue } from './characterDec';
+import {
+	CharacterProps, CharacterState, OutlineCharacterDataValue,
+	CharacterDataValue, InventoryCharacterDataValue
+} from './characterDec';
 
 // database operations
 import { getCharacter } from '../../../db/operations/character-ops';
 import { getAllOutlinesGivenCharacter } from '../../../db/operations/outline-ops';
+import { getAllInventoriesGivenCharacter } from '../../../db/operations/inventory-ops';
 
 // utils
 import { imageMapping, characterIllustrations, mapGenderText } from '../../utils/constants';
@@ -36,13 +40,15 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			characteristics: '',
 			experience: '',
 			note: '',
-			outlines: []
+			outlines: [],
+			inventories: []
 		};
 	}
 
 	componentDidMount = () => {
 		this.setCharacter();
 		this.setOutlines();
+		this.setInventories();
 	}
 
 	// set information about a single character
@@ -67,10 +73,21 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 			});
 	}
 
+	// set inventories information about a inventory
+	setInventories = () => {
+		getAllInventoriesGivenCharacter(this.state.id)
+			.then((inventories: InventoryCharacterDataValue[]) => {
+				this.setState({ inventories });
+			})
+			.catch((err: DatabaseError) => {
+				Message.error(err);
+			});
+	}
+
 	render() {
 		const { expand } = this.props;
 		const {
-			name, image, age, nickname, gender, height, outlines,
+			name, image, age, nickname, gender, height, outlines, inventories,
 			identity, appearance, characteristics, experience, note, id
 		} = this.state;
 
@@ -175,6 +192,29 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 										outlines.map((outline: OutlineCharacterDataValue, index: number) => (
 											<Link key={outline.id} to={`/outline/${id}/${outline.id}`} className="custom-link">
 												{index + 1}.&nbsp;{outline.title}
+											</Link>
+										))
+									}
+								</Col>
+							</Row>
+							<Row className="character-section">
+								<Col span={4} style={{ width: '60px' }}>
+									道具
+									<Tooltip
+										placement="rightTop"
+										title={characterIllustrations.inventories}
+									>
+										<Icon type="question-circle" className="question-mark" />
+									</Tooltip>
+								</Col>
+								<Col span={16}>
+									{
+										!inventories.length && (<p>暂无</p>)
+									}
+									{
+										inventories.map((inventory: InventoryCharacterDataValue, index: number) => (
+											<Link key={inventory.id} to={`/inventory/${id}/${inventory.id}`} className="custom-link-blue">
+												{index + 1}.&nbsp;{inventory.name}
 											</Link>
 										))
 									}

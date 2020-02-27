@@ -27,9 +27,10 @@ export interface CharacterProps extends RouteComponentProps<MatchParams> {
 
 export interface CharacterState extends CharacterDataValue {
   outlines: OutlineCharacterDataValue[];
+  inventories: InventoryCharacterDataValue[];
   id: number | string;
   novel_id: number | string;
-  [key: string]: string | number | OutlineCharacterDataValue[];
+  [key: string]: string | number | OutlineCharacterDataValue[] | InventoryCharacterDataValue[];
 }
 
 export interface CharacterEditState {
@@ -53,4 +54,10 @@ export interface CharacterEditState {
 export interface OutlineCharacterDataValue {
   id: number;
   title: string;
+}
+
+// inventories that belong to one character
+export interface InventoryCharacterDataValue {
+  id: number;
+  name: string;
 }

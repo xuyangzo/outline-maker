@@ -15,10 +15,6 @@ const Inventories = sequelize.define(
 			field: 'novel_id',
 			type: Sequelize.INTEGER
 		},
-		character_id: {
-			field: 'character_id',
-			type: Sequelize.INTEGER
-		},
 		name: {
 			field: 'name',
 			type: Sequelize.STRING,

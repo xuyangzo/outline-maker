@@ -1,4 +1,5 @@
 import InventoryModel from '../models/Inventories';
+import CharacterInventoryModel from '../models/CharacterInventories';
 const Op = require('sequelize').Op;
 import { addTrash } from './trash-ops';
 import { addInventoryToCharacter } from './character-inventory-ops';
@@ -9,6 +10,7 @@ import { inventoryCategories } from '../../renderer/utils/constants';
 // type declaration
 import { NovelInventoryDataValue } from '../../renderer/components/novel-inventory/novelInventoryDec';
 import { TrashInventoryDataValue } from '../../renderer/components/trash/inventory-trash/inventoryTrashDec';
+import { InventoryCharacterDataValue } from '../../renderer/components/character/characterDec';
 
 export interface InventoryTemplate {
 	novel_id?: string;
@@ -48,6 +50,27 @@ const getInventoryHelper = (id: string | number): Promise<DataModel> => {
 			attributes: ['id', 'name'],
 			where: { id }
 		});
+};
+
+// get all inventories given character
+export const getAllInventoriesGivenCharacter = async (
+	character_id: string | number
+): Promise<InventoryCharacterDataValue[]> => {
+	const dataResults: DataResults = await InventoryModel
+		.findAll({
+			attributes: ['id', 'name'],
+			include: [{
+				model: CharacterInventoryModel,
+				where: { character_id },
+				required: true,
+			}]
+		});
+
+	if (dataResults && dataResults.length) {
+		return dataResults.map((result: DataModel) => result.dataValues);
+	}
+
+	return [];
 };
 
 // get all inventories by their id
