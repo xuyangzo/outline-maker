@@ -25,11 +25,21 @@ export const tagColors = [
 ];
 
 // map images for characters
-export const imageMapping: { [key: string]: string } = {
-	0: shadowMan,
-	1: shadowGirl,
-	2: shadowNone,
-	3: shadowBoth
+export const imageMapping = (gender: number, image: string): string => {
+	if (image && image.length > 0) {
+		return image;
+	}
+
+	const map: { [key: string]: string } = {
+		0: shadowMan,
+		1: shadowGirl,
+		2: shadowNone,
+		3: shadowBoth
+	};
+
+	if (!gender) return map[0];
+
+	return map[gender];
 };
 
 // map gender text
@@ -70,7 +80,7 @@ export const tags = [
 ];
 
 export const inventoryCategories = [
-	'功法', '法宝', '丹药', '草药', '魔兽', '装备', '材料', '招式', '技能'
+	'功法', '法宝', '丹药', '草药', '魔兽', '装备', '材料', '招式', '技能', '宠物'
 ];
 
 interface BackgroundIllustrations {

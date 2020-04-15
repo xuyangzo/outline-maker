@@ -156,8 +156,8 @@ export const getAllCharactersGivenNovel = async (id: string | number): Promise<N
 	if (dataResults && dataResults.length) {
 		dataResults.forEach((result: DataModel) => {
 			const { id, name, image, gender, isMain } = result.dataValues;
-			if (isMain) data.main.push({ id, name, gender, image: image ? image : imageMapping[gender ? gender : 0] });
-			else data.sub.push({ id, name, gender, image: image ? image : imageMapping[gender ? gender : 0] });
+			if (isMain) data.main.push({ id, name, gender, image: imageMapping(gender, image) });
+			else data.sub.push({ id, name, gender, image: imageMapping(gender, image) });
 		});
 	}
 
@@ -419,8 +419,8 @@ export const searchCharacter = async (novel_id: string | number, key: string): P
 	if (dataResults && dataResults.length) {
 		dataResults.forEach((result: DataModel) => {
 			const { id, name, image, gender, isMain } = result.dataValues;
-			if (isMain) data.main.push({ id, name, gender, image: image ? image : imageMapping[gender ? gender : 0] });
-			else data.sub.push({ id, name, gender, image: image ? image : imageMapping[gender ? gender : 0] });
+			if (isMain) data.main.push({ id, name, gender, image: imageMapping(gender, image) });
+			else data.sub.push({ id, name, gender, image: imageMapping(gender, image) });
 		});
 	}
 

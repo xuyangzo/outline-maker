@@ -27,6 +27,7 @@ import {
 import { BackgroundContainer, BackgroundEditContainer } from '../containers/BackgroundContainer';
 import { NovelOutlineContainer, NovelOutlineEditContainer } from '../containers/OutlineContainer';
 import { NovelInventoryContainer } from '../containers/InventoryContainer';
+import GuardContainer from '../containers/GuardContainer';
 
 /**
  * communication from main process to browser process
@@ -67,6 +68,7 @@ const Application = () => {
 				<Router>
 					<SidebarContainer />
 					<NotificationContainer />
+					<GuardContainer />
 					<Switch>
 						<Route path="/" exact><TutorialContainer /></Route>
 						<Route path="/novel/:id" exact><NovelContainer /></Route>

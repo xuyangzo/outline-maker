@@ -31,13 +31,16 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 			novels: [],
 			showModal: false,
 			createdName: '',
-			createdDescription: ''
+			createdDescription: '',
+			edited: false
 		};
 	}
 
 	componentWillReceiveProps = (newProps: SidebarProps) => {
 		// set selected keys
 		this.setSelectedKey(newProps);
+		// update edited status
+		this.setState({ edited: newProps.edited });
 		// if need to refresh, refresh
 		if (newProps.refresh) {
 			this.getNovels();
@@ -83,9 +86,26 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 		this.setState({ createdDescription });
 	}
 
-	// once a menu is selected, forward to corresponding outline page
+	/**
+	 * once a menu is selected, forward to corresponding page
+	 * if a page's edition is not saved, prevent the forwarding
+	 */
 	select = (e: ClickParam) => {
-		this.props.history.push(e.key);
+		if (this.state.edited) {
+			// open modal
+			this.props.setOpen();
+			// set redirectUrl
+			this.props.setRedirect(e.key);
+			// prevent select from switching
+			setTimeout(
+				() => {
+					this.setSelectedKey(this.props);
+				},
+				0
+			);
+		} else {
+			this.props.history.push(e.key);
+		}
 	}
 
 	// get selected key

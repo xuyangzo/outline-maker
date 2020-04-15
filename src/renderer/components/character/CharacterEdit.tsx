@@ -18,7 +18,7 @@ import { getCharacter, updateCharacter } from '../../../db/operations/character-
 
 // utils
 import { ctrlsPress } from '../../utils/utils';
-import { imageMapping, characterIllustrations } from '../../utils/constants';
+import { characterIllustrations, imageMapping } from '../../utils/constants';
 
 // sass
 import './character.scss';
@@ -151,7 +151,7 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 		} = this.state;
 
 		// mapping of image
-		const imageURL = image ? image : imageMapping[gender];
+		const imageURL = imageMapping(gender, image);
 
 		return (
 			<Col

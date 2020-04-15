@@ -17,7 +17,7 @@ import { getAllOutlinesGivenCharacter } from '../../../db/operations/outline-ops
 import { getAllInventoriesGivenCharacter } from '../../../db/operations/inventory-ops';
 
 // utils
-import { imageMapping, characterIllustrations, mapGenderText } from '../../utils/constants';
+import { characterIllustrations, mapGenderText, imageMapping } from '../../utils/constants';
 import { Property } from '../../utils/components';
 
 // sass
@@ -92,7 +92,7 @@ class Character extends React.Component<CharacterProps, CharacterState> {
 		} = this.state;
 
 		// mapping of image
-		const imageURL = image ? image : imageMapping[gender ? gender : 0];
+		const imageURL = imageMapping(gender, image);
 		const genderText: string = mapGenderText(gender);
 
 		return (

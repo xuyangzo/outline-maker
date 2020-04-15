@@ -19,3 +19,10 @@ interface MatchParams {
 export interface NovelCharacterProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
 }
+
+export interface NovelCharacterEditProps extends NovelCharacterProps {
+	edited: boolean;
+
+	setEdit: () => void;
+	setSave: () => void;
+}

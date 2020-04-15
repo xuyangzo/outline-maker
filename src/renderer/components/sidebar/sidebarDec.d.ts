@@ -17,11 +17,14 @@ interface MatchParams {
 export interface SidebarProps extends RouteComponentProps<MatchParams> {
 	expand: boolean;
 	refresh: boolean;
+	edited: boolean;
 
 	shrinkSidebar: () => void;
 	growSidebar: () => void;
 	stopRefreshSidebar: () => void;
 	createOutline: () => void;
+	setOpen: () => void;
+	setRedirect: (payload: string) => void;
 }
 
 export interface SidebarState {
@@ -30,4 +33,5 @@ export interface SidebarState {
 	showModal: boolean;
 	createdName: string;
 	createdDescription: string;
+	edited: boolean;
 }

@@ -10,7 +10,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelCharacterProps, NovelCharacterDataValues, NovelCharacterDataValue } from './novelCharacterDec';
+import { NovelCharacterEditProps, NovelCharacterDataValues, NovelCharacterDataValue } from './novelCharacterDec';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components
@@ -19,18 +19,15 @@ import BatchDeleteModel from './batch-delete-modal/BatchDeleteModal';
 // database operations
 import { updateCharacter, getAllCharactersGivenNovel, searchCharacter } from '../../../db/operations/character-ops';
 
-// utils
-import { imageMapping } from '../../utils/constants';
-
 // sass
 import './novel-character.scss';
 
 // image
 import empty from '../../../public/empty-character.png';
 
-const NovelCharacterEdit = (props: NovelCharacterProps) => {
+const NovelCharacterEdit = (props: NovelCharacterEditProps) => {
 	const { novel_id } = props.match.params;
-	const { expand } = props;
+	const { expand, setEdit, setSave } = props;
 
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
@@ -145,11 +142,17 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 
 	// when reorder finishes triggering for main characters
 	function onSortEndMain({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		// set edited
+		setEdit();
+
 		setMainCharacters(arrayMove(mainCharacters, oldIndex, newIndex));
 	}
 
 	// when reorder finishes triggering for sub characters
 	function onSortEndSub({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		// set edited
+		setEdit();
+
 		setSubCharacters(arrayMove(subCharacters, oldIndex, newIndex));
 	}
 
@@ -167,6 +170,8 @@ const NovelCharacterEdit = (props: NovelCharacterProps) => {
 				Message.success('保存成功！');
 				// refresh characters
 				getCharacters();
+				// set saved
+				setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
