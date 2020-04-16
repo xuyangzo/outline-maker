@@ -13,3 +13,12 @@ export interface NovelOutlineDataValue {
 export interface NovelOutlineProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
+
+export interface NovelOutlineEditProps extends NovelOutlineProps {
+  edited: boolean;
+
+  setEdit: () => void;
+  setSave: () => void;
+  setOpen: () => void;
+  setRedirect: (payload: string) => void;
+}

@@ -9,7 +9,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelOutlineProps, NovelOutlineDataValue } from './novelOutlineDec';
+import { NovelOutlineEditProps, NovelOutlineDataValue } from './novelOutlineDec';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components
@@ -21,9 +21,9 @@ import { updateOutline, getAllOutlinesGivenNovel, searchOutline } from '../../..
 // image
 import empty from '../../../public/empty-character.png';
 
-const NovelOutlineEdit = (props: NovelOutlineProps) => {
+const NovelOutlineEdit = (props: NovelOutlineEditProps) => {
 	const { novel_id } = props.match.params;
-	const { expand } = props;
+	const { expand, edited, setEdit, setSave, setOpen, setRedirect } = props;
 
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
@@ -110,6 +110,9 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 
 	// when reorder finishes triggering
 	function onSortEnd({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		// set edited
+		setEdit();
+
 		setOutlines(arrayMove(outlines, oldIndex, newIndex));
 	}
 
@@ -141,10 +144,24 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 				setOutlines(outlines);
 				// should render
 				setShouldRender(true);
+				// set saved
+				setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	// go back
+	function back() {
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			props.history.goBack();
+		}
 	}
 
 	// single item (card)
@@ -197,7 +214,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 			<div>
 				<PageHeader
 					title={''}
-					onBack={() => props.history.goBack()}
+					onBack={back}
 					extra={[
 						(
 							<Button type="danger" key="batch-delete" ghost onClick={() => setBatchDeleteModel(true)}>
@@ -205,7 +222,7 @@ const NovelOutlineEdit = (props: NovelOutlineProps) => {
 							</Button>
 						),
 						(
-							<Button type="primary" key="quit-edit" ghost onClick={() => props.history.goBack()}>
+							<Button type="primary" key="quit-edit" ghost onClick={back}>
 								<Icon type="rollback" />退出编辑
 							</Button>
 						),

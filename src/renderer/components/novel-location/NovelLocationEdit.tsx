@@ -9,7 +9,7 @@ const { Search } = Input;
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { NovelLocationProps, NovelLocationDataValue } from './novelLocationDec';
+import { NovelLocationEditProps, NovelLocationDataValue } from './novelLocationDec';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 // custom components
@@ -22,9 +22,9 @@ import { updateLocation, getAllLocationsGivenNovel, searchLocation } from '../..
 import empty from '../../../public/empty-character.png';
 import unknownArea from '../../../public/unknown_gray.jpg';
 
-const NovelLocationEdit = (props: NovelLocationProps) => {
+const NovelLocationEdit = (props: NovelLocationEditProps) => {
 	const { novel_id } = props.match.params;
-	const { expand } = props;
+	const { expand, edited, setEdit, setSave, setOpen, setRedirect } = props;
 
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
@@ -111,6 +111,9 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 
 	// when reorder finishes triggering
 	function onSortEnd({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) {
+		// set edited
+		setEdit();
+
 		setLocations(arrayMove(locations, oldIndex, newIndex));
 	}
 
@@ -128,6 +131,8 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 				Message.success('保存成功！');
 				// refresh locations
 				getLocations();
+				// set saved
+				setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -146,6 +151,18 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	// go back
+	function back() {
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			props.history.goBack();
+		}
 	}
 
 	// single item (card)
@@ -194,7 +211,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 			<div>
 				<PageHeader
 					title={''}
-					onBack={() => props.history.goBack()}
+					onBack={back}
 					extra={[
 						(
 							<Button type="danger" key="batch-delete" ghost onClick={() => setBatchDeleteModel(true)}>
@@ -202,7 +219,7 @@ const NovelLocationEdit = (props: NovelLocationProps) => {
 							</Button>
 						),
 						(
-							<Button type="primary" key="quit-edit" ghost onClick={() => props.history.goBack()}>
+							<Button type="primary" key="quit-edit" ghost onClick={back}>
 								<Icon type="rollback" />退出编辑
 							</Button>
 						),
