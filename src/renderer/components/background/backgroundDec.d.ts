@@ -33,6 +33,15 @@ export interface BackgroundProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
 
+export interface BackgroundEditProps extends BackgroundProps {
+  edited: boolean;
+
+  setEdit: () => void;
+  setSave: () => void;
+  setOpen: () => void;
+  setRedirect: (payload: string) => void;
+}
+
 export interface BackgroundState {
   novel_id: string;
   backgrounds: BackgroundDec[];

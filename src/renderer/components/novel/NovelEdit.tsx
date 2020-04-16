@@ -11,7 +11,7 @@ import { withRouter } from 'react-router-dom';
 import NovelModal from './novel-modal/NovelModal';
 
 // type declaration
-import { NovelProps, NovelDataValue } from './novelDec';
+import { NovelEditProps, NovelDataValue } from './novelDec';
 
 // database operations
 import { getNovel, updateNovel } from '../../../db/operations/novel-ops';
@@ -23,9 +23,9 @@ import { tagColors, tags } from '../../utils/constants';
 // sass
 import './novel.scss';
 
-const NovelEdit = (props: NovelProps) => {
+const NovelEdit = (props: NovelEditProps) => {
 	const { id } = props.match.params;
-	const { expand, refreshSidebar } = props;
+	const { expand, refreshSidebar, edited, setEdit, setSave, setOpen, setRedirect } = props;
 
 	// hooks
 	const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -77,12 +77,18 @@ const NovelEdit = (props: NovelProps) => {
 	function onNameChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const name = event.target.value;
 		setName(name);
+
+		// set edited
+		setEdit();
 	}
 
 	// the event of textarea change is different, so use a separate method
 	function onDescriptionChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
 		const description = event.target.value;
 		setDescription(description);
+
+		// set edited
+		setEdit();
 	}
 
 	// add new tag
@@ -97,11 +103,17 @@ const NovelEdit = (props: NovelProps) => {
 		if (categories.indexOf(tag) !== -1) return;
 
 		setCategories(categories.concat(tag));
+
+		// set edited
+		setEdit();
 	}
 
 	// delete new tag
 	function onDeleteTag(tag: string) {
 		setCategories(categories.filter((currTag: string) => currTag !== tag));
+
+		// set edited
+		setEdit();
 	}
 
 	// on save
@@ -111,6 +123,8 @@ const NovelEdit = (props: NovelProps) => {
 				Message.success('保存成功！');
 				// refresh content
 				getNovelContent();
+				// set saved
+				setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -142,6 +156,18 @@ const NovelEdit = (props: NovelProps) => {
 			});
 	}
 
+	// go back
+	function back() {
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			props.history.goBack();
+		}
+	}
+
 	return (
 		<Col
 			span={19}
@@ -153,10 +179,10 @@ const NovelEdit = (props: NovelProps) => {
 		>
 			<PageHeader
 				title={''}
-				onBack={() => { props.history.goBack(); }}
+				onBack={back}
 				extra={[
 					(
-						<Button type="primary" key="quit-edit" ghost onClick={() => props.history.goBack()}>
+						<Button type="primary" key="quit-edit" ghost onClick={back}>
 							<Icon type="rollback" />退出编辑
 						</Button>
 					),

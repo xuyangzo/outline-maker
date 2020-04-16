@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom';
 
 // type declaration
 import {
-	BackgroundProps, BackgroundEditState as BackgroundState,
+	BackgroundEditProps, BackgroundEditState as BackgroundState,
 	BackgroundEditDec, BackgroundDataValue
 } from './BackgroundDec';
 
@@ -22,8 +22,8 @@ import { backgroundIllustrations } from '../../utils/constants';
 // sass
 import './background.scss';
 
-class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
-	constructor(props: BackgroundProps) {
+class BackgroundEdit extends React.Component<BackgroundEditProps, BackgroundState> {
+	constructor(props: BackgroundEditProps) {
 		super(props);
 		this.state = {
 			novel_id: this.props.match.params.id,
@@ -85,6 +85,9 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 		});
 
 		this.setState({ backgrounds });
+
+		// set edit
+		this.props.setEdit();
 	}
 
 	// when input field changes
@@ -126,6 +129,9 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 				backgrounds: prevState.backgrounds.concat({ title, content: '', id: -1, created: true })
 			}));
 		}
+
+		// set edit
+		this.props.setEdit();
 	}
 
 	// when textarea changes
@@ -182,7 +188,8 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			}));
 		}
 
-		return;
+		// set edit
+		this.props.setEdit();
 	}
 
 	// save
@@ -192,6 +199,8 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 				Message.success('更新成功！');
 				// refresh background
 				this.setBackground();
+				// set save
+				this.props.setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -206,6 +215,19 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
 			});
+	}
+
+	// back
+	onBack = () => {
+		const { edited, setOpen, setRedirect } = this.props;
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			this.props.history.goBack();
+		}
 	}
 
 	render() {
@@ -243,14 +265,14 @@ class BackgroundEdit extends React.Component<BackgroundProps, BackgroundState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.goBack(); }}
+					onBack={this.onBack}
 					className="main-header"
 					extra={[
 						<Button
 							key="quit"
 							type="danger"
 							ghost
-							onClick={() => { this.props.history.goBack(); }}
+							onClick={this.onBack}
 						>
 							<Icon type="rollback" />退出编辑
 						</Button>,

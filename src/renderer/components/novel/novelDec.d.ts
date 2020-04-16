@@ -16,6 +16,15 @@ export interface NovelProps extends RouteComponentProps<MatchParams> {
   refreshSidebar: () => void;
 }
 
+export interface NovelEditProps extends NovelProps {
+  edited: boolean;
+
+  setEdit: () => void;
+  setSave: () => void;
+  setOpen: () => void;
+  setRedirect: (payload: string) => void;
+}
+
 export interface NovelState {
   id: string;
   name: string;
