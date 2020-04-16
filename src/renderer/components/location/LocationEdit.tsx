@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 const fs = require('fs');
 
 // type declaration
-import { LocationProps, LocationState, LocationDataValue } from './locationDec';
+import { LocationEditProps, LocationState, LocationDataValue } from './locationDec';
 
 // database operations
 import { getLocation, updateLocation } from '../../../db/operations/location-ops';
@@ -22,8 +22,8 @@ import { locationIllustrations } from '../../utils/constants';
 // sass
 import './location.scss';
 
-class LocationEdit extends React.Component<LocationProps, LocationState> {
-	constructor(props: LocationProps) {
+class LocationEdit extends React.Component<LocationEditProps, LocationState> {
+	constructor(props: LocationEditProps) {
 		super(props);
 		this.state = {
 			id: this.props.match.params.id,
@@ -57,11 +57,17 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 	// when input field changes
 	onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.setState({ [e.target.name]: e.target.value });
+
+		// set edited
+		this.props.setEdit();
 	}
 
 	// when textarea changes
 	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		this.setState({ [e.target.name]: e.target.value });
+
+		// set edited
+		this.props.setEdit();
 	}
 
 	/**
@@ -92,6 +98,10 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			// convert buffer to base64 string format
 			const imageStr: string = `data:${type};base64,${Buffer.from(data).toString('base64')}`;
 			this.setState({ image: imageStr });
+
+			// set edited
+			this.props.setEdit();
+
 			return false;
 		});
 
@@ -110,6 +120,8 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 		updateLocation(id, props)
 			.then(() => {
 				Message.success('保存成功！');
+				// set save
+				this.props.setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -124,6 +136,19 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err);
 			});
+	}
+
+	// go back
+	onBack = () => {
+		const { edited, setOpen, setRedirect } = this.props;
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			this.props.history.goBack();
+		}
 	}
 
 	render() {
@@ -141,14 +166,14 @@ class LocationEdit extends React.Component<LocationProps, LocationState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.goBack(); }}
+					onBack={this.onBack}
 					className="main-header"
 					extra={[
 						<Button
 							key="quit"
 							type="danger"
 							ghost
-							onClick={() => { this.props.history.goBack(); }}
+							onClick={this.onBack}
 						>
 							<Icon type="rollback" />退出编辑
 						</Button>,

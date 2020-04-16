@@ -20,6 +20,15 @@ export interface LocationProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
 
+export interface LocationEditProps extends LocationProps {
+  edited: boolean;
+
+  setEdit: () => void;
+  setSave: () => void;
+  setOpen: () => void;
+  setRedirect: (payload: string) => void;
+}
+
 /**
  * location page and location edit page share same props and state
  * because their attributes are the same (different from character)

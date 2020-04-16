@@ -25,6 +25,15 @@ export interface CharacterProps extends RouteComponentProps<MatchParams> {
   expand: boolean;
 }
 
+export interface CharacterEditProps extends CharacterProps {
+  edited: boolean;
+
+  setEdit: () => void;
+  setSave: () => void;
+  setOpen: () => void;
+  setRedirect: (payload: string) => void;
+}
+
 export interface CharacterState extends CharacterDataValue {
   outlines: OutlineCharacterDataValue[];
   inventories: InventoryCharacterDataValue[];

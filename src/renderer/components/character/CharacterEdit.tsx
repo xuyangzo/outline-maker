@@ -11,7 +11,7 @@ const fs = require('fs');
 import { withRouter } from 'react-router-dom';
 
 // type declaration
-import { CharacterProps, CharacterEditState, CharacterDataValue } from './characterDec';
+import { CharacterEditProps, CharacterEditState, CharacterDataValue } from './characterDec';
 
 // database operations
 import { getCharacter, updateCharacter } from '../../../db/operations/character-ops';
@@ -23,8 +23,8 @@ import { characterIllustrations, imageMapping } from '../../utils/constants';
 // sass
 import './character.scss';
 
-class Character extends React.Component<CharacterProps, CharacterEditState> {
-	constructor(props: CharacterProps) {
+class CharacterEdit extends React.Component<CharacterEditProps, CharacterEditState> {
+	constructor(props: CharacterEditProps) {
 		super(props);
 		this.state = {
 			id: this.props.match.params.id,
@@ -64,15 +64,24 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	// when input field changes
 	onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.setState({ [e.target.name]: e.target.value });
+
+		// set edited
+		this.props.setEdit();
 	}
 
 	onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		this.setState({ [e.target.name]: e.target.value });
+
+		// set edited
+		this.props.setEdit();
 	}
 
 	// when select gender
 	onSelectGender = (value: string) => {
 		this.setState({ gender: parseInt(value, 10) });
+
+		// set edited
+		this.props.setEdit();
 	}
 
 	/**
@@ -103,6 +112,10 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			// convert buffer to base64 string format
 			const imageStr: string = `data:${type};base64,${Buffer.from(data).toString('base64')}`;
 			this.setState({ image: imageStr });
+
+			// set edited
+			this.props.setEdit();
+
 			return false;
 		});
 
@@ -126,6 +139,8 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			.then(() => {
 				// alert success
 				Message.success('保存成功！');
+				// set save
+				this.props.setSave();
 			})
 			.catch((err: DatabaseError) => {
 				Message.error(err.message);
@@ -141,6 +156,19 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			.catch((err: DatabaseError) => {
 				Message.error(err);
 			});
+	}
+
+	// go back
+	onBack = () => {
+		const { edited, setOpen, setRedirect } = this.props;
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			this.props.history.goBack();
+		}
 	}
 
 	render() {
@@ -164,14 +192,14 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 			>
 				<PageHeader
 					title={''}
-					onBack={() => { this.props.history.goBack(); }}
+					onBack={this.onBack}
 					className="main-header"
 					extra={[
 						<Button
 							key="quit"
 							type="danger"
 							ghost
-							onClick={() => { this.props.history.goBack(); }}
+							onClick={this.onBack}
 						>
 							<Icon type="rollback" />退出编辑
 						</Button>,
@@ -379,4 +407,4 @@ class Character extends React.Component<CharacterProps, CharacterEditState> {
 	}
 }
 
-export default withRouter(Character);
+export default withRouter(CharacterEdit);
