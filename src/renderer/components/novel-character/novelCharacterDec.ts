@@ -25,4 +25,6 @@ export interface NovelCharacterEditProps extends NovelCharacterProps {
 
 	setEdit: () => void;
 	setSave: () => void;
+	setOpen: () => void;
+	setRedirect: (payload: string) => void;
 }

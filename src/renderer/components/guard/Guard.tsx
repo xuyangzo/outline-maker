@@ -14,8 +14,12 @@ const Guard = (props: GuardProps) => {
 	function redirect() {
 		// close modal
 		setClose();
-		// redirect
-		props.history.push(redirectUrl);
+		/**
+		 * redirect
+		 * if redirect url === 'b', go back
+		 */
+		if (redirectUrl === 'b') props.history.goBack();
+		else props.history.push(redirectUrl);
 		// set edited to false
 		setSave();
 	}

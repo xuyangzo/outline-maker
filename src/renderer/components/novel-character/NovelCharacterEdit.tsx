@@ -27,7 +27,7 @@ import empty from '../../../public/empty-character.png';
 
 const NovelCharacterEdit = (props: NovelCharacterEditProps) => {
 	const { novel_id } = props.match.params;
-	const { expand, setEdit, setSave } = props;
+	const { expand, edited, setEdit, setSave, setOpen, setRedirect } = props;
 
 	// state hooks
 	const [showBatchDeleteModel, setBatchDeleteModel] = React.useState<boolean>(false);
@@ -201,6 +201,18 @@ const NovelCharacterEdit = (props: NovelCharacterEditProps) => {
 			});
 	}
 
+	// go back
+	function back() {
+		if (edited) {
+			// open modal
+			setOpen();
+			// set redirectUrl
+			setRedirect('b');
+		} else {
+			props.history.goBack();
+		}
+	}
+
 	// single item (card) for main characters
 	const SortableItemMain = SortableElement(({ value }: { value: NovelCharacterDataValue }) => (
 		<li className="card-li">
@@ -281,7 +293,7 @@ const NovelCharacterEdit = (props: NovelCharacterEditProps) => {
 			<div>
 				<PageHeader
 					title={''}
-					onBack={() => props.history.goBack()}
+					onBack={back}
 					extra={[
 						(
 							<Button type="danger" key="batch-delete" ghost onClick={() => setBatchDeleteModel(true)}>
@@ -289,7 +301,7 @@ const NovelCharacterEdit = (props: NovelCharacterEditProps) => {
 							</Button>
 						),
 						(
-							<Button type="primary" key="quit-edit" ghost onClick={() => props.history.goBack()}>
+							<Button type="primary" key="quit-edit" ghost onClick={back}>
 								<Icon type="rollback" />退出编辑
 							</Button>
 						),

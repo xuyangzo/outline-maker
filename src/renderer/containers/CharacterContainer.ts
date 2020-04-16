@@ -6,7 +6,7 @@ import NovelCharacterEdit from '../components/novel-character/NovelCharacterEdit
 import Character from '../components/character/Character';
 import CharacterEdit from '../components/character/CharacterEdit';
 import { RootState } from '../reducers';
-import { GuardAction, edit, save } from '../actions/guardActions';
+import { GuardAction, edit, save, open, redirect } from '../actions/guardActions';
 
 const mapStateToProps = (state: RootState) => ({
 	expand: state.sidebar.expand
@@ -20,7 +20,9 @@ const mapStateToPropsEditVersion = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<GuardAction>) => ({
 	setEdit: () => dispatch(edit()),
-	setSave: () => dispatch(save())
+	setSave: () => dispatch(save()),
+	setOpen: () => dispatch(open()),
+	setRedirect: (payload: string) => dispatch(redirect(payload))
 });
 
 export const NovelCharacterContainer = connect(mapStateToProps)(NovelCharacter);
